@@ -333,6 +333,14 @@ Complete the first serious workflow contract layer.
 - Secrets and credentials have a documented boundary before any real token is stored.
 - Failed runs, rejected reviews, parked items, and blocked signals have defined behavior.
 
+### Schema Status
+
+Completed.
+
+### Contract Status
+
+In progress.
+
 ## Parallel Track - SearchClarity Business Readiness
 
 ### Goal
@@ -468,6 +476,7 @@ Phase 7 SearchClarity Compatibility Preparation should begin only when:
 Not started in Neon Ronin.
 
 SearchClarity docs have been inspected as WIP context.
+
 ## Phase 5 - Operations Layer
 
 ### Goal
@@ -767,17 +776,14 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Write the Phase 4 P1 schemas, starting with `docs/core/schemas/artifact.schema.md`.
-2. Continue with `workflow.schema.md`, `business-intake.schema.md`, `human-decision.schema.md`, and `permission-scope.schema.md`.
-3. Write the Phase 4 contracts:
-   - `docs/core/15-secrets-and-credentials.md`
-   - `docs/core/16-error-and-failure-handling.md`
-   - `docs/core/17-observatory-scoring-contract.md`
-   - `docs/core/18-external-integration-contract.md`
-4. Create `docs/operations/` and the Phase 5 operations docs.
-5. Track SearchClarity Business Readiness as a parallel dependency, not core platform work.
-6. Prepare Internal Research as Workspace 1.
-7. Only then prepare SearchClarity compatibility review.
+1. Write `docs/core/15-secrets-and-credentials.md`.
+2. Write `docs/core/16-error-and-failure-handling.md`.
+3. Write `docs/core/17-observatory-scoring-contract.md`.
+4. Write `docs/core/18-external-integration-contract.md`.
+5. Create `docs/operations/` and the Phase 5 operations docs.
+6. Track SearchClarity Business Readiness as a parallel dependency, not core platform work.
+7. Prepare Internal Research as Workspace 1.
+8. Only then prepare SearchClarity compatibility review.
 
 ## Final Rule
 
