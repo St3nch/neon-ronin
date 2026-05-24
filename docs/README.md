@@ -10,7 +10,7 @@ Core docs must not be written around any one specific business, brand, store, or
 |---|---|
 | `core` | Business-neutral Neon Ronin platform doctrine and architecture |
 | `workspace-adapters` | Generic workspace patterns for types of businesses |
-| `research` | Supporting research, feasibility notes, policy research, and experiments |
+| `research-docs/` | Supporting research, feasibility notes, policy research, and experiments |
 | `decisions` | Architecture decision records |
 
 ## Anti-Drift Rule
