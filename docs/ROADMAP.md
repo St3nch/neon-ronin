@@ -20,10 +20,37 @@ Do not turn Neon Ronin into SearchClarity.
 Neon Ronin must follow the build order already defined in `docs/core/10-build-order.md`:
 
 ```text
-Doctrine -> Schemas -> Manual Workspace Validation -> Controlled Agent Assistance -> Additional Workspace Types
+Doctrine -> Structural Authority -> Schemas -> Manual Workspace Validation -> Controlled Agent Assistance -> Additional Workspace Types
 ```
 
 This roadmap expands that sequence into practical planning phases.
+
+## VEDA-Informed Planning Adjustment
+
+A review of VEDA observatory/database specification docs showed several structural patterns Neon Ronin should adopt before glossary and schema work.
+
+Neon Ronin should borrow VEDA's discipline, not VEDA's exact system boundaries.
+
+Useful borrowed patterns:
+
+- define data ownership before schema
+- define system invariants before implementation
+- preserve provenance and evidence before interpretation
+- distinguish raw, structured, sanitized, normalized, and derived records
+- make schema authority explicit before individual schema files
+- prevent deferred domains from getting ad hoc tables or fields
+- prefer explicit schema over unbounded JSON sludge
+- keep derived outputs labeled as derived
+- preserve read-without-ownership boundaries
+
+Adapted Neon Ronin rule:
+
+```text
+Borrow structural rigor from VEDA.
+Do not import VEDA's project assumptions, entity names, or pure-observatory role.
+```
+
+Neon Ronin is not a pure observatory. Neon Ronin orchestrates workspaces under human control, and the Observatory is one core subsystem inside that platform.
 
 ## Current Status
 
@@ -45,6 +72,9 @@ Before coding begins, Neon Ronin needs concrete contracts for:
 - signal sanitization
 - Observatory ingestion
 - permissions
+- provenance and evidence
+- schema authority
+- data ownership boundaries
 - external integration boundaries
 
 ## Near-Term Rule
@@ -85,11 +115,15 @@ Stabilize the current doctrine so future planning has a clean base.
 - Research docs cannot accidentally override core doctrine.
 - First-business containment is documented as an accepted architecture decision.
 
+### Status
+
+Completed.
+
 ## Phase 1 - Core Boundary Specs
 
 ### Goal
 
-Turn the doctrine into enforceable platform boundaries before schemas and code.
+Turn the doctrine into enforceable platform boundaries before structural authority docs, schemas, and code.
 
 ### Tasks
 
@@ -98,22 +132,129 @@ Turn the doctrine into enforceable platform boundaries before schemas and code.
 3. Define allowed runtime modes by workspace status.
 4. Define what belongs in core vs adapter vs workspace-specific config vs external integration.
 5. Define manual-test requirements and workspace promotion criteria.
+6. Define the Observatory shared-intelligence boundary.
 
 ### Deliverables
 
 - `docs/core/08-sanitization.md`
 - `docs/core/09-workspace-lifecycle.md`
-- `docs/core/glossary.md`
-- `docs/operations/manual-test-template.md`
-- `docs/operations/workspace-promotion-checklist.md`
+- `docs/decisions/adr-004-observatory-shared-intelligence-boundary.md`
 
 ### Exit Criteria
 
 - A workspace cannot move from idea to active without explicit criteria.
 - A signal cannot enter the Observatory without a defined sanitization path.
+- The Observatory is structurally defined as shared intelligence, not shared private memory.
 - Manual testing is operational, not just philosophical.
 
-## Phase 2 - P0 Platform Schemas
+### Status
+
+Completed.
+
+## Phase 2 - Structural Authority Layer
+
+### Goal
+
+Add the VEDA-informed authority docs that must exist before glossary and schema work.
+
+This phase defines ownership, invariants, provenance, and schema authority so individual schemas do not become ad hoc implementation guesses.
+
+### Tasks
+
+1. Define Neon Ronin data ownership boundaries.
+2. Define system invariants that must always remain true.
+3. Define provenance and evidence requirements.
+4. Define schema authority and governed schema families.
+5. Define canonical vocabulary after ownership and provenance are clear.
+
+### Deliverables
+
+1. `docs/core/11-data-boundaries.md`
+2. `docs/core/12-system-invariants.md`
+3. `docs/core/13-provenance-and-evidence.md`
+4. `docs/core/14-schema-authority.md`
+5. `docs/core/glossary.md`
+
+### Data Boundary Topics
+
+`docs/core/11-data-boundaries.md` should define:
+
+- core-owned data
+- workspace-owned data
+- Observatory-owned data
+- adapter-owned patterns
+- integration-owned records
+- referenced-only data
+- forbidden-in-core data
+- read-without-ownership rules
+- derived-does-not-replace-canonical rules
+- deferred domain rules
+
+### System Invariant Topics
+
+`docs/core/12-system-invariants.md` should define non-negotiables such as:
+
+- Neon Ronin hosts workspaces; it does not become a workspace.
+- Workspaces are isolated by default.
+- The Observatory is the only cross-workspace intelligence channel.
+- Human approval gates risky actions.
+- No agent approves its own work.
+- Manual workflow proof comes before automation.
+- Core schemas remain business-neutral.
+- Deferred domains do not get ad hoc schemas.
+- Derived intelligence does not become approval or execution truth.
+- The system remains legible to capable LLMs.
+
+### Provenance And Evidence Topics
+
+`docs/core/13-provenance-and-evidence.md` should define provenance requirements for:
+
+- raw workspace observations
+- signal candidates
+- sanitized signals
+- normalized Observatory records
+- derived intelligence
+- agent runs
+- artifacts
+- review queue items
+- human decisions
+- audit records
+
+It should preserve the distinction between:
+
+```text
+raw data -> structured record -> sanitized record -> normalized record -> derived output -> human decision/action
+```
+
+### Schema Authority Topics
+
+`docs/core/14-schema-authority.md` should define governed schema families before individual schema docs are written:
+
+- workspace records
+- workflow records
+- agent records
+- run/job records
+- artifact records
+- review records
+- human decision records
+- signal records
+- Observatory records
+- audit records
+- permission records
+- integration reference records
+- operations records
+
+It should also define what must not become schema yet, including deferred domains such as marketplace integrations, Printify, Fiverr automation, Tauri UI, LangGraph, Hermes, scheduled agents, watch mode, and multi-user roles.
+
+### Exit Criteria
+
+- Every future schema family has an ownership category.
+- Every derived output can be distinguished from canonical source records.
+- Every meaningful record has a provenance expectation.
+- Deferred domains cannot sneak into schema through convenience fields.
+- Glossary terms are grounded in ownership and provenance decisions.
+
+## Phase 3 - P0 Platform Schemas
 
 ### Goal
 
@@ -141,11 +282,15 @@ docs/core/schemas/
 Each schema doc should define:
 
 - purpose
+- ownership category
 - required fields
 - optional fields
+- server/system-owned fields
 - valid statuses or enums
 - relationships to other records
+- provenance requirements
 - audit requirements
+- lifecycle constraints
 - example record
 - non-goals
 
@@ -157,8 +302,9 @@ Where practical, schemas should be written so they can later become JSON Schema,
 - A review item can be created, reviewed, and audited on paper.
 - A signal can be sanitized and accepted or rejected on paper.
 - An agent run can be recorded and traced on paper.
+- No schema depends on SearchClarity-specific assumptions.
 
-## Phase 3 - P1 Platform Schemas And Contracts
+## Phase 4 - P1 Platform Schemas And Contracts
 
 ### Goal
 
@@ -171,10 +317,10 @@ Complete the first serious workflow contract layer.
 3. `docs/core/schemas/business-intake.schema.md`
 4. `docs/core/schemas/human-decision.schema.md`
 5. `docs/core/schemas/permission-scope.schema.md`
-6. `docs/core/11-secrets-and-credentials.md`
-7. `docs/core/12-error-and-failure-handling.md`
-8. `docs/core/13-observatory-scoring-contract.md`
-9. `docs/core/14-external-integration-contract.md`
+6. `docs/core/15-secrets-and-credentials.md`
+7. `docs/core/16-error-and-failure-handling.md`
+8. `docs/core/17-observatory-scoring-contract.md`
+9. `docs/core/18-external-integration-contract.md`
 
 ### Exit Criteria
 
@@ -183,7 +329,7 @@ Complete the first serious workflow contract layer.
 - Secrets and credentials have a documented boundary before any real token is stored.
 - Failed runs, rejected reviews, parked items, and blocked signals have defined behavior.
 
-## Phase 4 - Operations Layer
+## Phase 5 - Operations Layer
 
 ### Goal
 
@@ -193,6 +339,8 @@ Create the operational documents that prevent planning rules from becoming wishf
 
 - `docs/operations/first-workspace-decision-log.md`
 - `docs/operations/workspace-onboarding-checklist.md`
+- `docs/operations/manual-test-template.md`
+- `docs/operations/workspace-promotion-checklist.md`
 - `docs/operations/review-queue-runbook.md`
 - `docs/operations/emergency-stop-procedure.md`
 - `docs/operations/schema-change-checklist.md`
@@ -204,7 +352,7 @@ Create the operational documents that prevent planning rules from becoming wishf
 - Every schema change can be reviewed for drift risk.
 - Emergency stop is defined before background work exists.
 
-## Phase 5 - Workspace 1: Internal Research
+## Phase 6 - Workspace 1: Internal Research
 
 ### Goal
 
@@ -236,6 +384,8 @@ This workspace should validate:
 - sanitization gates
 - Observatory ingestion rules
 - manual workflow discipline
+- provenance requirements
+- derived-vs-canonical record boundaries
 
 ### Allowed
 
@@ -267,14 +417,15 @@ Before SearchClarity enters Neon Ronin planning, Internal Research should prove 
 4. An audit record can trace the work.
 5. A signal candidate can be sanitized or rejected.
 6. A platform decision can be recorded without business-specific contamination.
+7. Provenance is preserved across raw, structured, sanitized, and derived records.
 
-## Phase 6 - SearchClarity Compatibility Preparation
+## Phase 7 - SearchClarity Compatibility Preparation
 
 ### Goal
 
 Prepare Neon Ronin to inspect and onboard SearchClarity without letting SearchClarity reshape core.
 
-This phase begins only after Phases 0 through 5 are complete enough to enforce boundaries.
+This phase begins only after Phases 0 through 6 are complete enough to enforce boundaries.
 
 ### Tasks
 
@@ -290,6 +441,8 @@ This phase begins only after Phases 0 through 5 are complete enough to enforce b
 10. Identify hard-no automation rules.
 11. Identify Observatory signal candidates.
 12. Identify data that must remain private.
+13. Identify provenance and evidence requirements.
+14. Identify any deferred domains that must not enter core yet.
 
 ### Expected Classification
 
@@ -326,6 +479,7 @@ SearchClarity may reveal reusable needs such as:
 - signal sanitization rules
 - audit requirements
 - review queue item types
+- provenance requirements
 
 Only these reusable capabilities should be promoted into Neon Ronin core.
 
@@ -346,7 +500,7 @@ Only these reusable capabilities should be promoted into Neon Ronin core.
 - Any reusable requirements are documented as generic capabilities.
 - A manual test can be run before any automation.
 
-## Phase 7 - Workspace 2: SearchClarity Manual Validation
+## Phase 8 - Workspace 2: SearchClarity Manual Validation
 
 ### Goal
 
@@ -384,7 +538,7 @@ SearchClarity can move toward active only when:
 6. The service-business adapter remains generic.
 7. No SearchClarity-specific logic has entered core.
 
-## Phase 8 - Controlled Agent Assistance
+## Phase 9 - Controlled Agent Assistance
 
 ### Goal
 
@@ -413,7 +567,7 @@ Add limited agent assistance after manual workflows are understood.
 
 Agents improve speed or consistency without bypassing human review gates.
 
-## Phase 9 - Future Workspace Types
+## Phase 10 - Future Workspace Types
 
 ### Goal
 
@@ -459,29 +613,36 @@ Until the earlier phases are complete, do not build:
 - customer messaging automation
 - cross-workspace direct queries
 
+Deferred domains must not receive ad hoc schemas, fields, or tables before they are promoted through the roadmap.
+
 ## Roadmap Principle
 
 ```text
 Neon Ronin earns automation by proving manual workflows.
 Neon Ronin earns new workspace types by preserving core boundaries.
+Neon Ronin earns schemas by proving ownership and provenance.
 Neon Ronin earns complexity gradually.
 ```
 
 ## Immediate Next Actions
 
-1. Commit the current foundational docs.
-2. Fix `docs/README.md` folder map.
-3. Add ADR-002 for research-docs status.
-4. Add ADR-003 for first-business containment.
-5. Write `docs/core/08-sanitization.md`.
-6. Write `docs/core/09-workspace-lifecycle.md`.
-7. Create `docs/core/schemas/`.
-8. Write the six P0 schemas.
-9. Create `docs/operations/`.
-10. Prepare Internal Research as Workspace 1.
+1. Write `docs/core/11-data-boundaries.md`.
+2. Write `docs/core/12-system-invariants.md`.
+3. Write `docs/core/13-provenance-and-evidence.md`.
+4. Write `docs/core/14-schema-authority.md`.
+5. Write `docs/core/glossary.md`.
+6. Create `docs/core/schemas/`.
+7. Write the six P0 schemas.
+8. Create `docs/operations/`.
+9. Prepare Internal Research as Workspace 1.
+10. Only then prepare SearchClarity compatibility review.
 
 ## Final Rule
 
 SearchClarity is allowed to be an early workspace.
 
 SearchClarity is not allowed to become Neon Ronin.
+
+```text
+Smart and Optimal.
+```
