@@ -1,10 +1,72 @@
 # Generated/editor backup files
 *.bak
+*.backup
+*.orig
+*.rej
+*~
+
+# Local archive/safety copies
+archive/**
+docs/archive/**
+research-docs/archive/**
+!archive/.gitkeep
+!docs/archive/.gitkeep
+!research-docs/archive/.gitkeep
+
+# Generated exports / build artifacts
+exports/**
+docs/exports/**
+reports/**
+dist/**
+build/**
+out/**
+!exports/.gitkeep
+!docs/exports/.gitkeep
+
+# Logs
+*.log
+logs/**
 
 # OS/editor noise
 Thumbs.db
+Desktop.ini
 .DS_Store
+.vscode/**
+.idea/**
 
 # Temporary files
 *.tmp
 *.temp
+*.swp
+*.swo
+
+# Environment / secrets / local config
+.env
+.env.*
+!.env.example
+*.local
+*.secret
+secrets/**
+
+# Dependency and tool caches
+node_modules/**
+.npm/**
+.pnpm-store/**
+.yarn/**
+__pycache__/**
+.pytest_cache/**
+.mypy_cache/**
+.ruff_cache/**
+.venv/**
+venv/**
+
+# Python packaging/build
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/**
+
+# Large/local datasets and scratch files
+data/raw/**
+data/cache/**
+tmp/**
