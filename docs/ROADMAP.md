@@ -304,6 +304,10 @@ Where practical, schemas should be written so they can later become JSON Schema,
 - An agent run can be recorded and traced on paper.
 - No schema depends on SearchClarity-specific assumptions.
 
+### Status
+
+Completed.
+
 ## Phase 4 - P1 Platform Schemas And Contracts
 
 ### Goal
@@ -329,6 +333,141 @@ Complete the first serious workflow contract layer.
 - Secrets and credentials have a documented boundary before any real token is stored.
 - Failed runs, rejected reviews, parked items, and blocked signals have defined behavior.
 
+## Parallel Track - SearchClarity Business Readiness
+
+### Goal
+
+Make SearchClarity operationally ready as a real manual service business before Neon Ronin attempts full workspace onboarding or automation planning.
+
+This is a parallel business-readiness track, not Neon Ronin core work.
+
+SearchClarity artifacts may inform Neon Ronin compatibility work, but they must not become core doctrine or core schema.
+
+Core rule:
+
+```text
+SearchClarity must prove its manual business workflow.
+Neon Ronin must prepare to host that workflow without becoming it.
+```
+
+### Why This Track Exists
+
+A review of `C:\dev\searchclarity\docs` showed that SearchClarity is strategically strong but still has launch-blocking business artifacts to finish.
+
+SearchClarity should not be fully onboarded into Neon Ronin until there is enough real manual workflow evidence to model safely.
+
+SearchClarity currently needs manual-business assets such as:
+
+- public sample report
+- report production pipeline
+- branded report template
+- tracker workbook
+- Fiverr gig copy
+- buyer intake forms
+- first-order fulfillment SOP
+- QC checklist
+- pricing source of truth
+- public proof assets
+
+These are SearchClarity workspace inputs.
+
+They are not Neon Ronin platform doctrine.
+
+### SearchClarity Readiness Deliverables
+
+Before full SearchClarity onboarding, SearchClarity should have:
+
+1. `docs/samples/maplewood-candle-co-listing-visibility-audit.md` completed as a polished sample source.
+2. A working PDF export pipeline from Markdown to customer-facing PDF.
+3. A SearchClarity stylesheet or report styling system.
+4. A delivery-ready sample PDF export.
+5. A reusable Etsy Listing Visibility Audit report template.
+6. A minimal tracker workbook with the eight required sheets:
+   - Customers
+   - Orders
+   - Reports
+   - Action Plan Items
+   - Keyword Observations
+   - Raw Market Signals
+   - Generalized Observations
+   - Consent Records
+7. Fiverr gig copy for the first offer.
+8. Buyer intake form copy for the first offer.
+9. First-order fulfillment SOP.
+10. One-page QC checklist or tracker tab.
+11. Reconciled launch pricing source of truth.
+12. Consent language for public examples, testimonials, or case studies.
+
+### SearchClarity Evidence Needed By Neon Ronin
+
+Neon Ronin should later use SearchClarity readiness artifacts to extract:
+
+- service-business workspace requirements
+- customer intake workflow
+- report artifact types
+- QA review gate needs
+- customer delivery review gate needs
+- privacy review needs
+- signal capture workflow
+- raw-to-sanitized signal handoff
+- artifact storage requirements
+- audit events required for fulfillment
+- workspace-private data boundaries
+- manual-test checklist items
+
+### SearchClarity Must Stay Workspace-Owned
+
+The following remain SearchClarity workspace-owned or SearchClarity business-owned:
+
+- brand language
+- service offers
+- package names
+- pricing
+- Fiverr gig copy
+- buyer-facing report language
+- report templates
+- customer intake forms
+- customer/order/report records
+- customer delivery messages
+- client-specific recommendations
+- client-specific report history
+- raw client observations
+- consent records
+
+These must not enter `docs/core/` as Neon Ronin doctrine.
+
+### Neon Ronin May Extract Reusable Capabilities
+
+SearchClarity may reveal reusable platform needs, such as:
+
+- artifact schema requirements
+- workflow schema requirements
+- business intake schema requirements
+- human decision schema requirements
+- permission scope requirements
+- service-business adapter gaps
+- review queue item types
+- audit event types
+- signal sanitization patterns
+- Observatory scoring contract needs
+- external integration boundaries
+
+Only reusable capabilities may be promoted into Neon Ronin core.
+
+### Readiness Gate For Phase 7
+
+Phase 7 SearchClarity Compatibility Preparation should begin only when:
+
+1. Neon Ronin has completed enough Phase 4 and Phase 5 structure to model manual workflows safely.
+2. SearchClarity has completed enough business-readiness artifacts to provide real workspace input.
+3. SearchClarity-specific details can be classified as workspace-owned, adapter-owned, reusable core capability, integration-owned, or out-of-scope.
+4. SearchClarity can be inspected without turning SearchClarity's docs into Neon Ronin doctrine.
+
+### Status
+
+Not started in Neon Ronin.
+
+SearchClarity docs have been inspected as WIP context.
 ## Phase 5 - Operations Layer
 
 ### Goal
@@ -425,7 +564,7 @@ Before SearchClarity enters Neon Ronin planning, Internal Research should prove 
 
 Prepare Neon Ronin to inspect and onboard SearchClarity without letting SearchClarity reshape core.
 
-This phase begins only after Phases 0 through 6 are complete enough to enforce boundaries.
+This phase begins only after Phases 0 through 6 are complete enough to enforce boundaries and the SearchClarity Business Readiness track has produced enough manual-business evidence to model safely.
 
 ### Tasks
 
@@ -443,6 +582,8 @@ This phase begins only after Phases 0 through 6 are complete enough to enforce b
 12. Identify data that must remain private.
 13. Identify provenance and evidence requirements.
 14. Identify any deferred domains that must not enter core yet.
+15. Confirm which SearchClarity readiness artifacts exist and which are still missing.
+16. Confirm whether SearchClarity is ready for workspace onboarding or should remain business-build-only.
 
 ### Expected Classification
 
@@ -626,16 +767,17 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Write `docs/core/11-data-boundaries.md`.
-2. Write `docs/core/12-system-invariants.md`.
-3. Write `docs/core/13-provenance-and-evidence.md`.
-4. Write `docs/core/14-schema-authority.md`.
-5. Write `docs/core/glossary.md`.
-6. Create `docs/core/schemas/`.
-7. Write the six P0 schemas.
-8. Create `docs/operations/`.
-9. Prepare Internal Research as Workspace 1.
-10. Only then prepare SearchClarity compatibility review.
+1. Write the Phase 4 P1 schemas, starting with `docs/core/schemas/artifact.schema.md`.
+2. Continue with `workflow.schema.md`, `business-intake.schema.md`, `human-decision.schema.md`, and `permission-scope.schema.md`.
+3. Write the Phase 4 contracts:
+   - `docs/core/15-secrets-and-credentials.md`
+   - `docs/core/16-error-and-failure-handling.md`
+   - `docs/core/17-observatory-scoring-contract.md`
+   - `docs/core/18-external-integration-contract.md`
+4. Create `docs/operations/` and the Phase 5 operations docs.
+5. Track SearchClarity Business Readiness as a parallel dependency, not core platform work.
+6. Prepare Internal Research as Workspace 1.
+7. Only then prepare SearchClarity compatibility review.
 
 ## Final Rule
 
@@ -646,3 +788,5 @@ SearchClarity is not allowed to become Neon Ronin.
 ```text
 Smart and Optimal.
 ```
+
+
