@@ -1,0 +1,10 @@
+# Generated/editor backup files
+*.bak
+
+# OS/editor noise
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
