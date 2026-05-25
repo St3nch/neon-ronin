@@ -500,6 +500,10 @@ Create the operational documents that prevent planning rules from becoming wishf
 - Every schema change can be reviewed for drift risk.
 - Emergency stop is defined before background work exists.
 
+### Status
+
+Completed.
+
 ## Phase 6 - Workspace 1: Internal Research
 
 ### Goal
@@ -776,10 +780,12 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Create `docs/operations/` and the Phase 5 operations docs.
-2. Track SearchClarity Business Readiness as a parallel dependency, not core platform work.
-3. Prepare Internal Research as Workspace 1.
-4. Only then prepare SearchClarity compatibility review.
+1. Prepare Internal Research as Workspace 1.
+2. Draft the Internal Research workspace config.
+3. Run the Internal Research manual-test template against artifact, review, audit, and signal flow.
+4. Record findings in the first-workspace decision log.
+5. Track SearchClarity Business Readiness as a parallel dependency, not core platform work.
+6. Only then prepare SearchClarity compatibility review.
 
 ## Final Rule
 
