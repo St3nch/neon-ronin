@@ -714,7 +714,9 @@ Internal Research has completed:
 
 - Manual Test 005 plan for local schema shape consolidation planning
 
-- Manual Test 005 evidence pending human decision
+- Manual Test 005 evidence and human decision
+
+- Manual Test 005 classification approved as manual evidence only
 
 Current posture remains:
 
@@ -959,8 +961,8 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Record the human decision for Manual Test 005 using canonical decision types.
-2. Do not create a local schema reference until Manual Test 005 evidence is reviewed and approved.
+1. Pause for audit sync, or draft a separate local-reference boundary/task plan before creating any local schema reference.
+2. Do not create a local schema reference from Manual Test 005 evidence alone.
 3. Do not promote recommendation/proposed-action/manual-test packet shapes into core schemas without schema authority review.
 4. Keep proposed actions as reviewable packets only; do not prepare or execute actions.
 5. Keep executable agent definitions blocked until a separate approval path says otherwise.
