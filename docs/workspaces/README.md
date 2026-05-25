@@ -14,7 +14,7 @@ No workspace configs are active yet.
 
 Phase 5C and Phase 5D cleanup are complete.
 
-Phase 6 preparation has begun with the lightweight Internal Research intake/classification record in `internal-research/intake-classification.md`.
+Phase 6 preparation has begun with the lightweight Internal Research intake/classification record in `internal-research/intake-classification.md` and the workspace config draft in `internal-research/workspace-config.draft.md`.
 
 Do not create active workspace configs here until the intake/classification step and workspace config draft are reviewed.
 
