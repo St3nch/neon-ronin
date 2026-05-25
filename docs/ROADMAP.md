@@ -709,8 +709,8 @@ Internal Research has completed:
 - propose-action boundary plan
 - Part A audit nit follow-up before Manual Test 004
 - Manual Test 004 plan for LLM propose-action assistance
-
-- Manual Test 004 evidence pending human decision
+- Manual Test 004 evidence and human decision
+- Manual Test 004 proposed action approved for manual planning only
 
 Current posture remains:
 
@@ -955,12 +955,13 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Record the human decision for Manual Test 004 using canonical decision types.
-2. Treat any approve-for-manual-planning intent as `approve_with_changes` with manual-planning-only conditions.
-3. Keep proposed actions as reviewable packets only; do not prepare or execute actions.
-4. Keep executable agent definitions blocked until propose-action testing passes and a separate approval path says otherwise.
-5. Keep runtime off, `allowed_agents: []`, scheduled jobs disabled, watch mode disabled, and live Observatory ingestion blocked.
-6. Keep SearchClarity as future workspace pressure, not core doctrine.
+1. Create Manual Test 005 for local schema shape consolidation planning.
+2. Do not create a local schema reference until Manual Test 005 is drafted, reviewed, and approved.
+3. Do not promote recommendation/proposed-action/manual-test packet shapes into core schemas without schema authority review.
+4. Keep proposed actions as reviewable packets only; do not prepare or execute actions.
+5. Keep executable agent definitions blocked until a separate approval path says otherwise.
+6. Keep runtime off, `allowed_agents: []`, scheduled jobs disabled, watch mode disabled, and live Observatory ingestion blocked.
+7. Keep SearchClarity as future workspace pressure, not core doctrine.
 
 ## Final Rule
 
