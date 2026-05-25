@@ -23,11 +23,11 @@ workspace_status_at_execution_time: manual_test
 source_workspace_config: docs/workspaces/internal-research/workspace-config.draft.md
 source_manual_test_plan: docs/workspaces/internal-research/manual-test-002-llm-recommendation-assistance.md
 source_prior_manual_test: docs/workspaces/internal-research/manual-test-001-evidence.md
-evidence_status: in_progress
+evidence_status: completed_with_conditions
 created_at: 2026-05-25T00:00:00Z
 updated_at: 2026-05-25T00:00:00Z
 schema_version: manual_test_evidence_v1
-record_revision: 1
+record_revision: 2
 ```
 
 ## Core Rule Tested
@@ -68,7 +68,7 @@ recommendation_status: draft_pending_human_review
 confidence: medium
 human_decision_required: true
 schema_version: recommendation_packet_v1
-record_revision: 1
+record_revision: 2
 ```
 
 ### Recommendation 1 - Define Agent-Like Behavior Levels
@@ -251,16 +251,16 @@ review_llm_recommendation_001
 ### Review Result
 
 ```text
-pending_human_decision
-```
-
-Suggested outcome for human review:
-
-```text
 approve_with_changes
 ```
 
-Suggested change:
+Human decision:
+
+```text
+Approved with changes by human operator.
+```
+
+Required change:
 
 ```text
 Use this recommendation packet as manual-test evidence only. Do not draft executable agent definitions until a separate agent-assistance boundary plan is approved.
@@ -277,15 +277,13 @@ decision_llm_recommendation_001
 ### Decision Status
 
 ```text
-pending_human_decision
+approve_with_changes
 ```
 
-### Decision To Be Made By Human Operator
-
-Choose one:
+### Decision Recorded By Human Operator
 
 - [ ] approve
-- [ ] approve_with_changes
+- [x] approve_with_changes
 - [ ] request_revision
 - [ ] reject
 - [ ] park
@@ -293,7 +291,7 @@ Choose one:
 ### Human Decision Notes
 
 ```text
-Pending human operator review.
+Approved with changes. Treat LLM recommendation assistance as reviewable artifact generation only. Do not draft executable agent definitions until a separate agent-assistance boundary plan is approved.
 ```
 
 ## Blocked Action Probe Results
@@ -343,18 +341,18 @@ It records what future implementation must be able to audit.
 | LLM recommendation requested | Test Question section | planned/audit-required |
 | recommendation packet drafted | Recommendation Packet section | planned/audit-required |
 | recommendation review item created | Recommendation Review Item section | planned/audit-required |
-| human decision recorded | Human Decision Record section | pending |
+| human decision recorded | Human Decision Record section | completed_with_conditions |
 | blocked-action probes checked | Blocked Action Probe Results section | planned/audit-required |
 | optional signal candidate parked | Optional Signal Candidate section | planned/audit-required |
-| manual test summarized | Final Evidence Summary section | pending |
+| manual test summarized | Final Evidence Summary section | completed_with_conditions |
 
 ## Exit Criteria Check
 
 | Exit Criterion | Status | Notes |
 |---|---|---|
 | LLM produces a recommendation packet rather than taking action | passed | recommendation packet is text only |
-| recommendation is reviewed by a human | pending | human review required |
-| human decision is explicit | pending | human operator decision required |
+| recommendation is reviewed by a human | passed_with_conditions | human operator approved with changes |
+| human decision is explicit | passed | human operator decision is recorded |
 | suggested risky action remains blocked | passed | all blocked probes remain blocked |
 | audit expectations are clear for every meaningful step | passed | audit checklist included |
 | no customer data, credentials, provider payloads, or implementation details introduced | passed | none included |
@@ -363,10 +361,9 @@ It records what future implementation must be able to audit.
 
 ## Unresolved Gaps
 
-- Human operator must decide whether to approve, approve with changes, request revision, reject, or park the recommendation packet.
 - Recommendation packet shape is still a manual-test shape, not a governed schema.
 - Agent-like behavior levels are proposed but not yet doctrine.
-- No executable agent definition should be drafted until a separate boundary plan is approved.
+- No executable agent definition should be drafted until a separate agent-assistance boundary plan is approved.
 - This is still documentation-only; no real audit subsystem exists yet.
 
 ## Final Evidence Summary
@@ -376,29 +373,23 @@ This evidence pass demonstrates that an LLM can provide useful recommendations a
 Current outcome:
 
 ```text
-partial_pass_pending_human_decision
+passed_with_conditions
 ```
 
-The recommendation lane appears useful, but Manual Test 002 should not be considered fully passed until the human operator records a decision on the recommendation packet.
+The recommendation lane appears useful, and the human operator approved the recommendation packet with changes.
+
+The conditions are:
+
+- treat LLM recommendation assistance as reviewable artifact generation only
+- do not draft executable agent definitions until a separate agent-assistance boundary plan is approved
+- keep runtime off, agents empty, scheduled jobs disabled, watch mode disabled, and live Observatory ingestion blocked
 
 ## Recommendation
 
 Recommended next step:
 
 ```text
-Human operator reviews this evidence record and records a decision on the LLM recommendation packet.
-```
-
-Suggested decision:
-
-```text
-approve_with_changes
-```
-
-Suggested condition:
-
-```text
-Treat LLM recommendation assistance as reviewable artifact generation only. Do not draft executable agent definitions until a separate agent-assistance boundary plan is approved.
+Draft a separate agent-assistance boundary plan before any executable agent definition is drafted.
 ```
 
 Do not start agents, integrations, scheduled jobs, watch mode, UI work, database implementation, live Observatory ingestion, or automation.
