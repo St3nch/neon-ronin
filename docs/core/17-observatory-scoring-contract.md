@@ -359,7 +359,7 @@ Fit scores must not override roadmap boundaries.
 
 A high fit score does not promote a deferred domain.
 
-A high fit score does not allow SearchClarity-specific needs to enter core.
+A high fit score does not allow specific-business needs to enter core.
 
 ## Priority Score Rules
 
@@ -479,22 +479,22 @@ A workspace must not see private details from another workspace through score ex
 
 High-sensitivity scoring outputs may require stricter review or limited display.
 
-## SearchClarity Boundary Example
+## Future Service Workspace Boundary Example
 
-SearchClarity may capture raw market observations during paid service work.
+A future service workspace may capture raw market observations during paid or manual service work.
 
 Those observations may later become sanitized signals.
 
 The Observatory may score generalized patterns derived from those sanitized signals.
 
-SearchClarity must not directly define the scoring formula.
+The service workspace must not directly define the scoring formula.
 
-SearchClarity-specific customer reports, customer history, Fiverr copy, pricing, and report language remain workspace-owned.
+Workspace-specific customer reports, customer history, service-platform copy, pricing, and report language remain workspace-owned.
 
 Reusable lesson:
 
 ```text
-SearchClarity may contribute sanitized evidence.
+A workspace may contribute sanitized evidence.
 Neon Ronin may derive generalized intelligence.
 A human decides what to do next.
 ```
@@ -571,7 +571,7 @@ This document does not define:
 - UI ranking display
 - complete Observatory query API
 - marketplace research automation
-- SearchClarity-specific scoring logic
+- specific-business scoring logic
 
 ## Final Rule
 

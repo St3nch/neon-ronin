@@ -227,7 +227,7 @@ other
 
 Signal type should remain business-neutral.
 
-Do not create SearchClarity-specific, Etsy-specific, Printify-specific, or Fiverr-specific signal types in core.
+Do not create specific-business, provider-specific, or marketplace-specific signal types in core.
 
 ## Sensitivity Ratings
 
@@ -488,7 +488,7 @@ api_key
 provider_token
 oauth_refresh_token
 payment_details
-searchclarity_report_template
+business_specific_report_template
 etsy_listing_payload
 printify_product_payload
 fiverr_message_text

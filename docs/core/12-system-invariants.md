@@ -55,7 +55,7 @@ Violations include:
 
 - adding one business's report language to core
 - adding one marketplace's fields to core records
-- adding SearchClarity-specific workflow assumptions to core
+- adding specific-business workflow assumptions to core
 - treating a workspace adapter as the whole platform
 - naming core schemas after one business or channel
 
@@ -206,7 +206,7 @@ Good core concepts:
 
 Bad core concepts:
 
-- SearchClarity report section
+- one business report section
 - Etsy listing draft field inside a generic artifact
 - Printify product wizard state inside core workspace config
 - Fiverr gig package baked into core schema

@@ -240,7 +240,7 @@ A signal summary is not raw evidence.
 
 The following must not become core platform data:
 
-- SearchClarity-specific report language
+- one workspace's report language
 - one business's service packages
 - one business's customer promises
 - one business's pricing assumptions
@@ -355,13 +355,13 @@ Before adding a new schema, table, field, or durable document type, answer:
 9. What review or audit rules apply?
 10. Is this domain deferred?
 11. Would adding this create a shortcut around workspace isolation?
-12. Would adding this make core depend on SearchClarity or another first business?
+12. Would adding this make core depend on a specific business or first-business candidate?
 
 If these questions cannot be answered, do not add the data structure yet.
 
 ## Examples
 
-### Example 1 - SearchClarity Report Template
+### Example 1 - Workspace-Specific Report Template
 
 Classification:
 
@@ -371,7 +371,7 @@ Workspace-owned data
 
 Reason:
 
-A SearchClarity report template is specific to one business. It may inform reusable artifact patterns, but the exact template must not become core.
+A specific business report template is workspace-owned. It may inform reusable artifact patterns, but the exact template must not become core.
 
 Reusable extraction may produce:
 

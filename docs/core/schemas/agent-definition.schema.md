@@ -175,7 +175,7 @@ editorial_planning_agent
 
 Roles should remain generic.
 
-Do not define SearchClarity-specific, Etsy-specific, Printify-specific, or Fiverr-specific agent roles in core.
+Do not define specific-business, provider-specific, or marketplace-specific agent roles in core.
 
 ## Output Types
 
@@ -431,7 +431,7 @@ Runs belong to the agent run schema.
 Do not add fields such as:
 
 ```text
-searchclarity_secret_prompt
+business_specific_secret_prompt
 etsy_publish_permission
 printify_api_key
 fiverr_message_permission

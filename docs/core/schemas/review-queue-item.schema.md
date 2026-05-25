@@ -452,7 +452,7 @@ provider_token
 api_key
 oauth_refresh_token
 full_external_payload
-searchclarity_report_section
+business_specific_report_section
 etsy_listing_payload
 printify_product_payload
 fiverr_message_text

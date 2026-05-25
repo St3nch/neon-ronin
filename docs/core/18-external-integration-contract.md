@@ -580,26 +580,26 @@ LLM provider use must obey:
 
 LLM output is derived unless promoted through review/schema/ADR path.
 
-## SearchClarity Boundary Example
+## Future Service Workspace Boundary Example
 
-SearchClarity may eventually need integrations with service platforms, research tools, file export pipelines, or marketplace-related references.
+A future service workspace may eventually need integrations with service platforms, research tools, file export pipelines, or marketplace-related references.
 
-Those integrations must remain SearchClarity workspace-scoped.
+Those integrations must remain workspace-scoped.
 
-SearchClarity-specific integration needs must not become Neon Ronin core fields.
+Specific-business integration needs must not become Neon Ronin core fields.
 
 Examples:
 
 ```text
-Fiverr gig copy -> SearchClarity workspace-owned artifact
-Fiverr automation -> deferred integration domain
-Etsy shop/listing references -> external references or workspace-owned input
+Service-platform profile copy -> workspace-owned artifact
+Service-platform automation -> deferred integration domain
+Marketplace shop/listing references -> external references or workspace-owned input
 PDF export pipeline -> artifact/workflow capability, not customer delivery automation
 ```
 
-SearchClarity may inform integration requirements.
+A future workspace may inform integration requirements.
 
-SearchClarity must not define core integration authority.
+A future workspace must not define core integration authority.
 
 ## Forbidden Integration Patterns
 
@@ -623,17 +623,17 @@ Do not allow:
 This is a conceptual shape, not a final schema.
 
 ```yaml
-integration_id: integ_searchclarity_fiverr_future
-provider: fiverr
+integration_id: integ_future_service_provider_readonly
+provider: example_service_provider
 integration_status: planned
-workspace_id: ws_searchclarity_future
+workspace_id: ws_future_service_workspace_001
 purpose: Future service-platform reference or read-only integration planning.
 allowed_action_classes:
   - read
 required_credential_references:
-  - credref_searchclarity_fiverr_readonly_001
+  - credref_future_service_provider_readonly_001
 required_permission_scopes:
-  - perm_searchclarity_fiverr_readonly_001
+  - perm_future_service_provider_readonly_001
 required_review_gates:
   - credential_permission_gate
   - data_privacy_gate
@@ -648,7 +648,7 @@ provider_capabilities:
 neon_ronin_allowed_actions:
   - read
 external_references:
-  - extref_fiverr_account_001
+  - extref_example_service_account_001
 audit_requirements:
   - integration_config_created
   - external_read_attempted
@@ -659,7 +659,7 @@ failure_behavior:
   on_credential_failure: block_and_review
 ```
 
-This example does not promote Fiverr automation.
+This example does not promote service-platform automation.
 
 ## Promotion Requirements
 

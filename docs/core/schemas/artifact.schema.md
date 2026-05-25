@@ -114,7 +114,7 @@ other
 
 Artifact types should remain business-neutral.
 
-Do not create SearchClarity-specific, Etsy-specific, Printify-specific, Fiverr-specific, or provider-specific artifact types in core.
+Do not create specific-business, provider-specific, marketplace-specific, or channel-specific artifact types in core.
 
 ## Valid Statuses
 
@@ -321,7 +321,7 @@ provider_token
 api_key
 oauth_refresh_token
 full_external_payload
-searchclarity_report_template_body
+business_specific_report_template_body
 etsy_listing_payload
 printify_product_payload
 fiverr_message_text
@@ -333,23 +333,23 @@ Use workspace-owned content files, bounded summaries, references, or future gove
 ## Example Record
 
 ```yaml
-artifact_id: art_sample_report_001
-workspace_id: ws_searchclarity_future
+artifact_id: art_service_sample_report_001
+workspace_id: ws_future_service_workspace_001
 artifact_type: sample_report
 status: draft
 content_scope: workspace_private
 storage_reference:
   storage_type: repo_path
-  reference: docs/samples/maplewood-candle-co-listing-visibility-audit.md
+  reference: docs/workspaces/example-service-workspace/sample-report.md
   external_reference_id: null
   content_stored_in_core: false
-title: Maplewood Candle Co. Etsy Listing Visibility Audit Sample
-summary: Fictional sample report source used as a SearchClarity proof asset and future workflow input.
+title: Future Service Workspace Sample Report
+summary: Fictional sample report source used as a service-workspace proof asset and future workflow input.
 creator_actor_type: human
 creator_actor_id: human_operator
 source_references:
   - record_type: business_intake
-    record_id: intake_searchclarity_001
+    record_id: intake_future_service_workspace_001
     relationship: business_context
 created_at: 2026-05-24T00:00:00Z
 updated_at: 2026-05-24T00:00:00Z
@@ -362,7 +362,7 @@ human_decision_ids: []
 parent_artifact_id: null
 version_label: draft-v1
 content_format: markdown
-file_name: maplewood-candle-co-listing-visibility-audit.md
+file_name: sample-report.md
 file_hash: null
 sensitivity_rating: low
 confidence: high

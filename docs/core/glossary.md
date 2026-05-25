@@ -983,15 +983,15 @@ Examples:
 - audit records
 - Observatory records
 
-## SearchClarity
+## Specific Business Candidate
 
-A future or early real business workspace candidate mentioned in planning.
+A real or future business idea that may become a workspace.
 
-SearchClarity is allowed to be an early workspace.
+Specific business candidates are allowed to provide concrete planning pressure.
 
-SearchClarity is not allowed to become Neon Ronin.
+They are not allowed to become Neon Ronin core doctrine.
 
-SearchClarity-specific details must stay outside core unless extracted as reusable platform capabilities.
+Specific-business details must stay outside core unless extracted as reusable platform capabilities.
 
 ## Service Business Workspace
 

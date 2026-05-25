@@ -216,21 +216,21 @@ Example:
 | generic artifact review | core_platform_capability |
 | provider-specific API payload | integration_specific |
 
-## SearchClarity Example Classification
+## Future Service Workspace Example Classification
 
-SearchClarity-style details should classify like this:
+A concrete service-workspace candidate should classify like this:
 
 | Item | Classification |
 |---|---|
-| professional PDF reports | workspace output / artifact need |
-| customer delivery review | reusable core review gate need |
-| Fiverr gig copy | workspace-specific |
-| Etsy Listing Visibility Audit template | workspace-specific or service adapter pattern after extraction |
-| raw market signal capture | workspace-owned signal source |
-| Observatory scoring | Neon Ronin core/Observatory concern |
-| customer/order/report tracker | workspace-owned operational data |
+| Professional PDF reports | workspace output / artifact need |
+| Customer delivery review | reusable core review gate need |
+| Service-platform profile copy | workspace-specific |
+| Service report template | workspace-specific or service adapter pattern after extraction |
+| Raw market signal capture | workspace-owned signal source |
+| Observatory scoring | Neon Ronin core / Observatory concern |
+| Customer/order/report tracker | workspace-owned operational data |
 
-This example does not make SearchClarity core doctrine.
+This example does not make a specific service business core doctrine.
 
 ## System-Owned Fields
 
@@ -331,34 +331,32 @@ Use source references, workspace docs, integration records, or future governed s
 ## Example Record
 
 ```yaml
-business_intake_id: intake_searchclarity_001
-idea_name: SearchClarity
+business_intake_id: intake_future_service_workspace_001
+idea_name: Future Service Workspace
 intake_status: captured
 proposed_workspace_type: service
-summary: Professional SEO, GEO, and marketplace visibility service business focused first on Etsy Listing Visibility Audits.
-purpose: Validate a manual service business that produces evidence-based, human-reviewed visibility reports and captures safe market signals.
-target_customer_or_user: Marketplace sellers who need clearer listing visibility recommendations.
-primary_offer_or_output: Customer-facing PDF visibility audit report.
+summary: Professional service business concept producing evidence-based, human-reviewed customer deliverables.
+purpose: Validate a manual service workflow that produces reviewed deliverables and captures safe market signals.
+target_customer_or_user: Small-business operators who need structured recommendations.
+primary_offer_or_output: Customer-facing PDF report.
 channels:
   - service_platform
   - direct_site
 expected_inputs:
-  - shop URL
-  - listing URLs
   - customer intake answers
+  - source URLs or files provided by customer
   - optional screenshots provided by customer
 expected_outputs:
   - draft report
   - final PDF report
   - action plan
-  - keyword observations
-  - raw market signals
+  - generalized observations
 private_data_expected: true
 external_systems_expected:
-  - Fiverr
-  - Etsy
-  - SEO research tools
-initial_risk_notes: Customer data, platform terms, public sample consent, no ranking guarantees, no credential storage.
+  - service platform
+  - marketplace reference source
+  - research tool
+initial_risk_notes: Customer data, platform terms, public sample consent, no unsupported guarantees, no credential storage.
 classification_verdict: YELLOW_LIGHT
 created_at: 2026-05-24T00:00:00Z
 updated_at: 2026-05-24T00:00:00Z
@@ -368,7 +366,7 @@ source_actor_type: human
 source_actor_id: human_operator
 source_references:
   - record_type: artifact
-    record_id: art_searchclarity_docs_review
+    record_id: art_future_service_docs_review
     relationship: source_context
 proposed_adapter: service-business-workspace
 known_workflows:
@@ -405,18 +403,17 @@ reusable_capabilities:
   - audit trail
 workspace_specific_items:
   - brand language
-  - Fiverr copy
+  - service-platform copy
   - report template text
   - pricing
   - customer records
 deferred_domains_touched:
-  - Fiverr automation
+  - service-platform automation
   - external integrations
 manual_test_goal: Model one manual report workflow from intake to QA to delivery-ready artifact without automation.
 promotion_recommendation: continue_business_build_before_full_onboarding
 tags:
   - service
-  - searchclarity
   - future-workspace
 version: 1
 ```

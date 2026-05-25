@@ -313,7 +313,7 @@ Do not automate signal approval until:
 ### Good Sanitized Signal
 
 ```text
-Multiple service-business customers ask for help understanding Etsy keyword competition. This may indicate demand for a reusable Etsy keyword education asset or service add-on.
+Multiple service-business customers ask for help understanding marketplace keyword competition. This may indicate demand for a reusable keyword education asset or service add-on.
 ```
 
 Why it is acceptable:
@@ -326,7 +326,7 @@ Why it is acceptable:
 ### Bad Raw Signal
 
 ```text
-Customer Jane Doe at janedoe@example.com with shop https://example.etsy.com asked us to rewrite her listing for 'Blue Floral Nurse Retirement Shirt' because her conversion rate dropped after March 3.
+Customer Jane Doe at jane@example.com with a specific shop URL asked us to rewrite a specific product listing because conversion rate changed after a specific date.
 ```
 
 Why it is not acceptable:

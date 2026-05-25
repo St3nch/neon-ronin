@@ -428,7 +428,7 @@ workspace_type: internal_research
 status: manual_test
 ```
 
-SearchClarity and other real business workspaces should wait until Neon Ronin has enough lifecycle, review, audit, and sanitization structure to contain them.
+Real business workspaces should wait until Neon Ronin has enough lifecycle, review, audit, and sanitization structure to contain them.
 
 ## Final Principle
 

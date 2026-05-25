@@ -324,7 +324,7 @@ Other records must not operate without workspace scope unless explicitly global/
 Do not add fields such as:
 
 ```text
-searchclarity_report_template
+business_specific_report_template
 etsy_shop_id
 etsy_listing_id
 printify_product_id
@@ -441,7 +441,7 @@ This schema does not define:
 
 - customer records
 - artifact content
-- SearchClarity report formats
+- specific-business report formats
 - marketplace listing payloads
 - provider credentials
 - external integration details

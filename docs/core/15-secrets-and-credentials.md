@@ -80,10 +80,10 @@ A credential reference must not contain:
 Example safe reference:
 
 ```yaml
-credential_reference_id: credref_etsy_readonly_001
-provider: etsy
-provider_account_label: searchclarity_future_readonly
-workspace_id: ws_searchclarity_future
+credential_reference_id: credref_example_provider_readonly_001
+provider: example_service_provider
+provider_account_label: future_service_workspace_readonly
+workspace_id: ws_future_service_workspace_001
 allowed_action_classes:
   - read
 status: active
@@ -477,10 +477,10 @@ Use credential references instead.
 ## Example Credential Reference Record
 
 ```yaml
-credential_reference_id: credref_searchclarity_fiverr_readonly_001
-provider: fiverr
-provider_account_label: searchclarity_future
-workspace_id: ws_searchclarity_future
+credential_reference_id: credref_future_service_provider_readonly_001
+provider: example_service_provider
+provider_account_label: future_service_workspace
+workspace_id: ws_future_service_workspace_001
 status: planned
 allowed_action_classes:
   - read
@@ -496,9 +496,9 @@ audit_record_ids:
 
 This is only a reference pattern.
 
-It is not permission to implement Fiverr automation.
+It is not permission to implement service-platform automation.
 
-Fiverr automation remains deferred.
+Service-platform automation remains deferred.
 
 ## Deferred Implementation
 

@@ -128,7 +128,7 @@ Workspace records are core-owned because Neon Ronin must know what workspaces ex
 - business-specific templates
 - marketplace-specific payloads
 - one workspace's detailed operating database
-- SearchClarity-specific service logic
+- specific-business service logic
 
 ### First Schema
 
@@ -823,7 +823,7 @@ Before writing or changing a schema, answer:
 2. Who owns this data?
 3. Is it core, workspace, Observatory, adapter, integration, referenced-only, or derived?
 4. Is this schema business-neutral?
-5. Does this schema depend on SearchClarity or another specific business?
+5. Does this schema depend on a specific business or first-business candidate?
 6. Does this schema introduce a deferred domain?
 7. What provenance must be preserved?
 8. What audit events touch it?
@@ -845,7 +845,7 @@ This document does not define:
 - API route contracts
 - UI forms
 - provider-specific payload contracts
-- SearchClarity-specific schema
+- specific-business schema
 
 Those come later if and when the roadmap allows them.
 

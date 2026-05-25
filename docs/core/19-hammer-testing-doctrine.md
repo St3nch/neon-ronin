@@ -537,22 +537,22 @@ Manual proof does not replace hammer proof.
 
 Hammer proof does not replace human review.
 
-## Relationship To SearchClarity
+## Relationship To Concrete Workspace Scenarios
 
-SearchClarity may later provide excellent hammer scenarios:
+Concrete workspaces may later provide excellent hammer scenarios, such as:
 
-- report artifact ownership
+- artifact ownership
 - customer delivery review
 - raw market signal capture
 - sanitized signal handoff
-- public sample/consent checks
-- external service platform boundaries
+- public sample and consent checks
+- external service-platform boundaries
 
-But SearchClarity-specific business details must not define hammer doctrine.
+Specific-business details must not define hammer doctrine.
 
 Hammer doctrine protects Neon Ronin generally.
 
-SearchClarity later supplies realistic scenarios.
+Concrete workspaces later supply realistic scenarios.
 
 ## Relationship To VEDA Lessons
 

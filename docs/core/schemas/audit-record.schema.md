@@ -472,7 +472,7 @@ api_key
 oauth_refresh_token
 full_external_payload
 full_provider_response
-searchclarity_report_text
+business_specific_report_text
 etsy_listing_payload
 printify_product_payload
 custom_data

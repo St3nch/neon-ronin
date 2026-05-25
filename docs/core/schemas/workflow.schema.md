@@ -97,7 +97,7 @@ other
 
 Workflow types should remain business-neutral.
 
-Do not create SearchClarity-specific, Etsy-specific, Fiverr-specific, or provider-specific workflow types in core.
+Do not create specific-business, provider-specific, or marketplace-specific workflow types in core.
 
 ## Scope Types
 
@@ -379,7 +379,7 @@ api_key
 oauth_refresh_token
 etsy_publish_payload
 fiverr_message_text
-searchclarity_report_template_body
+business_specific_report_template_body
 custom_data
 ```
 
