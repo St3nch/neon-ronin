@@ -14,7 +14,7 @@ No workspace configs are active yet.
 
 Phase 5C and Phase 5D cleanup are complete.
 
-Phase 6 preparation has begun with the lightweight Internal Research intake/classification record in `internal-research/intake-classification.md` and the workspace config draft in `internal-research/workspace-config.draft.md`.
+Phase 6 preparation has begun with the lightweight Internal Research intake/classification record in `internal-research/intake-classification.md`, the workspace config draft in `internal-research/workspace-config.draft.md`, and the first manual-test plan in `internal-research/manual-test-001-artifact-review-audit-signal-flow.md`.
 
 Do not create active workspace configs here until the intake/classification step and workspace config draft are reviewed.
 
