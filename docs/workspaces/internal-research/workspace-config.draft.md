@@ -118,7 +118,8 @@ It does not create database tables, API routes, UI screens, scheduled jobs, watc
 ## Validation Questions
 
 - Is the workspace type valid? Yes: `internal_research`.
-- Is the lifecycle status valid? Yes: `onboarding`.
+- Is the lifecycle status valid? Yes: `manual_test`.
+  - Note: the prior revision used `onboarding`; the status change is recorded in `promotion-review-001-onboarding-to-manual-test.md`.
 - Are runtime modes allowed for the lifecycle status? Yes: default is `off`, with only `off` and `on_demand` listed for future manual use.
 - Are Observatory permissions explicit? Yes: query and sanitized signal submission are explicit, and signal submission requires human review.
 - Are review gates defined? Yes.

@@ -162,10 +162,9 @@ If the proposal could affect workspace posture, also require:
 
 ## Required Human Decision
 
-A human operator must decide one of:
+A human operator must decide one of the canonical human-decision outcomes:
 
 ```text
-approve_for_manual_planning
 approve_with_changes
 request_revision
 reject
@@ -173,10 +172,20 @@ park
 block
 ```
 
+For propose-action manual tests, `approve_for_manual_planning` is a manual-test-local label, not a canonical `decision_type`.
+
+Canonical recording rule:
+
+```text
+Record `approve_for_manual_planning` as `approve_with_changes` with a condition limiting approval to manual planning only.
+```
+
+Extending the canonical decision type list requires the schema-change-checklist.
+
 Important:
 
 ```text
-approve_for_manual_planning does not mean execute.
+approval for manual planning does not mean prepare or execute.
 ```
 
 It means the proposed action may become a future manual planning task or document update under separate review.
