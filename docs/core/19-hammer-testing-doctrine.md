@@ -307,6 +307,23 @@ Must eventually verify:
 - emergency stop cannot be bypassed by permission scope
 - lifting emergency stop requires human decision
 
+## 16. Polymorphic Resolver Hammer
+
+Verifies that polymorphic references are resolved through one governed resolver contract rather than scattered local guesswork.
+
+Must eventually verify:
+
+- only canonical `record_type` registry values are accepted
+- unknown `record_type` values are rejected with exact error classes
+- target record existence is checked through the resolver
+- workspace-scoped target records verify workspace scope before disclosure
+- cross-workspace private references fail without existence leakage
+- provider-specific target types cannot appear in generic core references
+- denied or invalid resolution leaves state clean
+- resolver failures are deterministic and auditable when meaningful
+
+Resolver hammer modules should include both valid references and hostile references, including wrong-workspace ids, unknown record types, missing targets, forbidden provider-specific types, and stale references.
+
 ## Real Execution Principle
 
 Future hammer tests should use real execution surfaces wherever possible.
@@ -415,6 +432,7 @@ When Neon Ronin reaches implementation/DB readiness, first hammer modules should
 8. `hammer-permission-denial`
 9. `hammer-emergency-stop`
 10. `hammer-schema-drift`
+11. `hammer-polymorphic-resolver`
 
 These names are planning names, not implementation commitments.
 
