@@ -12,9 +12,11 @@ It exists so real workspace details do not leak into `docs/core/`.
 No workspace configs are active yet.
 ```
 
-Neon Ronin is still completing Phase 5C and Phase 5D cleanup before Phase 6 Internal Research begins.
+Phase 5C and Phase 5D cleanup are complete.
 
-Do not create Phase 6 workspace records here until Phase 5C and Phase 5D are complete.
+Phase 6 preparation has begun with the lightweight Internal Research intake/classification record in `internal-research/intake-classification.md`.
+
+Do not create active workspace configs here until the intake/classification step and workspace config draft are reviewed.
 
 ## What Belongs Here Later
 
