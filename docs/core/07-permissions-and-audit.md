@@ -65,6 +65,12 @@ Every audit record should include:
 - result status
 - linked review item if applicable
 
+## Relationship To Transaction Boundaries
+
+Audit requirements are enforced through the transaction posture named in `docs/core/20-transaction-boundaries.md`.
+
+The permissions layer must not allow actors to perform consequential state changes when required audit records cannot be created.
+
 ## Core Rules
 
 ```text
@@ -72,4 +78,7 @@ Audit logs should be immutable.
 Rejected actions remain auditable.
 Paused workspaces may not execute new actions.
 No agent should bypass review gates through direct permissions.
+Meaningful state changes and required audit records succeed or fail together.
 ```
+
+If audit logging is unavailable, Neon Ronin must block new consequential work rather than create unaudited state changes.

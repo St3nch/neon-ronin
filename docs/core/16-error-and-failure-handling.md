@@ -178,13 +178,25 @@ A retry is a new traceable attempt, not a rewrite of history.
 
 If an operation changes meaningful state or fails while attempting meaningful state, it must create an audit record.
 
-If audit logging itself fails, Neon Ronin must not continue to perform external actions, live writes, destructive actions, credential changes, permission changes, or Observatory intake.
+Transaction-aware clarification:
 
 ```text
-audit_logging_failed -> block consequential action
+state change + required audit record = one atomic unit
+```
+
+If the required in-transaction audit record cannot be created, the state change must roll back.
+
+If the audit subsystem is unavailable before new consequential work begins, Neon Ronin must block that work rather than perform unauditable state changes.
+
+Consequential work includes external actions, live writes, destructive actions, credential changes, permission changes, workspace lifecycle changes, workspace config changes, human decisions, review outcomes, artifact status changes, signal sanitization decisions, emergency stop changes, and Observatory intake.
+
+```text
+audit_logging_failed -> rollback in-transaction state change or block new consequential work
 ```
 
 Audit failure is a platform safety failure.
+
+See `docs/core/20-transaction-boundaries.md` for named atomic operation boundaries.
 
 ## Review-Required Failures
 
@@ -626,6 +638,7 @@ This document depends on:
 - `docs/core/schemas/agent-run.schema.md`
 - `docs/core/schemas/human-decision.schema.md`
 - `docs/core/schemas/permission-scope.schema.md`
+- `docs/core/20-transaction-boundaries.md`
 
 This document informs:
 

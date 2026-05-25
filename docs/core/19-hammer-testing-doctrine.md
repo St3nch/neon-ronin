@@ -626,6 +626,7 @@ This document depends on:
 - `docs/core/14-schema-authority.md`
 - `docs/core/16-error-and-failure-handling.md`
 - `docs/core/18-external-integration-contract.md`
+- `docs/core/20-transaction-boundaries.md`
 - `docs/operations/manual-test-template.md`
 - `docs/operations/schema-change-checklist.md`
 - `docs/operations/emergency-stop-procedure.md`
