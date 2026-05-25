@@ -504,6 +504,30 @@ Create the operational documents that prevent planning rules from becoming wishf
 
 Completed.
 
+## Phase 5B - Hammer Testing Doctrine
+
+### Goal
+
+Define Neon Ronin's future hammer testing doctrine before implementation, database design, API design, agent runtime, or integration work begins.
+
+This phase adapts VEDA, Project V, and V Forge hammer discipline to Neon Ronin's workspace, Observatory, review, audit, permission, artifact, signal, and integration model.
+
+### Deliverable
+
+- `docs/core/19-hammer-testing-doctrine.md`
+
+### Exit Criteria
+
+- Hammer testing is defined as stress verification, not ordinary unit testing.
+- Future hammer categories are named for persistence, contracts, boundaries, workspace isolation, Observatory, review gates, audit, permissions, agent runs, artifacts, signals, rollback, schema drift, integrations, and emergency stop.
+- Anti-fake-coverage rules are documented before tests exist.
+- Future DB reliability probes are listed without prematurely choosing database architecture.
+- Manual testing and hammer testing are clearly separated.
+
+### Status
+
+Completed.
+
 ## Phase 6 - Workspace 1: Internal Research
 
 ### Goal
@@ -784,8 +808,9 @@ Neon Ronin earns complexity gradually.
 2. Draft the Internal Research workspace config.
 3. Run the Internal Research manual-test template against artifact, review, audit, and signal flow.
 4. Record findings in the first-workspace decision log.
-5. Track SearchClarity Business Readiness as a parallel dependency, not core platform work.
-6. Only then prepare SearchClarity compatibility review.
+5. Keep Phase 5B Hammer Testing Doctrine as the future implementation verification gate.
+6. Track SearchClarity Business Readiness as a parallel dependency, not core platform work.
+7. Only then prepare SearchClarity compatibility review.
 
 ## Final Rule
 
@@ -796,5 +821,6 @@ SearchClarity is not allowed to become Neon Ronin.
 ```text
 Smart and Optimal.
 ```
+
 
 
