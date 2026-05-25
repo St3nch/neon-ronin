@@ -528,6 +528,47 @@ This phase adapts VEDA, Project V, and V Forge hammer discipline to Neon Ronin's
 
 Completed.
 
+## Phase 5C - Core Example Separation
+
+### Goal
+
+Separate concrete worked examples from core doctrine before Phase 6 Internal Research begins.
+
+This phase exists because SearchClarity was useful as planning evidence, but SearchClarity-specific examples, IDs, and reminders should not live inside business-neutral core docs.
+
+Core docs should contain generic platform doctrine.
+
+Reference examples should contain concrete worked examples.
+
+### Why This Phase Exists
+
+A Claude architecture audit found that SearchClarity had leaked into multiple `docs/core/` files and schema examples.
+
+A follow-up discussion clarified the cause: Neon Ronin needed concrete examples during planning, but the repository lacked a legal home for real-business worked examples that are useful without becoming doctrine.
+
+This phase fixes that structure.
+
+### Deliverables
+
+- `docs/reference-examples/README.md`
+- `docs/workspaces/README.md`
+- SearchClarity-aware worked examples moved or rewritten outside `docs/core/`
+- generic replacements for SearchClarity-specific examples in core docs and schemas
+- status notes on unexercised operations docs where appropriate
+
+### Exit Criteria
+
+- `docs/core/` remains business-neutral.
+- Core schemas do not use SearchClarity IDs, filenames, package names, or business examples as canonical examples.
+- Concrete SearchClarity examples have a non-core home if they remain useful.
+- `docs/reference-examples/` is clearly labeled as explanatory, not canonical doctrine.
+- `docs/workspaces/` exists as the future home for actual workspace configs and notes.
+- Phase 6 can begin without SearchClarity acting as the hidden reference model.
+
+### Status
+
+Queued.
+
 ## Phase 6 - Workspace 1: Internal Research
 
 ### Goal
@@ -804,13 +845,14 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Prepare Internal Research as Workspace 1.
-2. Draft the Internal Research workspace config.
-3. Run the Internal Research manual-test template against artifact, review, audit, and signal flow.
-4. Record findings in the first-workspace decision log.
-5. Keep Phase 5B Hammer Testing Doctrine as the future implementation verification gate.
-6. Track SearchClarity Business Readiness as a parallel dependency, not core platform work.
-7. Only then prepare SearchClarity compatibility review.
+1. Wait for and review Claude Prompt B: Database / Hammer / Reliability Audit.
+2. Reconcile Prompt A and Prompt B findings into the Phase 5C cleanup plan.
+3. Create `docs/reference-examples/README.md`.
+4. Create `docs/workspaces/README.md`.
+5. Move or rewrite SearchClarity-aware worked examples outside `docs/core/`.
+6. Replace SearchClarity-specific examples in core docs and schemas with generic examples.
+7. Add status notes on unexercised operations docs where appropriate.
+8. Then prepare Internal Research as Workspace 1.
 
 ## Final Rule
 
