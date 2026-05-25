@@ -710,6 +710,8 @@ Internal Research has completed:
 - Part A audit nit follow-up before Manual Test 004
 - Manual Test 004 plan for LLM propose-action assistance
 
+- Manual Test 004 evidence pending human decision
+
 Current posture remains:
 
 ```text
@@ -953,9 +955,9 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Execute Manual Test 004 for `propose_action` assistance as a documented evidence pass.
-2. Keep proposed actions as reviewable packets only; do not prepare or execute actions.
-3. Record any Manual Test 004 human decision using canonical decision types; map local planning labels to canonical decisions instead of extending schema casually.
+1. Record the human decision for Manual Test 004 using canonical decision types.
+2. Treat any approve-for-manual-planning intent as `approve_with_changes` with manual-planning-only conditions.
+3. Keep proposed actions as reviewable packets only; do not prepare or execute actions.
 4. Keep executable agent definitions blocked until propose-action testing passes and a separate approval path says otherwise.
 5. Keep runtime off, `allowed_agents: []`, scheduled jobs disabled, watch mode disabled, and live Observatory ingestion blocked.
 6. Keep SearchClarity as future workspace pressure, not core doctrine.
