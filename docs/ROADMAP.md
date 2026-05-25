@@ -714,6 +714,8 @@ Internal Research has completed:
 
 - Manual Test 005 plan for local schema shape consolidation planning
 
+- Manual Test 005 evidence pending human decision
+
 Current posture remains:
 
 ```text
@@ -957,7 +959,7 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Execute Manual Test 005 for local schema shape consolidation as a documented evidence pass.
+1. Record the human decision for Manual Test 005 using canonical decision types.
 2. Do not create a local schema reference until Manual Test 005 evidence is reviewed and approved.
 3. Do not promote recommendation/proposed-action/manual-test packet shapes into core schemas without schema authority review.
 4. Keep proposed actions as reviewable packets only; do not prepare or execute actions.
