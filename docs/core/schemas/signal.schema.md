@@ -283,6 +283,10 @@ These decisions should come from a review queue item.
 
 No agent may approve its own signal candidate.
 
+During P0 planning, `sanitization_decision` may record the outcome needed to validate signal flow on paper.
+
+Once `human-decision.schema.md` is in use, the human-decision record is the canonical decision authority and the signal record should reference that authority rather than acting as its own approval source.
+
 ## Source References
 
 `source_references` is an array of thin references.

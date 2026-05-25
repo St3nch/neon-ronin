@@ -325,6 +325,15 @@ A future `human-decision.schema.md` may make this a separate P1 record.
 
 Until then, review items must still preserve decision provenance.
 
+P0/P1 authority rule:
+
+```text
+Embedded review decisions support P0 paper validation.
+P1 human-decision records become the canonical decision authority once used.
+```
+
+A review item must not become a second competing approval source after a separate human-decision record exists.
+
 ## System-Owned Fields
 
 The following fields should be system-owned:

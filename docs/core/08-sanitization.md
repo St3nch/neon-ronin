@@ -187,6 +187,21 @@ Human approval is required for Observatory intake.
 
 A later system may support deterministic or bulk approval for low-risk signal categories only after the sanitization rules and audit process are proven.
 
+## P0/P1 Sanitization Decision Boundary
+
+P0 signal and review schemas define enough structure to model sanitization on paper before implementation.
+
+P1 human-decision schema makes the human decision a separate authority record.
+
+Early planning rule:
+
+```text
+A P0 review item may carry an embedded decision shape for paper validation.
+A P1 human decision is the canonical authority record once that schema is used.
+```
+
+No signal may enter the Observatory without a human sanitization decision, whether that decision is represented inline during P0 planning or as a separate P1 human-decision record later.
+
 ## Rejection Rules
 
 A signal candidate must be rejected if it contains:
