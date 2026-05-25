@@ -8,7 +8,7 @@ Draft workspace config
 
 This document drafts the workspace config for Neon Ronin Internal Research after the lightweight intake/classification record.
 
-It is not an active runtime configuration.
+It is a manual_test posture draft with runtime default still off.
 
 It is not application code.
 
@@ -27,7 +27,7 @@ workspace_id: ws_internal_research_001
 workspace_name: Neon Ronin Internal Research
 workspace_slug: internal-research
 workspace_type: internal_research
-status: onboarding
+status: manual_test
 purpose: Research and evaluate business ideas, platform decisions, opportunity signals, and workspace onboarding plans before customer-facing or business-specific workspaces are promoted.
 channels:
   - internal_research
@@ -90,7 +90,7 @@ audit_requirements:
 owner_actor_id: human_operator
 data_classification: internal_low_risk
 manual_test_goal: Validate artifact, review, audit, human-decision, and sanitized-signal flow using internal research artifacts without customer data, external writes, agents, scheduled jobs, watch mode, or automation.
-promotion_notes: Remains onboarding until a separate manual-test plan is drafted and reviewed. Runtime default stays off.
+promotion_notes: Promoted to manual_test posture in documentation by promotion review 001. Runtime default remains off; allowed_agents remains empty; scheduled jobs and watch mode remain disabled.
 external_references: []
 tags:
   - internal-research
@@ -100,7 +100,7 @@ tags:
 created_at: 2026-05-25T00:00:00Z
 updated_at: 2026-05-25T00:00:00Z
 schema_version: schema_v1
-record_revision: 1
+record_revision: 2
 ```
 
 ## Boundary Notes
@@ -130,6 +130,6 @@ It does not create database tables, API routes, UI screens, scheduled jobs, watc
 
 ## Next Allowed Step
 
-Prepare the first Internal Research manual-test plan for artifact, review, audit, and signal flow.
+Continue manual-test work through documented manual evidence passes.
 
-Do not start agents, integrations, scheduled jobs, watch mode, UI work, database implementation, or automation.
+Do not start agents, integrations, scheduled jobs, watch mode, UI work, database implementation, live Observatory ingestion, or automation.
