@@ -13,6 +13,9 @@ research-docs/archive/**
 !docs/archive/.gitkeep
 !research-docs/archive/.gitkeep
 
+# Local AI audit reports / working evidence
+docs/claudeai-audits/**
+
 # Generated exports / build artifacts
 exports/**
 docs/exports/**
