@@ -949,9 +949,9 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Execute Manual Test 003 for LLM draft assistance as a documented evidence pass.
-2. Record the human decision for Manual Test 003 before treating `draft_only` as validated.
-3. Keep executable agent definitions blocked until Manual Test 003 passes and a separate approval path says otherwise.
+1. Create Manual Test 004 for `propose_action` assistance.
+2. Keep proposed actions as reviewable packets only; do not prepare or execute actions.
+3. Keep executable agent definitions blocked until propose-action testing passes and a separate approval path says otherwise.
 4. Keep runtime off, `allowed_agents: []`, scheduled jobs disabled, watch mode disabled, and live Observatory ingestion blocked.
 5. Keep SearchClarity as future workspace pressure, not core doctrine.
 
