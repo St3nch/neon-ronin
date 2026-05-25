@@ -23,11 +23,11 @@ workspace_status_at_execution_time: onboarding
 source_intake: docs/workspaces/internal-research/intake-classification.md
 source_workspace_config: docs/workspaces/internal-research/workspace-config.draft.md
 source_manual_test_plan: docs/workspaces/internal-research/manual-test-001-artifact-review-audit-signal-flow.md
-evidence_status: in_progress
+evidence_status: completed_with_conditions
 created_at: 2026-05-25T00:00:00Z
 updated_at: 2026-05-25T00:00:00Z
 schema_version: manual_test_evidence_v1
-record_revision: 1
+record_revision: 2
 ```
 
 ## Manual Test Goal
@@ -138,16 +138,16 @@ review_internal_research_artifact_001
 ### Review Result
 
 ```text
-pending_human_decision
-```
-
-Suggested outcome for human review:
-
-```text
 approve_with_changes
 ```
 
-Suggested change:
+Human decision:
+
+```text
+Approved with changes by human operator.
+```
+
+Required change:
 
 ```text
 Keep this as manual-test evidence only. Do not promote it into core doctrine without a separate schema/ADR/core-doc review.
@@ -164,15 +164,13 @@ decision_internal_research_artifact_001
 ### Decision Status
 
 ```text
-pending_human_decision
+approve_with_changes
 ```
 
-### Decision To Be Made By Human Operator
-
-Choose one:
+### Decision Recorded By Human Operator
 
 - [ ] approve
-- [ ] approve_with_changes
+- [x] approve_with_changes
 - [ ] request_revision
 - [ ] reject
 - [ ] park
@@ -180,7 +178,7 @@ Choose one:
 ### Human Decision Notes
 
 ```text
-Pending human operator review.
+Approved with changes. Keep the artifact as manual-test evidence only; do not promote it into core doctrine without separate schema/ADR/core-doc review.
 ```
 
 ## Audit Expectation Checklist
@@ -194,12 +192,12 @@ It records what future implementation must be able to audit.
 | workspace config reviewed | Boundary Confirmation section | planned/audit-required |
 | artifact drafted | Draft Internal Research Artifact section | planned/audit-required |
 | artifact review item created | Artifact Review Item section | planned/audit-required |
-| human decision recorded | Human Decision Record section | pending |
+| human decision recorded | Human Decision Record section | completed_with_conditions |
 | signal candidate drafted | Signal Candidate section | planned/audit-required |
 | sanitization review item created | Sanitization Review section | planned/audit-required |
-| sanitization decision recorded | Sanitization Decision section | pending |
+| sanitization decision recorded | Sanitization Decision section | completed_with_conditions |
 | forbidden action blocked if attempted | Blocked Action Probe Results section | planned/audit-required |
-| manual test summarized | Final Evidence Summary section | pending |
+| manual test summarized | Final Evidence Summary section | completed_with_conditions |
 
 ## Signal Candidate
 
@@ -253,26 +251,26 @@ signal_sanitization_gate
 | No business-specific details | passed | Candidate applies to any future workspace |
 | No raw artifact text copied as shared intelligence | passed_with_note | Candidate is a summary, not full artifact text |
 | Provenance retained | passed | Source artifact and manual test are named |
-| Human decision recorded | pending | Human operator decision still required |
+| Human decision recorded | completed_with_conditions | Human operator approved with changes |
 
 ## Sanitization Decision
 
 ### Decision Status
 
 ```text
-pending_human_decision
-```
-
-Suggested outcome for human review:
-
-```text
 approve_with_changes
 ```
 
-Suggested change:
+Human decision:
 
 ```text
-If approved later, keep the signal text concise and attach provenance references rather than copying the whole artifact into shared intelligence.
+Approved with changes by human operator.
+```
+
+Required change:
+
+```text
+Keep the signal text concise and attach provenance references rather than copying the whole artifact into shared intelligence.
 ```
 
 This evidence pass does not submit anything to the live Observatory.
@@ -286,16 +284,16 @@ This evidence pass does not submit anything to the live Observatory.
 | Try to enable watch mode | blocked; `watch_mode_allowed: false` | passed by config inspection |
 | Try to add provider credential | blocked; `external_credentials_allowed: false` and `no_provider_credentials` | passed by config inspection |
 | Try to submit raw artifact text to Observatory | blocked; sanitization required | passed by plan/evidence boundary |
-| Try to mark signal as approved without human decision | blocked; human review required | passed; decision remains pending |
+| Try to mark signal as approved without human decision | blocked; human review required | passed; human decision is now recorded |
 | Try to treat this plan as DB implementation permission | blocked; non-goal | passed by explicit non-goal |
 
 ## Exit Criteria Check
 
 | Exit Criterion | Status | Notes |
 |---|---|---|
-| workflow can be completed manually from artifact draft to sanitization decision | partial | workflow is documented; human decisions remain pending |
-| review gates are used before evidence is accepted | partial | review gates are applied; human acceptance remains pending |
-| human decisions are explicit | pending | human operator decision needed |
+| workflow can be completed manually from artifact draft to sanitization decision | passed_with_conditions | workflow is documented and human decisions are recorded |
+| review gates are used before evidence is accepted | passed_with_conditions | review gates were applied and accepted with changes |
+| human decisions are explicit | passed | human operator decisions are recorded |
 | audit expectations are clear for every meaningful step | passed | audit expectation checklist included |
 | signal candidate does not enter Observatory without sanitization review | passed | no live Observatory ingestion occurred |
 | hard-no probes remain blocked | passed | config/plan inspection confirms blocked posture |
@@ -304,9 +302,8 @@ This evidence pass does not submit anything to the live Observatory.
 
 ## Unresolved Gaps
 
-- Human operator must decide whether to approve, approve with changes, revise, reject, or park the artifact review.
-- Human operator must decide whether to approve, approve with changes, revise, reject, or park the sanitization decision.
-- If approved later, a separate decision/evidence update should record the approval and any changes.
+- Artifact review was approved with changes and must remain manual-test evidence only unless separately promoted through schema/ADR/core-doc review.
+- Sanitization decision was approved with changes and must not become live Observatory intake without a future governed implementation path.
 - This is still documentation-only; no real audit subsystem exists yet.
 - This is still documentation-only; no real Observatory intake exists yet.
 
@@ -317,17 +314,23 @@ This manual evidence pass demonstrates that the Internal Research workflow can b
 Current outcome:
 
 ```text
-partial_pass_pending_human_decisions
+passed_with_conditions
 ```
 
-The workflow boundaries appear sound, but the test should not be considered fully passed until the pending human artifact decision and sanitization decision are explicitly recorded.
+The workflow boundaries appear sound, and the human artifact review and sanitization decisions are recorded as `approve_with_changes`.
+
+The conditions are:
+
+- keep the artifact as manual-test evidence only unless separately promoted through schema/ADR/core-doc review
+- keep the signal candidate concise with provenance references
+- do not submit anything to live Observatory without a future governed implementation path
 
 ## Recommendation
 
 Recommended next step:
 
 ```text
-Human operator reviews this evidence record and records artifact/sanitization decisions.
+Summarize Manual Test 001 outcome and decide whether Internal Research may move from onboarding to manual_test posture in documentation.
 ```
 
 Do not start agents, integrations, scheduled jobs, watch mode, UI work, database implementation, live Observatory ingestion, or automation.
