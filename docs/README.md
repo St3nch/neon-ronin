@@ -10,6 +10,8 @@ Core docs must not be written around any one specific business, brand, store, or
 |---|---|
 | `core` | Business-neutral Neon Ronin platform doctrine and architecture |
 | `workspace-adapters` | Generic workspace patterns for types of businesses |
+| `reference-examples` | Non-canonical concrete examples and scenario sketches |
+| `workspaces` | Future home for real workspace configs, notes, and manual-test records |
 | `research-docs/` | Supporting research, feasibility notes, policy research, and experiments |
 | `decisions` | Architecture decision records |
 
