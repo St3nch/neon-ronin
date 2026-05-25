@@ -337,6 +337,7 @@ Promotion should create audit records for:
 
 Internal Research may enter manual test when:
 
+- [ ] lightweight intake/classification exists
 - [ ] workspace config draft exists
 - [ ] manual-test goal is clear
 - [ ] no external writes are needed

@@ -309,6 +309,12 @@ Manual test must identify:
 - [ ] failure cases tested
 - [ ] exit criteria
 
+## Internal Research Intake Note
+
+Internal Research is low-risk and internal, but it still needs a lightweight intake/classification record before a workspace config is drafted.
+
+That intake should confirm `internal_research` type, no default customer data, no external action posture, human-started manual/on-demand runtime only, and a manual-test goal for artifact/review/audit/signal flow.
+
 ## Step 13 - Draft Workspace Config
 
 Draft fields:
