@@ -689,6 +689,33 @@ This workspace should validate:
 - review queue items
 - sanitized signal candidates
 - audit records
+- documentation-only LLM recommendation assistance as reviewable artifacts
+- documentation-only LLM draft assistance testing through manual evidence passes
+
+### Current Progress
+
+Internal Research has completed:
+
+- lightweight intake/classification
+- workspace config draft
+- Manual Test 001 for artifact, review, audit, human-decision, and signal flow
+- Manual Test 001 evidence and human decisions
+- promotion to documentation-only `manual_test` posture
+- Manual Test 002 for LLM recommendation assistance
+- Manual Test 002 evidence and human decision
+- agent-assistance boundary plan
+- Manual Test 003 plan for LLM draft assistance
+
+Current posture remains:
+
+```text
+status: manual_test
+runtime.default_mode: off
+allowed_agents: []
+scheduled_allowed: false
+watch_mode_allowed: false
+external_references: []
+```
 
 ### Forbidden
 
@@ -922,10 +949,11 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Prepare Internal Research as Workspace 1, starting with a lightweight business intake/classification record.
-2. Draft the Internal Research workspace config only after that intake/classification step.
-3. Prepare the first Internal Research manual-test plan for artifact, review, audit, and signal flow.
-4. Keep SearchClarity as future workspace pressure, not core doctrine.
+1. Execute Manual Test 003 for LLM draft assistance as a documented evidence pass.
+2. Record the human decision for Manual Test 003 before treating `draft_only` as validated.
+3. Keep executable agent definitions blocked until Manual Test 003 passes and a separate approval path says otherwise.
+4. Keep runtime off, `allowed_agents: []`, scheduled jobs disabled, watch mode disabled, and live Observatory ingestion blocked.
+5. Keep SearchClarity as future workspace pressure, not core doctrine.
 
 ## Final Rule
 
