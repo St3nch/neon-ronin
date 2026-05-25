@@ -87,7 +87,8 @@ Human decisions are required for:
 | `expires_at` | datetime/null | human/system-owned | Expiration for bounded approval if applicable |
 | `supersedes_decision_id` | string/null | referenced-only | Prior decision superseded by this decision |
 | `sensitivity_rating` | enum | human/system-owned | Sensitivity/privacy rating |
-| `version` | integer/string | system-owned | Schema/version tracking |
+| `schema_version` | string | system-owned | Schema/contract version used to validate this record shape |
+| `record_revision` | integer | system-owned | Monotonic governed update/correction revision for this record |
 
 ## Valid Decision Types
 
@@ -210,7 +211,8 @@ System-owned fields should include:
 - `created_at`
 - `updated_at`
 - `audit_record_id`
-- `version`
+- `schema_version`
+- `record_revision`
 
 Agents and callers must not forge system-owned fields.
 
@@ -368,7 +370,8 @@ block_reason: null
 expires_at: null
 supersedes_decision_id: null
 sensitivity_rating: low
-version: 1
+schema_version: schema_v1
+record_revision: 1
 ```
 
 ## Validation Questions

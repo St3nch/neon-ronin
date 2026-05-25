@@ -83,7 +83,8 @@ An agent run must not be used as a backdoor for external writes, publishing, cus
 | `blocked_reason` | string/null | system/human-owned | Reason run was blocked |
 | `confidence` | enum/null | source/system-owned | Confidence of run output if applicable |
 | `provenance_level` | enum | system-owned | Run is usually event/structured provenance |
-| `version` | integer/string | system-owned | Schema/version tracking |
+| `schema_version` | string | system-owned | Schema/contract version used to validate this record shape |
+| `record_revision` | integer | system-owned | Monotonic governed update/correction revision for this record |
 
 ## Valid Statuses
 
@@ -317,7 +318,8 @@ The following fields should be system-owned:
 - `audit_record_ids`
 - `correlation_id`
 - system-computed error/block fields
-- `version`
+- `schema_version`
+- `record_revision`
 
 Agents and callers must not forge system-owned fields.
 
@@ -595,7 +597,8 @@ error_summary: null
 blocked_reason: null
 confidence: medium
 provenance_level: event
-version: 1
+schema_version: schema_v1
+record_revision: 1
 ```
 
 ## Validation Questions

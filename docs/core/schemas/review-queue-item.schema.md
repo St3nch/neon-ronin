@@ -94,7 +94,8 @@ Review items should be created for:
 | `revision_instructions` | string/null | human-owned | Instructions if revision is requested |
 | `park_reason` | string/null | human-owned | Reason item was parked |
 | `blocked_reason` | string/null | system/human-owned | Reason item cannot proceed |
-| `version` | integer/string | system-owned | Version for future migration/change tracking |
+| `schema_version` | string | system-owned | Schema/contract version used to validate this record shape |
+| `record_revision` | integer | system-owned | Monotonic governed update/correction revision for this record |
 
 ## Valid Review Types
 
@@ -335,7 +336,8 @@ The following fields should be system-owned:
 - status transition timestamps when implemented
 - lifecycle transition result fields
 - system-computed blocked/expired state
-- `version`
+- `schema_version`
+- `record_revision`
 
 Agents and callers must not forge system-owned fields.
 
@@ -508,7 +510,8 @@ evidence_summary: Signal is based on internal research notes and contains no cus
 created_at: 2026-05-24T00:00:00Z
 updated_at: 2026-05-24T00:00:00Z
 audit_record_id: audit_001
-version: 1
+schema_version: schema_v1
+record_revision: 1
 ```
 
 ## Validation Questions

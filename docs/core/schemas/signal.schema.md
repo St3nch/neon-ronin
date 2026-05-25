@@ -139,7 +139,8 @@ Derived intelligence is not approval and must not directly trigger external acti
 | `normalized_record_id` | string/null | system/reference | Resulting normalized Observatory record id |
 | `derived_from_signal_ids` | array string | referenced-only | Source signals for derived intelligence |
 | `tags` | array string | bounded/source-owned | Bounded classification tags |
-| `version` | integer/string | system-owned | Schema/version tracking |
+| `schema_version` | string | system-owned | Schema/contract version used to validate this record shape |
+| `record_revision` | integer | system-owned | Monotonic governed update/correction revision for this record |
 
 ## Valid Signal Forms
 
@@ -386,7 +387,8 @@ The following fields should be system-owned:
 - `updated_at`
 - `audit_record_id`
 - `normalized_record_id`
-- `version`
+- `schema_version`
+- `record_revision`
 
 Agents and callers must not forge system-owned fields.
 
@@ -564,7 +566,8 @@ sanitization_review_item_id: rev_001
 created_at: 2026-05-24T00:00:00Z
 updated_at: 2026-05-24T00:00:00Z
 audit_record_id: audit_002
-version: 1
+schema_version: schema_v1
+record_revision: 1
 ```
 
 ## Example Sanitized Signal
@@ -597,7 +600,8 @@ observatory_destination: normalized_signals
 created_at: 2026-05-24T00:00:00Z
 updated_at: 2026-05-24T00:00:00Z
 audit_record_id: audit_003
-version: 1
+schema_version: schema_v1
+record_revision: 1
 ```
 
 ## Validation Questions

@@ -70,7 +70,8 @@ A permission scope that allows a risky action must still require the appropriate
 | `observatory_scope` | object/null | human/system-owned | Observatory query/submission permissions |
 | `data_access_rules` | object | human/system-owned | Private/customer/credential/data rules |
 | `conditions` | array string | human/system-owned | Conditions that must remain true |
-| `version` | integer/string | system-owned | Schema/version tracking |
+| `schema_version` | string | system-owned | Schema/contract version used to validate this record shape |
+| `record_revision` | integer | system-owned | Monotonic governed update/correction revision for this record |
 
 ## Valid Scope Statuses
 
@@ -256,7 +257,8 @@ System-owned fields should include:
 - `created_at`
 - `updated_at`
 - expiration/revocation computed fields when implemented
-- `version`
+- `schema_version`
+- `record_revision`
 
 Agents and callers must not forge system-owned fields.
 
@@ -427,7 +429,8 @@ conditions:
   - Workspace must remain in manual_test or active status.
   - Signal candidates must go to human sanitization review.
   - Agent may not approve its own work.
-version: 1
+schema_version: schema_v1
+record_revision: 1
 ```
 
 ## Validation Questions

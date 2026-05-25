@@ -81,7 +81,8 @@ It does not become Neon Ronin.
 | `manual_test_goal` | string/null | human/system-owned | Goal for first manual test |
 | `promotion_recommendation` | enum/null | human/system-owned | Recommended next step |
 | `tags` | array string | bounded/human-owned | Bounded organizational tags |
-| `version` | integer/string | system-owned | Schema/version tracking |
+| `schema_version` | string | system-owned | Schema/contract version used to validate this record shape |
+| `record_revision` | integer | system-owned | Monotonic governed update/correction revision for this record |
 
 ## Valid Intake Statuses
 
@@ -242,7 +243,8 @@ System-owned fields should include:
 - `updated_at`
 - `audit_record_ids`
 - system-computed classification aids if added later
-- `version`
+- `schema_version`
+- `record_revision`
 
 Agents and callers must not forge system-owned fields.
 
@@ -415,7 +417,8 @@ promotion_recommendation: continue_business_build_before_full_onboarding
 tags:
   - service
   - future-workspace
-version: 1
+schema_version: schema_v1
+record_revision: 1
 ```
 
 ## Validation Questions

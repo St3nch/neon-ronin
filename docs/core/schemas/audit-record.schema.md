@@ -116,7 +116,8 @@ Audit records should be created for:
 | `error_summary` | string/null | system-owned | Human-readable error summary without private payload dump |
 | `sensitivity_rating` | enum | system/source-owned | Sensitivity rating for the audit event |
 | `provenance_level` | enum | system-owned | Raw/structured/sanitized/normalized/derived/decision/event posture |
-| `version` | integer/string | system-owned | Schema/version tracking |
+| `schema_version` | string | system-owned | Schema/contract version used to validate this record shape |
+| `record_revision` | integer | system-owned | Monotonic governed update/correction revision for this record |
 
 ## Valid Event Types
 
@@ -294,7 +295,8 @@ The following fields should be system-owned:
 - `result_status`
 - `correlation_id`
 - system-generated request ids
-- `version`
+- `schema_version`
+- `record_revision`
 
 Agents and callers must not forge system-owned fields.
 
@@ -529,7 +531,8 @@ error_summary: null
 sensitivity_rating: medium
 provenance_level: event
 created_at: 2026-05-24T00:00:00Z
-version: 1
+schema_version: schema_v1
+record_revision: 1
 ```
 
 ## Validation Questions

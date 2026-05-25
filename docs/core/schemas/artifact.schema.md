@@ -82,7 +82,8 @@ A customer report, draft, client file, marketplace listing draft, or workspace s
 | `public_use_allowed` | boolean | human/system-owned | Whether artifact may be used publicly |
 | `consent_reference_id` | string/null | referenced-only | Consent record reference if public use depends on consent |
 | `tags` | array string | bounded/source-owned | Bounded organizational tags |
-| `version` | integer/string | system-owned | Schema/version tracking |
+| `schema_version` | string | system-owned | Schema/contract version used to validate this record shape |
+| `record_revision` | integer | system-owned | Monotonic governed update/correction revision for this record |
 
 ## Valid Artifact Types
 
@@ -206,7 +207,8 @@ System-owned fields should include:
 - `audit_record_ids`
 - `file_hash` if computed by system
 - system-computed status transitions
-- `version`
+- `schema_version`
+- `record_revision`
 
 Agents and callers must not forge system-owned fields.
 
@@ -373,7 +375,8 @@ tags:
   - sample
   - report
   - service-business
-version: 1
+schema_version: schema_v1
+record_revision: 1
 ```
 
 ## Validation Questions

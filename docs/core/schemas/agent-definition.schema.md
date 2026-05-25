@@ -62,7 +62,8 @@ Agents must not approve their own work, bypass review gates, perform forbidden a
 
 | Field | Type | Owner | Description |
 |---|---|---|---|
-| `agent_version` | string/integer | system-owned | Version of the agent definition |
+| `schema_version` | string | system-owned | Schema/contract version used to validate this record shape |
+| `record_revision` | integer | system-owned | Monotonic governed update/correction revision for this record |
 | `status` | enum | system-governed | Whether the agent definition is active, draft, paused, retired, or deprecated |
 | `owner_actor_id` | string/null | human/config-owned | Human owner or maintainer |
 | `default_model_policy` | string/null | human/config-owned | Optional model/provider policy reference, not provider lock-in |
@@ -352,7 +353,8 @@ The following fields should be system-owned:
 - `agent_id`
 - `created_at`
 - `updated_at`
-- `agent_version`
+- `schema_version`
+- `record_revision`
 - status transition timestamps when implemented
 - system-computed compatibility flags when implemented
 
@@ -554,7 +556,8 @@ audit_requirements:
   - signal_candidate_created
 created_at: 2026-05-24T00:00:00Z
 updated_at: 2026-05-24T00:00:00Z
-agent_version: 1
+schema_version: schema_v1
+record_revision: 1
 ```
 
 ## Validation Questions

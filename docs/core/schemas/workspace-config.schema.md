@@ -80,7 +80,8 @@ It does not contain the workspace's private business data.
 | `promotion_notes` | string | human/config-owned | Notes about readiness or promotion blockers |
 | `external_references` | array object | integration-owned/referenced-only | External provider/resource references, not provider-specific fields |
 | `tags` | array string | human/config-owned | Bounded organizational tags |
-| `version` | integer/string | system-owned | Config version for future migration/change tracking |
+| `schema_version` | string | system-owned | Schema/contract version used to validate this record shape |
+| `record_revision` | integer | system-owned | Monotonic governed update/correction revision for this record |
 
 ## Valid Workspace Types
 
@@ -246,7 +247,8 @@ The following fields should be system-owned:
 - `workspace_id`
 - `created_at`
 - `updated_at`
-- `version`
+- `schema_version`
+- `record_revision`
 - lifecycle transition audit references when implemented
 
 Agents and workspace configs must not forge system-owned fields.
@@ -417,7 +419,8 @@ audit_requirements:
 manual_test_goal: Validate workspace config, artifacts, review queue, audit records, and sanitized signal flow without external writes.
 created_at: 2026-05-24T00:00:00Z
 updated_at: 2026-05-24T00:00:00Z
-version: 1
+schema_version: schema_v1
+record_revision: 1
 ```
 
 ## Validation Questions

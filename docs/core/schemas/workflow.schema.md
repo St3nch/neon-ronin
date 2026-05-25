@@ -73,7 +73,8 @@ Workflow definition is not automation permission.
 | `failure_behavior` | object | human/config-owned | Failure/block behavior |
 | `provenance_requirements` | array string | human/config-owned | Required provenance links |
 | `tags` | array string | bounded/human-owned | Bounded organizational tags |
-| `version` | integer/string | system-owned | Schema/version tracking |
+| `schema_version` | string | system-owned | Schema/contract version used to validate this record shape |
+| `record_revision` | integer | system-owned | Monotonic governed update/correction revision for this record |
 
 ## Valid Workflow Types
 
@@ -305,7 +306,8 @@ System-owned fields should include:
 - `created_at`
 - `updated_at`
 - system-computed status transition timestamps
-- `version`
+- `schema_version`
+- `record_revision`
 
 Agents and callers must not forge system-owned fields.
 
@@ -460,7 +462,8 @@ audit_requirements:
   - workflow_completed
 created_at: 2026-05-24T00:00:00Z
 updated_at: 2026-05-24T00:00:00Z
-version: 1
+schema_version: schema_v1
+record_revision: 1
 ```
 
 ## Validation Questions
