@@ -569,6 +569,83 @@ This phase fixes that structure.
 
 Queued.
 
+## Phase 5D - DB Reliability And Schema Clarification
+
+### Goal
+
+Resolve the database-readiness and hammer-readiness clarification issues found by the Claude Prompt B audit before Phase 6 begins.
+
+This phase does not design or implement the database.
+
+This phase clarifies the schema, transaction, resolver, and reliability decisions that Phase 6 records would otherwise encode ambiguously.
+
+### Why This Phase Exists
+
+The Prompt B audit found that Neon Ronin is not at data-swamp risk, but several pre-implementation concepts are still too ambiguous for reliable future database design.
+
+The highest-risk issues are:
+
+- polymorphic references without a resolver contract
+- ambiguous `version` field semantics
+- unnamed transaction boundaries
+- audit-first wording that needs transaction-aware clarification
+- cross-schema status drift
+- append-only audit/human-decision enforcement not yet specified
+- workspace isolation enforcement posture not yet specified
+- retention/deletion policy not yet specified
+
+### Pre-Phase-6 Fixes
+
+Before Phase 6 Internal Research begins, complete the following:
+
+1. Split generic `version` semantics into `schema_version` and `record_revision` across governed schemas.
+2. Add a canonical allowed `record_type` registry for polymorphic references.
+3. Add canonical cross-schema status definitions for recurring statuses such as `blocked`, `parked`, `rejected`, `cancelled`, `expired`, `archived`, and `retired`.
+4. Add a transaction-boundaries doc that names the Phase-6-relevant atomic operations.
+5. Clarify the audit-first rule so in-transaction audit failure rolls back state changes, while audit subsystem unavailability blocks new consequential work.
+6. Resolve the P0/P1 sanitization decision boundary if still ambiguous.
+7. Complete Phase 5C core example separation so SearchClarity is not the hidden reference model.
+8. Specify Internal Research's relationship to business intake before drafting its workspace config.
+9. Add a resolver hammer module specification to `docs/core/19-hammer-testing-doctrine.md`.
+
+### Future DB Planning Preconditions
+
+Track, but do not necessarily complete before Phase 6:
+
+- append-only enforcement posture for audit records and human decisions
+- workspace isolation enforcement posture
+- soft-delete, hard-delete, retention, and deletion policy
+- timestamp posture, including UTC, precision, DB-set fields, and ordering tie-breakers
+- system-owned field enforcement posture
+- signal record decomposition decision
+- workflow step storage decision
+- sub-object shape enumeration requirements
+- provider payload snapshot isolation rule
+- future hammer coverage map enforcement rules
+
+### Deliverables
+
+- updates to `docs/core/14-schema-authority.md`
+- updates to affected schema docs for `schema_version` and `record_revision`
+- `docs/core/20-transaction-boundaries.md`
+- updates to `docs/core/16-error-and-failure-handling.md`
+- updates to `docs/core/19-hammer-testing-doctrine.md`
+- any small supporting updates needed to preserve roadmap consistency
+
+### Exit Criteria
+
+- Version semantics are unambiguous before first Phase 6 records are drafted.
+- Polymorphic reference vocabulary has a canonical registry.
+- Phase-6-relevant transaction boundaries are named.
+- Audit-first behavior is implementable later.
+- Recurring statuses have canonical meanings.
+- Phase 5C cleanup is still required before Phase 6 starts.
+- Future DB planning preconditions are captured without prematurely choosing database technology.
+
+### Status
+
+Queued.
+
 ## Phase 6 - Workspace 1: Internal Research
 
 ### Goal
@@ -845,14 +922,15 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Wait for and review Claude Prompt B: Database / Hammer / Reliability Audit.
-2. Reconcile Prompt A and Prompt B findings into the Phase 5C cleanup plan.
-3. Create `docs/reference-examples/README.md`.
-4. Create `docs/workspaces/README.md`.
-5. Move or rewrite SearchClarity-aware worked examples outside `docs/core/`.
-6. Replace SearchClarity-specific examples in core docs and schemas with generic examples.
-7. Add status notes on unexercised operations docs where appropriate.
-8. Then prepare Internal Research as Workspace 1.
+1. Reconcile Claude Prompt A and Prompt B into a combined Phase 5C/5D cleanup plan.
+2. Complete Phase 5C Core Example Separation.
+3. Complete Phase 5D DB Reliability And Schema Clarification.
+4. Create `docs/reference-examples/README.md`.
+5. Create `docs/workspaces/README.md`.
+6. Move or rewrite SearchClarity-aware worked examples outside `docs/core/`.
+7. Replace SearchClarity-specific examples in core docs and schemas with generic examples.
+8. Update schema authority, schema docs, transaction boundaries, error handling, and hammer doctrine for Phase 5D findings.
+9. Then prepare Internal Research as Workspace 1.
 
 ## Final Rule
 
