@@ -567,7 +567,7 @@ This phase fixes that structure.
 
 ### Status
 
-Queued.
+Completed.
 
 ## Phase 5D - DB Reliability And Schema Clarification
 
@@ -639,12 +639,12 @@ Track, but do not necessarily complete before Phase 6:
 - Phase-6-relevant transaction boundaries are named.
 - Audit-first behavior is implementable later.
 - Recurring statuses have canonical meanings.
-- Phase 5C cleanup is still required before Phase 6 starts.
+- Phase 5C cleanup is complete before Phase 6 starts.
 - Future DB planning preconditions are captured without prematurely choosing database technology.
 
 ### Status
 
-Queued.
+Completed.
 
 ## Phase 6 - Workspace 1: Internal Research
 
@@ -922,15 +922,10 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Reconcile Claude Prompt A and Prompt B into a combined Phase 5C/5D cleanup plan.
-2. Complete Phase 5C Core Example Separation.
-3. Complete Phase 5D DB Reliability And Schema Clarification.
-4. Create `docs/reference-examples/README.md`.
-5. Create `docs/workspaces/README.md`.
-6. Move or rewrite SearchClarity-aware worked examples outside `docs/core/`.
-7. Replace SearchClarity-specific examples in core docs and schemas with generic examples.
-8. Update schema authority, schema docs, transaction boundaries, error handling, and hammer doctrine for Phase 5D findings.
-9. Then prepare Internal Research as Workspace 1.
+1. Prepare Internal Research as Workspace 1, starting with a lightweight business intake/classification record.
+2. Draft the Internal Research workspace config only after that intake/classification step.
+3. Prepare the first Internal Research manual-test plan for artifact, review, audit, and signal flow.
+4. Keep SearchClarity as future workspace pressure, not core doctrine.
 
 ## Final Rule
 
