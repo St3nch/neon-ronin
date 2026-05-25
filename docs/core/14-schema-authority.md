@@ -72,6 +72,95 @@ Every schema family must define:
 
 If a schema cannot define those items yet, it is not ready.
 
+## Schema Version And Record Revision Rule
+
+Governed record schemas must separate schema contract version from record mutation revision.
+
+Use:
+
+```text
+schema_version
+record_revision
+```
+
+`schema_version` identifies the schema or contract version used to validate the record shape.
+
+`record_revision` identifies the record's own governed update/correction revision.
+
+Do not use a generic `version` field when the meaning is ambiguous.
+
+Rules:
+
+- every governed schema should define `schema_version`
+- every governed record that can be corrected, revised, superseded, or updated should define `record_revision`
+- schema examples should not use plain `version` when they mean schema contract version or record mutation revision
+- changing a schema contract should not silently mutate existing record revisions
+- correcting a record should not imply the schema contract changed
+
+## Canonical Record Type Registry
+
+Polymorphic references must use a bounded `record_type` value from this registry.
+
+Core schemas must not invent new `record_type` strings locally.
+
+Allowed initial `record_type` values:
+
+```text
+workspace_config
+workflow
+agent_definition
+agent_run
+artifact
+review_item
+human_decision
+signal
+raw_signal
+signal_candidate
+sanitized_signal
+observatory_record
+observatory_query_result
+audit_record
+permission_scope
+business_intake
+external_reference
+credential_reference
+manual_note
+blocked_action_report
+analysis_summary
+recommendation_packet
+qa_checklist
+schema
+system
+```
+
+Rules:
+
+- a `record_type` value names a governed record family or approved reference target
+- `record_id` must be interpreted through the central resolver contract later
+- workspace-scoped target records must verify workspace scope before being exposed
+- cross-workspace private references are forbidden unless a future governance rule explicitly allows them
+- provider-specific target types belong behind integration-owned contracts, not generic core records
+- adding a new value requires schema authority review and the schema change checklist
+
+## Canonical Cross-Schema Status Definitions
+
+Recurring statuses must use the following meanings unless a specific schema intentionally narrows them without contradiction.
+
+| Status | Canonical Meaning |
+|---|---|
+| `blocked` | Work was prevented by rule, lifecycle, permission, safety, missing requirement, unresolved dependency, or validation boundary |
+| `parked` | A human deliberately held the item without proceeding, rejecting, deleting, or treating it as complete |
+| `rejected` | A human or validation rule determined the item/output/action should not proceed in its current form |
+| `cancelled` | A human or system intentionally stopped work before completion |
+| `expired` | The item, approval, request, credential, or action window is no longer valid due to time or condition |
+| `archived` | The record is preserved for history/reference and not used for active workflow |
+| `retired` | The record or workspace is closed for new use and retained for history, audit, or export |
+| `failed` | Work was attempted and did not complete successfully |
+| `skipped` | Work was intentionally not run because it was no longer needed or allowed |
+| `unknown` | Outcome cannot be confirmed and must be treated carefully until reconciled |
+
+Schemas may add domain-specific statuses, but they must not redefine these common statuses.
+
 ## Governed Schema Families
 
 The first governed Neon Ronin schema families are:
@@ -746,6 +835,8 @@ Immutability protects provenance and auditability.
 
 Schemas with statuses must define valid statuses and valid transitions.
 
+Schemas should reuse canonical cross-schema status definitions where applicable.
+
 A status enum without transition rules is incomplete.
 
 Examples:
@@ -784,6 +875,8 @@ Unbounded metadata is JSON sludge with a nicer hat.
 ## Relationship Rule
 
 Schema relationships must preserve ownership boundaries.
+
+Polymorphic references must use the canonical `record_type` registry rather than ad hoc local strings.
 
 Allowed:
 
@@ -828,11 +921,14 @@ Before writing or changing a schema, answer:
 7. What provenance must be preserved?
 8. What audit events touch it?
 9. What statuses and transitions exist?
-10. Which fields are system-owned?
-11. Which fields are immutable?
-12. What must not be stored here?
-13. What would be JSON sludge if added?
-14. What future schema should this not try to pre-solve?
+10. Do recurring statuses match canonical cross-schema definitions?
+11. Which fields are system-owned?
+12. Which fields are immutable?
+13. Does the schema use `schema_version` and `record_revision` correctly?
+14. Do polymorphic references use only canonical `record_type` values?
+15. What must not be stored here?
+16. What would be JSON sludge if added?
+17. What future schema should this not try to pre-solve?
 
 ## Non-Goals
 

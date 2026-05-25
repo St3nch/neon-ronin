@@ -859,6 +859,22 @@ Examples:
 - an audit record references a run without becoming the run
 - a review item references an artifact without owning the artifact content
 
+## Record Revision
+
+A system-owned revision marker for a specific governed record.
+
+`record_revision` changes when the record itself is updated, corrected, superseded, or otherwise revised through a governed path.
+
+Record revision is not the same as schema version.
+
+## Record Type
+
+A canonical value used in polymorphic references to identify the family of record being referenced.
+
+`record_type` values must come from the schema authority registry.
+
+A record type is not a provider-specific payload type and must not be invented locally by one schema.
+
 ## Recommendation Packet
 
 A structured draft output containing a suggested action, rationale, evidence summary, uncertainty, and review needs.
@@ -964,6 +980,14 @@ Schema docs are planning docs before implementation.
 
 They are not database migrations yet.
 
+## Schema Version
+
+A system-owned version marker for the schema or contract used to validate a governed record shape.
+
+`schema_version` changes when the schema contract changes.
+
+Schema version is not the same as record revision.
+
 ## Schema Authority
 
 The governed decision layer defining which schema families Neon Ronin may define, what each owns, and what must not become schema yet.
@@ -1030,6 +1054,12 @@ The origin information that explains where a record came from, including workspa
 A thin reference to a source record, artifact, run, review item, external resource, or signal.
 
 A source reference is a pointer, not ownership transfer.
+
+## Status
+
+A bounded state value describing where a record, workflow, review item, run, artifact, signal, permission scope, or workspace is in its lifecycle.
+
+Recurring statuses such as `blocked`, `parked`, `rejected`, `cancelled`, `expired`, `archived`, `retired`, `failed`, `skipped`, and `unknown` use the canonical definitions in `docs/core/14-schema-authority.md` unless a schema intentionally narrows them without contradiction.
 
 ## Structured Record
 
