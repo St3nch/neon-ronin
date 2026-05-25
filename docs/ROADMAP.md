@@ -339,7 +339,7 @@ Completed.
 
 ### Contract Status
 
-In progress.
+Completed.
 
 ## Parallel Track - SearchClarity Business Readiness
 
@@ -776,14 +776,10 @@ Neon Ronin earns complexity gradually.
 
 ## Immediate Next Actions
 
-1. Write `docs/core/15-secrets-and-credentials.md`.
-2. Write `docs/core/16-error-and-failure-handling.md`.
-3. Write `docs/core/17-observatory-scoring-contract.md`.
-4. Write `docs/core/18-external-integration-contract.md`.
-5. Create `docs/operations/` and the Phase 5 operations docs.
-6. Track SearchClarity Business Readiness as a parallel dependency, not core platform work.
-7. Prepare Internal Research as Workspace 1.
-8. Only then prepare SearchClarity compatibility review.
+1. Create `docs/operations/` and the Phase 5 operations docs.
+2. Track SearchClarity Business Readiness as a parallel dependency, not core platform work.
+3. Prepare Internal Research as Workspace 1.
+4. Only then prepare SearchClarity compatibility review.
 
 ## Final Rule
 
