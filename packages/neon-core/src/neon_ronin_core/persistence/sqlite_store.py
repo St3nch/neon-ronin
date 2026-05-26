@@ -8,12 +8,14 @@ This module intentionally implements only the approved persistence proof:
 - human_decisions
 - signal_candidates
 - artifact_metadata
+- workflow_records
 - workspace_config_create
 - workspace_config_update
 - review_queue_item_create
 - human_decision_record
 - signal_candidate_create
 - artifact_metadata_create
+- workflow_record_create
 - audit-first transaction behavior
 
 It does not implement agents, UI, integrations, scheduled jobs, watch mode,
@@ -37,6 +39,7 @@ INITIAL_DECISION_STATUS = "recorded"
 SIGNAL_CANDIDATE_FORM = "signal_candidate"
 INITIAL_SIGNAL_CANDIDATE_STATUS = "candidate"
 INITIAL_ARTIFACT_STATUS = "draft"
+INITIAL_WORKFLOW_STATUS = "manual_test"
 
 FORBIDDEN_FIELDS = frozenset({"metadata", "custom_data"})
 SYSTEM_OWNED_WORKSPACE_FIELDS = frozenset(
@@ -90,6 +93,17 @@ SYSTEM_OWNED_ARTIFACT_FIELDS = frozenset(
         "artifact_id",
         "status",
         "audit_record_ids",
+        "created_at",
+        "updated_at",
+        "schema_version",
+        "record_revision",
+    }
+)
+SYSTEM_OWNED_WORKFLOW_FIELDS = frozenset(
+    {
+        "workflow_id",
+        "status",
+        "audit_record_id",
         "created_at",
         "updated_at",
         "schema_version",
@@ -262,6 +276,49 @@ REQUIRED_ARTIFACT_METADATA_CREATE_FIELDS = frozenset(
         "source_references",
     }
 )
+ALLOWED_WORKFLOW_CREATE_FIELDS = frozenset(
+    {
+        "workflow_name",
+        "workflow_type",
+        "scope_type",
+        "workspace_id",
+        "adapter_id",
+        "allowed_workspace_types",
+        "allowed_lifecycle_statuses",
+        "allowed_runtime_modes",
+        "steps",
+        "required_review_gates",
+        "expected_inputs",
+        "expected_outputs",
+        "audit_requirements",
+        "description",
+        "version_label",
+        "trigger_types",
+        "allowed_agents",
+        "forbidden_actions",
+        "handoff_rules",
+        "failure_behavior",
+        "provenance_requirements",
+        "tags",
+    }
+)
+REQUIRED_WORKFLOW_CREATE_FIELDS = frozenset(
+    {
+        "workflow_name",
+        "workflow_type",
+        "scope_type",
+        "workspace_id",
+        "adapter_id",
+        "allowed_workspace_types",
+        "allowed_lifecycle_statuses",
+        "allowed_runtime_modes",
+        "steps",
+        "required_review_gates",
+        "expected_inputs",
+        "expected_outputs",
+        "audit_requirements",
+    }
+)
 ALLOWED_REVIEW_TYPES = frozenset(
     {
         "strategy_review",
@@ -407,6 +464,56 @@ FORBIDDEN_STORAGE_REFERENCE_KEYS = frozenset(
         "blob",
     }
 )
+ALLOWED_WORKFLOW_TYPES = frozenset(
+    {
+        "business_intake",
+        "manual_research",
+        "report_production",
+        "artifact_review",
+        "signal_capture",
+        "signal_sanitization",
+        "qa_review",
+        "internal_strategy",
+        "other",
+    }
+)
+ALLOWED_WORKFLOW_SCOPE_TYPES = frozenset({"workspace"})
+ALLOWED_WORKFLOW_LIFECYCLE_STATUSES = frozenset({"manual_test"})
+ALLOWED_WORKFLOW_RUNTIME_MODES = frozenset({"on_demand"})
+ALLOWED_WORKFLOW_TRIGGER_TYPES = frozenset({"human_started", "manual_test_started"})
+FORBIDDEN_WORKFLOW_TRIGGER_TYPES = frozenset({"scheduled", "watch_mode", "external_event"})
+ALLOWED_WORKFLOW_STEP_TYPES = frozenset(
+    {
+        "human_task",
+        "review_gate",
+        "artifact_creation",
+        "signal_capture",
+        "human_decision",
+        "audit_event",
+        "handoff",
+        "blocked_or_escalated",
+    }
+)
+ALLOWED_WORKFLOW_STEP_ACTOR_TYPES = frozenset({"human", "system"})
+ALLOWED_WORKFLOW_INPUT_TYPES = frozenset(
+    {"workspace_config", "artifact", "signal_candidate", "review_item", "human_decision", "manual_note"}
+)
+ALLOWED_WORKFLOW_OUTPUT_TYPES = frozenset(
+    {"artifact", "signal_candidate", "review_queue_item", "human_decision", "audit_record"}
+)
+FORBIDDEN_WORKFLOW_STEP_KEYS = frozenset(
+    {
+        "provider_payload",
+        "api_payload",
+        "private_content",
+        "content_body",
+        "raw_content",
+        "customer_record",
+        "credential",
+        "token",
+        "api_key",
+    }
+)
 REVIEW_STATUS_BY_DECISION_TYPE = {
     "approve": "approved",
     "approve_with_changes": "approved_with_changes",
@@ -495,6 +602,16 @@ class CreateArtifactMetadataResult:
     audit_record: dict[str, Any]
 
 
+@dataclass(frozen=True)
+class CreateWorkflowRecordResult:
+    """Result of a successful workflow record create operation."""
+
+    workflow_id: str
+    audit_record_id: str
+    workflow_record: dict[str, Any]
+    audit_record: dict[str, Any]
+
+
 Clock = Callable[[], datetime]
 IdFactory = Callable[[], str]
 
@@ -526,6 +643,7 @@ class SQLitePersistenceProofStore:
         human_decision_id_factory: IdFactory | None = None,
         signal_id_factory: IdFactory | None = None,
         artifact_id_factory: IdFactory | None = None,
+        workflow_id_factory: IdFactory | None = None,
         fail_audit_write: bool = False,
     ) -> None:
         self.connection = connection
@@ -539,6 +657,7 @@ class SQLitePersistenceProofStore:
         )
         self.signal_id_factory = signal_id_factory or (lambda: f"sigcand_{uuid4().hex}")
         self.artifact_id_factory = artifact_id_factory or (lambda: f"art_{uuid4().hex}")
+        self.workflow_id_factory = workflow_id_factory or (lambda: f"wf_{uuid4().hex}")
         self.fail_audit_write = fail_audit_write
         self.connection.row_factory = sqlite3.Row
 
@@ -636,6 +755,23 @@ class SQLitePersistenceProofStore:
                 artifact_type TEXT NOT NULL,
                 status TEXT NOT NULL,
                 content_scope TEXT NOT NULL,
+                audit_record_id TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                schema_version TEXT NOT NULL,
+                record_revision INTEGER NOT NULL,
+                record_json TEXT NOT NULL
+            )
+            """
+        )
+        self.connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS workflow_records (
+                workflow_id TEXT PRIMARY KEY,
+                workspace_id TEXT NOT NULL,
+                workflow_type TEXT NOT NULL,
+                scope_type TEXT NOT NULL,
+                status TEXT NOT NULL,
                 audit_record_id TEXT NOT NULL,
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL,
@@ -1169,6 +1305,89 @@ class SQLitePersistenceProofStore:
             audit_record=audit_record,
         )
 
+    def create_workflow_record(
+        self,
+        *,
+        workflow_record: Mapping[str, Any],
+        actor_id: str = "system:local_persistence_proof",
+    ) -> CreateWorkflowRecordResult:
+        """Create a workflow definition record and its audit record."""
+
+        clean_workflow = self._validate_workflow_record_payload(workflow_record)
+        workspace_id = clean_workflow["workspace_id"]
+        if self.get_workspace_config(workspace_id) is None:
+            raise NotFoundError("workspace config does not exist")
+
+        now = format_timestamp(self.clock())
+        workflow_id = self.workflow_id_factory()
+        audit_record_id = self.audit_id_factory()
+        record = {
+            "workflow_id": workflow_id,
+            **clean_workflow,
+            "status": INITIAL_WORKFLOW_STATUS,
+            "audit_record_id": audit_record_id,
+            "created_at": now,
+            "updated_at": now,
+            "schema_version": SCHEMA_VERSION,
+            "record_revision": INITIAL_RECORD_REVISION,
+        }
+        audit_record = self._build_audit_record(
+            audit_record_id=audit_record_id,
+            workspace_id=workspace_id,
+            actor_id=actor_id,
+            action_type="workflow_record_create",
+            event_type="workflow_record_created",
+            target_type="workflow_record",
+            target_id=workflow_id,
+            summary="Workflow definition created by local persistence proof.",
+            now=now,
+        )
+
+        try:
+            with self.connection:
+                self.connection.execute(
+                    """
+                    INSERT INTO workflow_records (
+                        workflow_id,
+                        workspace_id,
+                        workflow_type,
+                        scope_type,
+                        status,
+                        audit_record_id,
+                        created_at,
+                        updated_at,
+                        schema_version,
+                        record_revision,
+                        record_json
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        workflow_id,
+                        workspace_id,
+                        clean_workflow["workflow_type"],
+                        clean_workflow["scope_type"],
+                        INITIAL_WORKFLOW_STATUS,
+                        audit_record_id,
+                        now,
+                        now,
+                        SCHEMA_VERSION,
+                        INITIAL_RECORD_REVISION,
+                        _json_dumps(record),
+                    ),
+                )
+                self._insert_audit_record(audit_record)
+        except AuditWriteError:
+            raise
+        except sqlite3.Error as exc:
+            raise PersistenceProofError(str(exc)) from exc
+
+        return CreateWorkflowRecordResult(
+            workflow_id=workflow_id,
+            audit_record_id=audit_record_id,
+            workflow_record=record,
+            audit_record=audit_record,
+        )
+
     def get_workspace_config(self, workspace_id: str) -> dict[str, Any] | None:
         row = self.connection.execute(
             "SELECT record_json FROM workspace_configs WHERE workspace_id = ?",
@@ -1214,6 +1433,15 @@ class SQLitePersistenceProofStore:
             return None
         return json.loads(row["record_json"])
 
+    def get_workflow_record(self, workflow_id: str) -> dict[str, Any] | None:
+        row = self.connection.execute(
+            "SELECT record_json FROM workflow_records WHERE workflow_id = ?",
+            (workflow_id,),
+        ).fetchone()
+        if row is None:
+            return None
+        return json.loads(row["record_json"])
+
     def get_audit_record(self, audit_record_id: str) -> dict[str, Any] | None:
         row = self.connection.execute(
             "SELECT record_json FROM audit_records WHERE audit_record_id = ?",
@@ -1237,6 +1465,9 @@ class SQLitePersistenceProofStore:
 
     def count_artifact_metadata(self) -> int:
         return int(self.connection.execute("SELECT COUNT(*) FROM artifact_metadata").fetchone()[0])
+
+    def count_workflow_records(self) -> int:
+        return int(self.connection.execute("SELECT COUNT(*) FROM workflow_records").fetchone()[0])
 
     def count_audit_records(self) -> int:
         return int(self.connection.execute("SELECT COUNT(*) FROM audit_records").fetchone()[0])
@@ -1549,6 +1780,84 @@ class SQLitePersistenceProofStore:
             raise ValidationError("tags must contain only non-empty strings")
         return clean_artifact
 
+    @staticmethod
+    def _validate_workflow_record_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
+        if not isinstance(payload, Mapping):
+            raise ValidationError("workflow_record must be a mapping")
+        keys = set(payload.keys())
+        forbidden = keys & FORBIDDEN_FIELDS
+        if forbidden:
+            raise ValidationError(f"forbidden fields present: {sorted(forbidden)}")
+        forged = keys & SYSTEM_OWNED_WORKFLOW_FIELDS
+        if forged:
+            raise ValidationError(f"system-owned fields cannot be supplied: {sorted(forged)}")
+        unknown = keys - ALLOWED_WORKFLOW_CREATE_FIELDS
+        if unknown:
+            raise ValidationError(f"unknown fields present: {sorted(unknown)}")
+        missing = REQUIRED_WORKFLOW_CREATE_FIELDS - keys
+        if missing:
+            raise ValidationError(f"required fields missing: {sorted(missing)}")
+
+        clean_workflow = dict(payload)
+        _validate_non_empty_string(clean_workflow, "workflow_name")
+        _validate_non_empty_string(clean_workflow, "workspace_id")
+        workflow_type = clean_workflow.get("workflow_type")
+        if workflow_type not in ALLOWED_WORKFLOW_TYPES:
+            raise ValidationError("unsupported workflow_type")
+        scope_type = clean_workflow.get("scope_type")
+        if scope_type not in ALLOWED_WORKFLOW_SCOPE_TYPES:
+            raise ValidationError("unsupported scope_type")
+        if clean_workflow.get("adapter_id") is not None:
+            raise ValidationError("adapter_id must be null for workspace-scoped proof")
+        _validate_allowed_string_sequence(
+            clean_workflow.get("allowed_workspace_types"),
+            "allowed_workspace_types",
+            frozenset({"internal_research"}),
+            require_non_empty=True,
+        )
+        _validate_allowed_string_sequence(
+            clean_workflow.get("allowed_lifecycle_statuses"),
+            "allowed_lifecycle_statuses",
+            ALLOWED_WORKFLOW_LIFECYCLE_STATUSES,
+            require_non_empty=True,
+        )
+        _validate_allowed_string_sequence(
+            clean_workflow.get("allowed_runtime_modes"),
+            "allowed_runtime_modes",
+            ALLOWED_WORKFLOW_RUNTIME_MODES,
+            require_non_empty=True,
+        )
+        triggers = clean_workflow.get("trigger_types", ["human_started"])
+        _validate_allowed_string_sequence(
+            triggers,
+            "trigger_types",
+            ALLOWED_WORKFLOW_TRIGGER_TYPES,
+            require_non_empty=True,
+        )
+        forbidden_triggers = set(triggers) & FORBIDDEN_WORKFLOW_TRIGGER_TYPES
+        if forbidden_triggers:
+            raise ValidationError(f"forbidden trigger_types: {sorted(forbidden_triggers)}")
+        if clean_workflow.get("allowed_agents", []) != []:
+            raise ValidationError("allowed_agents must be empty for workflow proof")
+        _validate_workflow_steps(clean_workflow.get("steps"))
+        _validate_optional_string_array(
+            clean_workflow.get("required_review_gates"), "required_review_gates"
+        )
+        _validate_workflow_io(
+            clean_workflow.get("expected_inputs"), "expected_inputs", ALLOWED_WORKFLOW_INPUT_TYPES
+        )
+        _validate_workflow_io(
+            clean_workflow.get("expected_outputs"), "expected_outputs", ALLOWED_WORKFLOW_OUTPUT_TYPES
+        )
+        _validate_optional_string_array(clean_workflow.get("audit_requirements"), "audit_requirements")
+        _validate_optional_string_array(clean_workflow.get("forbidden_actions", []), "forbidden_actions")
+        _validate_optional_string_array(
+            clean_workflow.get("provenance_requirements", []), "provenance_requirements"
+        )
+        tags = clean_workflow.get("tags", [])
+        _validate_optional_string_array(tags, "tags")
+        return clean_workflow
+
 
 def _validate_non_empty_string(payload: Mapping[str, Any], field_name: str) -> None:
     value = payload.get(field_name)
@@ -1619,6 +1928,78 @@ def _validate_storage_reference(value: Any) -> None:
     reference = value.get("reference")
     if reference is not None and not isinstance(reference, str):
         raise ValidationError("storage_reference.reference must be a string when present")
+
+
+def _validate_workflow_steps(value: Any) -> None:
+    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
+        raise ValidationError("steps must be an array")
+    if not value:
+        raise ValidationError("steps must not be empty")
+    seen_step_ids: set[str] = set()
+    for step in value:
+        if not isinstance(step, Mapping):
+            raise ValidationError("steps entries must be mappings")
+        forbidden_keys = set(step.keys()) & FORBIDDEN_WORKFLOW_STEP_KEYS
+        if forbidden_keys:
+            raise ValidationError(f"forbidden workflow step fields: {sorted(forbidden_keys)}")
+        for field_name in ("step_id", "step_name", "step_type", "actor_type", "audit_event_type"):
+            if not isinstance(step.get(field_name), str) or not step.get(field_name).strip():
+                raise ValidationError(f"workflow step {field_name} must be a non-empty string")
+        step_id = step["step_id"]
+        if step_id in seen_step_ids:
+            raise ValidationError("workflow step ids must be unique")
+        seen_step_ids.add(step_id)
+        if step.get("step_type") not in ALLOWED_WORKFLOW_STEP_TYPES:
+            raise ValidationError("unsupported workflow step_type")
+        if step.get("actor_type") not in ALLOWED_WORKFLOW_STEP_ACTOR_TYPES:
+            raise ValidationError("unsupported workflow step actor_type")
+        if step.get("allowed_agent_ids", []) != []:
+            raise ValidationError("workflow step allowed_agent_ids must be empty")
+        if not isinstance(step.get("required"), bool):
+            raise ValidationError("workflow step required must be boolean")
+        _validate_optional_string_array(step.get("input_refs", []), "workflow step input_refs")
+        _validate_optional_string_array(step.get("output_refs", []), "workflow step output_refs")
+        review_gate = step.get("review_gate")
+        if review_gate is not None and not isinstance(review_gate, str):
+            raise ValidationError("workflow step review_gate must be a string or null")
+        allowed_keys = {
+            "step_id",
+            "step_name",
+            "step_type",
+            "required",
+            "actor_type",
+            "allowed_agent_ids",
+            "input_refs",
+            "output_refs",
+            "review_gate",
+            "audit_event_type",
+        }
+        extra_keys = set(step.keys()) - allowed_keys
+        if extra_keys:
+            raise ValidationError(f"unknown workflow step fields: {sorted(extra_keys)}")
+
+
+def _validate_workflow_io(value: Any, field_name: str, allowed_types: frozenset[str]) -> None:
+    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
+        raise ValidationError(f"{field_name} must be an array")
+    for item in value:
+        if not isinstance(item, Mapping):
+            raise ValidationError(f"{field_name} entries must be mappings")
+        type_key = "input_type" if field_name == "expected_inputs" else "output_type"
+        item_type = item.get(type_key)
+        if item_type not in allowed_types:
+            raise ValidationError(f"unsupported {field_name} type")
+        if not isinstance(item.get("required"), bool):
+            raise ValidationError(f"{field_name} required must be boolean")
+        ownership = item.get("ownership")
+        if ownership is not None and ownership not in {"workspace_owned", "core_owned", "referenced_only"}:
+            raise ValidationError(f"unsupported {field_name} ownership")
+        if "requires_review" in item and not isinstance(item["requires_review"], bool):
+            raise ValidationError(f"{field_name} requires_review must be boolean")
+        allowed_keys = {type_key, "required", "ownership", "requires_review", "artifact_type", "review_type"}
+        extra_keys = set(item.keys()) - allowed_keys
+        if extra_keys:
+            raise ValidationError(f"unknown {field_name} fields: {sorted(extra_keys)}")
 
 
 def _json_dumps(value: Mapping[str, Any]) -> str:

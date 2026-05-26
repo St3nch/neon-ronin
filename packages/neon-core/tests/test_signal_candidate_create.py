@@ -166,6 +166,7 @@ class SignalCandidateCreateProofTests(unittest.TestCase):
                 "human_decisions",
                 "review_queue_items",
                 "signal_candidates",
+                "workflow_records",
                 "workspace_configs",
             ],
         )

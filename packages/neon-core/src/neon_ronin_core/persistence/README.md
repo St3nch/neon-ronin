@@ -25,12 +25,14 @@ review_queue_items
 human_decisions
 signal_candidates
 artifact_metadata
+workflow_records
 workspace_config_create
 workspace_config_update
 review_queue_item_create
 human_decision_record
 signal_candidate_create
 artifact_metadata_create
+workflow_record_create
 audit-first transaction behavior
 hammer-audit-first-workspace-config-create
 ```
@@ -43,6 +45,7 @@ no audit record means no review queue item record
 no audit record means no human decision record and no review item resolution
 no audit record means no signal candidate record
 no audit record means no artifact metadata record
+no audit record means no workflow record
 ```
 
 ## Current Files
@@ -51,7 +54,7 @@ no audit record means no artifact metadata record
 sqlite_store.py
 ```
 
-`sqlite_store.py` implements a tiny SQLite-backed direct module/service proof for `workspace_config_create`, `workspace_config_update`, `review_queue_item_create`, `human_decision_record`, `signal_candidate_create`, and `artifact_metadata_create`.
+`sqlite_store.py` implements a tiny SQLite-backed direct module/service proof for `workspace_config_create`, `workspace_config_update`, `review_queue_item_create`, `human_decision_record`, `signal_candidate_create`, `artifact_metadata_create`, and `workflow_record_create`.
 
 It uses Python stdlib `sqlite3` and no external dependencies.
 
@@ -66,6 +69,7 @@ review_queue_items
 human_decisions
 signal_candidates
 artifact_metadata
+workflow_records
 ```
 
 Adding any new persistence table or domain record requires a separate decision.
@@ -81,7 +85,7 @@ python tools/hammers/run_audit_first_workspace_config_create.py
 Expected result:
 
 ```text
-Ran 72 tests
+Ran 87 tests
 OK
 ```
 
@@ -95,17 +99,20 @@ The hammer currently verifies:
 - valid human decision recording writes exactly one human decision, resolves one review item, and writes one audit record
 - valid signal candidate creation writes exactly one workspace-owned signal candidate and one audit record
 - valid artifact metadata creation writes exactly one metadata-only artifact record and one audit record
+- valid workflow record creation writes exactly one manual-test workflow definition and one audit record
 - forced audit-write failure rolls back workspace config creation
 - forced audit-write failure rolls back workspace config update
 - forced audit-write failure rolls back review queue item creation
 - forced audit-write failure rolls back human decision recording and review item resolution
 - forced audit-write failure rolls back signal candidate creation
 - forced audit-write failure rolls back artifact metadata creation
+- forced audit-write failure rolls back workflow record creation
 - no partial workspace config remains after forced audit failure
 - no partial review queue item remains after forced audit failure
 - no partial human decision or review item resolution remains after forced audit failure
 - no partial signal candidate remains after forced audit failure
 - no partial artifact metadata remains after forced audit failure
+- no partial workflow record remains after forced audit failure
 - file-backed SQLite persistence survives reconnect
 - duplicate workspace id does not create a second audit record
 - missing workspace update does not create an audit record
@@ -113,6 +120,7 @@ The hammer currently verifies:
 - human decision recording requires an existing unresolved review item
 - signal candidate creation requires an existing workspace
 - artifact metadata creation requires an existing workspace
+- workflow record creation requires an existing workspace
 - non-human reviewer actors are rejected for human decisions
 - schema initialization creates only the authorized tables
 - caller-supplied system-owned fields are rejected
@@ -127,10 +135,13 @@ The hammer currently verifies:
 - unsupported decision types, decision scopes, and target record types are rejected
 - unsupported signal types, sensitivity ratings, and source reference record types are rejected
 - unsupported artifact types, content scopes, creator actor types, content formats, sensitivity ratings, confidence values, and source reference record types are rejected
+- unsupported workflow types, scope types, runtime modes, triggers, step actors, step payload fields, and workflow I/O types are rejected
 - signal candidates require `private_data_removed: true`
 - artifact metadata requires `storage_reference.content_stored_in_core: false`
 - artifact metadata rejects delivery-ready and public-use shortcuts
 - artifact metadata rejects storage references containing credential or content payload fields
+- workflow records are definitions only and reject scheduled/watch/external-event triggers
+- workflow records reject agent and integration step actors
 - timestamps are UTC ISO 8601 strings with a `Z` suffix
 - `schema_version` and `record_revision` are present and owned by the persistence layer
 
@@ -167,6 +178,9 @@ Do not add any of the following in this persistence slice:
 - artifact status transitions
 - delivery-ready marking
 - artifact delivery or publishing
+- workflow execution
+- workflow run records
+- workflow status transitions
 - external action execution
 - provider payload snapshots
 - credential handling
@@ -175,7 +189,4 @@ Do not add any of the following in this persistence slice:
 
 Before expanding persistence, keep this proof green and decide the next smallest boundary explicitly.
 
-Preferred next work should either:
-
-1. pause and audit the current persistence slice, or
-2. implement a separately approved workflow boundary.
+Preferred next work should pause and audit the current persistence slice before adding another table.
