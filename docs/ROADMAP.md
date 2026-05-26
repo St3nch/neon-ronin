@@ -718,6 +718,10 @@ Internal Research has completed:
 
 - Manual Test 005 classification approved as manual evidence only
 
+- no Manual Test 006 by default
+- implementation-readiness checkpoint queued
+- Prompt B schema/status audit findings fixed
+
 Current posture remains:
 
 ```text
@@ -959,15 +963,65 @@ Neon Ronin earns schemas by proving ownership and provenance.
 Neon Ronin earns complexity gradually.
 ```
 
+## Implementation Readiness Checkpoint
+
+Phase 6 manual evidence has validated enough platform behavior to stop adding meta-governance by default.
+
+The next decision should determine whether Neon Ronin is ready for the smallest executable platform slice.
+
+Checkpoint questions:
+
+- Are Prompt B P1/P2 audit findings resolved or intentionally deferred?
+- Which docs are authoritative for the first executable slice?
+- What is the smallest persistence proof that validates doctrine without overbuilding?
+- Which hammer proof must run first?
+- Which domains remain explicitly forbidden?
+- Are adapter/workspace-extension docs blockers, or can they wait until a customer-facing workspace is queued?
+
+Likely first executable slice, if approved later:
+
+```text
+workspace_configs
+audit_records
+audit-first write path
+one transaction boundary
+one hammer probe
+```
+
+This checkpoint does not authorize implementation by itself.
+
+### No MT006 By Default
+
+Do not create another manual test unless it answers a concrete implementation-readiness question.
+
+Manual Tests 001-005 are enough meta-validation for now.
+
+### Still Forbidden Until Explicitly Approved
+
+- application code
+- database implementation
+- executable agents
+- integrations
+- UI work
+- scheduled jobs
+- watch mode
+- live Observatory ingestion
+- automation
+- customer-facing workspace onboarding
+- SearchClarity onboarding
+- local schema reference creation
+- core schema promotion from local packet shapes
+
 ## Immediate Next Actions
 
-1. Pause for audit sync, or draft a separate local-reference boundary/task plan before creating any local schema reference.
-2. Do not create a local schema reference from Manual Test 005 evidence alone.
-3. Do not promote recommendation/proposed-action/manual-test packet shapes into core schemas without schema authority review.
-4. Keep proposed actions as reviewable packets only; do not prepare or execute actions.
-5. Keep executable agent definitions blocked until a separate approval path says otherwise.
-6. Keep runtime off, `allowed_agents: []`, scheduled jobs disabled, watch mode disabled, and live Observatory ingestion blocked.
-7. Keep SearchClarity as future workspace pressure, not core doctrine.
+1. Complete the implementation-readiness checkpoint before starting any new manual test or local schema reference.
+2. Decide whether adapter/workspace-extension infrastructure is a blocker before the first executable slice or can wait until a customer-facing workspace is queued.
+3. If implementation is approved later, keep the first executable slice limited to workspace configs, audit records, an audit-first write path, one transaction boundary, and one hammer probe.
+4. Do not create a local schema reference from Manual Test 005 evidence alone.
+5. Do not promote recommendation/proposed-action/manual-test packet shapes into core schemas without schema authority review.
+6. Keep executable agent definitions blocked until a separate approval path says otherwise.
+7. Keep runtime off, `allowed_agents: []`, scheduled jobs disabled, watch mode disabled, and live Observatory ingestion blocked.
+8. Keep SearchClarity as future workspace pressure, not core doctrine.
 
 ## Final Rule
 

@@ -9,7 +9,8 @@ It exists so real workspace details do not leak into `docs/core/`.
 ## Current Status
 
 ```text
-No workspace configs are active yet.
+Internal Research has documentation-only manual_test records.
+No workspace configs are active runtime configs yet.
 ```
 
 Phase 5C and Phase 5D cleanup are complete.
@@ -17,6 +18,8 @@ Phase 5C and Phase 5D cleanup are complete.
 Phase 6 preparation has moved Internal Research into documentation-only `manual_test` posture with `internal-research/intake-classification.md`, `internal-research/workspace-config.draft.md`, `internal-research/manual-test-001-artifact-review-audit-signal-flow.md`, `internal-research/manual-test-001-evidence.md`, `internal-research/promotion-review-001-onboarding-to-manual-test.md`, `internal-research/manual-test-002-llm-recommendation-assistance.md`, `internal-research/manual-test-002-evidence.md`, `internal-research/agent-assistance-boundary-plan.md`, `internal-research/manual-test-003-llm-draft-assistance.md`, `internal-research/manual-test-003-evidence.md`, `internal-research/propose-action-boundary-plan.md`, `internal-research/manual-test-004-llm-propose-action-assistance.md`, `internal-research/manual-test-004-evidence.md`, `internal-research/manual-test-005-local-schema-shape-consolidation.md`, and `internal-research/manual-test-005-evidence.md`.
 
 Do not create active workspace configs here until the intake/classification step and workspace config draft are reviewed.
+
+Implementation readiness is the next checkpoint before any executable platform slice, local schema reference, or customer-facing workspace onboarding.
 
 ## What Belongs Here Later
 
