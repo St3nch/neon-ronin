@@ -732,6 +732,8 @@ Internal Research has completed:
 
 - implementation-start decision approved for first local persistence proof
 
+- first local SQLite audit-first persistence proof implemented and passing
+
 Current posture remains:
 
 ```text
@@ -1034,12 +1036,11 @@ Assistant-drafted planning refinements may be recorded and reviewed by the opera
 
 ## Immediate Next Actions
 
-1. Begin the first local persistence proof implementation in the approved narrow scope.
-2. Implement only the smallest SQLite-backed direct module/service path needed to prove `workspace_config_create` creates or rolls back `workspace_configs` and `audit_records` together.
-3. Add the hammer proof `hammer-audit-first-workspace-config-create` for the positive and forced-audit-failure cases.
-4. Keep the first proof limited to SQLite, direct service/module call, `workspace_configs`, `audit_records`, `workspace_config_create`, and `hammer-audit-first-workspace-config-create` unless a separate decision narrows or changes scope.
+1. Add a tiny developer hammer runner or test command wrapper for `hammer-audit-first-workspace-config-create` so the first proof can be rerun consistently without manual `PYTHONPATH` setup.
+2. Keep the runner limited to the existing `packages/neon-core` proof and `fixtures/internal-research` fixture.
+3. Do not add new persistence tables, new domain records, UI, agents, integrations, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, or automation without a separate decision.
+4. After the runner exists, either pause for implementation-slice audit or decide the next smallest persistence boundary.
 5. Do not create a local schema reference from Manual Test 005 evidence alone.
-6. Keep executable agent definitions, integrations, UI, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, and automation blocked.
 
 ## Final Rule
 
