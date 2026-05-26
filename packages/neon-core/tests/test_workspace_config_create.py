@@ -1,5 +1,6 @@
 import re
 import sqlite3
+import tempfile
 import unittest
 from datetime import UTC, datetime
 
@@ -66,6 +67,33 @@ class WorkspaceConfigCreateProofTests(unittest.TestCase):
         self.assertEqual(audit["schema_version"], SCHEMA_VERSION)
         self.assertEqual(audit["record_revision"], 1)
         self.assertRegex(audit["created_at"], TIMESTAMP_PATTERN)
+
+    def test_file_backed_sqlite_store_persists_records(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            db_path = f"{temp_dir}/neon_ronin_proof.sqlite3"
+            connection = sqlite3.connect(db_path)
+            store = SQLitePersistenceProofStore(
+                connection,
+                clock=lambda: FIXED_TIME,
+                audit_id_factory=lambda: "audit_workspace_config_create_file_001",
+            )
+            store.initialize_schema()
+            store.create_workspace_config(
+                assigned_workspace_id=INTERNAL_RESEARCH_WORKSPACE_ID,
+                workspace_config=INTERNAL_RESEARCH_WORKSPACE_CONFIG,
+            )
+            connection.close()
+
+            reopened = sqlite3.connect(db_path)
+            reopened_store = SQLitePersistenceProofStore(reopened, clock=lambda: FIXED_TIME)
+
+            self.assertEqual(reopened_store.count_workspace_configs(), 1)
+            self.assertEqual(reopened_store.count_audit_records(), 1)
+            self.assertIsNotNone(reopened_store.get_workspace_config(INTERNAL_RESEARCH_WORKSPACE_ID))
+            self.assertIsNotNone(
+                reopened_store.get_audit_record("audit_workspace_config_create_file_001")
+            )
+            reopened.close()
 
     def test_forced_audit_failure_rolls_back_workspace_config(self):
         store = self.make_store(fail_audit_write=True)
