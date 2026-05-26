@@ -34,7 +34,7 @@ signal_candidate_create
 artifact_metadata_create
 workflow_record_create
 audit-first transaction behavior
-hammer-audit-first-workspace-config-create
+first-persistence-proof
 ```
 
 The core invariants are:
@@ -79,7 +79,7 @@ Adding any new persistence table or domain record requires a separate decision.
 Run the proof from the repository root:
 
 ```text
-python tools/hammers/run_audit_first_workspace_config_create.py
+python tools/hammers/run_first_persistence_proof.py
 ```
 
 Expected result:

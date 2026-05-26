@@ -5,7 +5,7 @@ Hammer proof tooling.
 Current authorized hammer:
 
 ```text
-hammer-audit-first-workspace-config-create
+first-persistence-proof
 ```
 
 This folder may contain focused verification scripts/tests for the first local persistence proof.
@@ -16,7 +16,7 @@ It must not introduce agents, integrations, UI, scheduled jobs, watch mode, live
 Run the current hammer proof from the repository root:
 
 ```text
-python tools/hammers/run_audit_first_workspace_config_create.py
+python tools/hammers/run_first_persistence_proof.py
 ```
 
 

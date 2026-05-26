@@ -16,6 +16,7 @@ from workspace_config_fixture import (
     INTERNAL_RESEARCH_WORKSPACE_CONFIG,
     INTERNAL_RESEARCH_WORKSPACE_ID,
 )
+from proof_helpers import assert_authorized_tables_only
 
 
 FIXED_TIME = datetime(2026, 5, 26, 12, 0, 0, tzinfo=UTC)
@@ -313,14 +314,7 @@ class HumanDecisionRecordProofTests(unittest.TestCase):
 
     def test_schema_initialization_includes_only_authorized_tables(self):
         store = self.make_store()
-        rows = store.connection.execute(
-            "SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name"
-        ).fetchall()
-
-        self.assertEqual(
-            [row["name"] for row in rows],
-            ["artifact_metadata", "audit_records", "human_decisions", "review_queue_items", "signal_candidates", "workflow_records", "workspace_configs"],
-        )
+        assert_authorized_tables_only(self, store)
 
 
 if __name__ == "__main__":

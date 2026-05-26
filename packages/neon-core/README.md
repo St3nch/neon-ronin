@@ -22,7 +22,7 @@ signal_candidate_create
 artifact_metadata_create
 workflow_record_create
 audit-first write behavior
-hammer-audit-first-workspace-config-create
+first-persistence-proof
 ```
 
 Current forbidden scope:

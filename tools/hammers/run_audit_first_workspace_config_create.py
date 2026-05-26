@@ -1,37 +1,21 @@
-"""Run the first Neon Ronin hammer proof.
+"""Compatibility wrapper for the renamed first persistence proof hammer.
 
-This runner exists only to make the approved first local persistence proof
-repeatable without manual PYTHONPATH setup.
+Prefer `python tools/hammers/run_first_persistence_proof.py`.
 """
 
 from __future__ import annotations
 
 import pathlib
 import sys
-import unittest
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-CORE_SRC = ROOT / "packages" / "neon-core" / "src"
-FIXTURE_SRC = ROOT / "fixtures" / "internal-research"
-TESTS_DIR = ROOT / "packages" / "neon-core" / "tests"
+HAMMERS_DIR = ROOT / "tools" / "hammers"
 
-for path in (CORE_SRC, FIXTURE_SRC):
-    text_path = str(path)
-    if text_path not in sys.path:
-        sys.path.insert(0, text_path)
+text_path = str(HAMMERS_DIR)
+if text_path not in sys.path:
+    sys.path.insert(0, text_path)
 
-
-def main() -> int:
-    """Run hammer-audit-first-workspace-config-create."""
-
-    print("hammer: hammer-audit-first-workspace-config-create")
-    print(f"core_src: {CORE_SRC}")
-    print(f"fixtures: {FIXTURE_SRC}")
-    print(f"tests: {TESTS_DIR}")
-
-    suite = unittest.defaultTestLoader.discover(str(TESTS_DIR))
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-    return 0 if result.wasSuccessful() else 1
+from run_first_persistence_proof import main
 
 
 if __name__ == "__main__":

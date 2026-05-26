@@ -14,7 +14,7 @@ import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-HAMMER = ROOT / "tools" / "hammers" / "run_audit_first_workspace_config_create.py"
+HAMMER = ROOT / "tools" / "hammers" / "run_first_persistence_proof.py"
 COMPILE_TARGETS = (
     ROOT / "packages" / "neon-core" / "src",
     ROOT / "packages" / "neon-core" / "tests",
@@ -26,7 +26,7 @@ COMPILE_TARGETS = (
 def run_hammer() -> int:
     """Run the current audit-first workspace config hammer."""
 
-    print("check: hammer-audit-first-workspace-config-create", flush=True)
+    print("check: first-persistence-proof", flush=True)
     completed = subprocess.run([sys.executable, str(HAMMER)], cwd=ROOT, check=False)
     return completed.returncode
 
