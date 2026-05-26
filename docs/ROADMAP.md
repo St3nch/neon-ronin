@@ -734,6 +734,8 @@ Internal Research has completed:
 
 - first local SQLite audit-first persistence proof implemented and passing
 
+- developer hammer runner added for first persistence proof
+
 Current posture remains:
 
 ```text
@@ -1036,10 +1038,10 @@ Assistant-drafted planning refinements may be recorded and reviewed by the opera
 
 ## Immediate Next Actions
 
-1. Add a tiny developer hammer runner or test command wrapper for `hammer-audit-first-workspace-config-create` so the first proof can be rerun consistently without manual `PYTHONPATH` setup.
-2. Keep the runner limited to the existing `packages/neon-core` proof and `fixtures/internal-research` fixture.
-3. Do not add new persistence tables, new domain records, UI, agents, integrations, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, or automation without a separate decision.
-4. After the runner exists, either pause for implementation-slice audit or decide the next smallest persistence boundary.
+1. Run the first hammer proof with `python tools/hammers/run_audit_first_workspace_config_create.py` before changing persistence code.
+2. Decide the next smallest persistence boundary only after the current proof stays green.
+3. Candidate next boundaries remain limited to planning/evaluation; do not add new persistence tables or domain records without a separate decision.
+4. Do not add UI, agents, integrations, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, or automation without a separate decision.
 5. Do not create a local schema reference from Manual Test 005 evidence alone.
 
 ## Final Rule
