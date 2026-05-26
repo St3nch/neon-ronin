@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-in_progress
+passed_with_notes
 ```
 
 This document records the manual evidence pass for `manual-test-001-artifact-review-audit-signal-flow.md`.
@@ -23,7 +23,7 @@ workspace_status_at_execution_time: onboarding
 source_intake: docs/workspaces/internal-research/intake-classification.md
 source_workspace_config: docs/workspaces/internal-research/workspace-config.draft.md
 source_manual_test_plan: docs/workspaces/internal-research/manual-test-001-artifact-review-audit-signal-flow.md
-evidence_status: completed_with_conditions
+evidence_status: passed_with_notes
 created_at: 2026-05-25T00:00:00Z
 updated_at: 2026-05-25T00:00:00Z
 schema_version: manual_test_evidence_v1
@@ -192,12 +192,12 @@ It records what future implementation must be able to audit.
 | workspace config reviewed | Boundary Confirmation section | planned/audit-required |
 | artifact drafted | Draft Internal Research Artifact section | planned/audit-required |
 | artifact review item created | Artifact Review Item section | planned/audit-required |
-| human decision recorded | Human Decision Record section | completed_with_conditions |
+| human decision recorded | Human Decision Record section | passed_with_notes |
 | signal candidate drafted | Signal Candidate section | planned/audit-required |
 | sanitization review item created | Sanitization Review section | planned/audit-required |
-| sanitization decision recorded | Sanitization Decision section | completed_with_conditions |
+| sanitization decision recorded | Sanitization Decision section | passed_with_notes |
 | forbidden action blocked if attempted | Blocked Action Probe Results section | planned/audit-required |
-| manual test summarized | Final Evidence Summary section | completed_with_conditions |
+| manual test summarized | Final Evidence Summary section | passed_with_notes |
 
 ## Signal Candidate
 
@@ -251,7 +251,7 @@ signal_sanitization_gate
 | No business-specific details | passed | Candidate applies to any future workspace |
 | No raw artifact text copied as shared intelligence | passed_with_note | Candidate is a summary, not full artifact text |
 | Provenance retained | passed | Source artifact and manual test are named |
-| Human decision recorded | completed_with_conditions | Human operator approved with changes |
+| Human decision recorded | passed_with_notes | Human operator approved with changes |
 
 ## Sanitization Decision
 
@@ -291,8 +291,8 @@ This evidence pass does not submit anything to the live Observatory.
 
 | Exit Criterion | Status | Notes |
 |---|---|---|
-| workflow can be completed manually from artifact draft to sanitization decision | passed_with_conditions | workflow is documented and human decisions are recorded |
-| review gates are used before evidence is accepted | passed_with_conditions | review gates were applied and accepted with changes |
+| workflow can be completed manually from artifact draft to sanitization decision | passed_with_notes | workflow is documented and human decisions are recorded |
+| review gates are used before evidence is accepted | passed_with_notes | review gates were applied and accepted with changes |
 | human decisions are explicit | passed | human operator decisions are recorded |
 | audit expectations are clear for every meaningful step | passed | audit expectation checklist included |
 | signal candidate does not enter Observatory without sanitization review | passed | no live Observatory ingestion occurred |
@@ -314,7 +314,7 @@ This manual evidence pass demonstrates that the Internal Research workflow can b
 Current outcome:
 
 ```text
-passed_with_conditions
+passed_with_notes
 ```
 
 The workflow boundaries appear sound, and the human artifact review and sanitization decisions are recorded as `approve_with_changes`.

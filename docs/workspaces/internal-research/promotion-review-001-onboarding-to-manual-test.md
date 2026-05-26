@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-approved_with_conditions
+approved
 ```
 
 This document records the documentation-only promotion review for Neon Ronin Internal Research from `onboarding` to `manual_test` posture.
@@ -19,7 +19,7 @@ workspace_name: Neon Ronin Internal Research
 workspace_type: internal_research
 current_status: onboarding
 proposed_status: manual_test
-promotion_status: approved_with_conditions
+promotion_status: approved
 review_date: 2026-05-25T00:00:00Z
 source_intake: docs/workspaces/internal-research/intake-classification.md
 source_workspace_config: docs/workspaces/internal-research/workspace-config.draft.md
@@ -100,18 +100,26 @@ human_decision_id: decision_internal_research_promotion_001
 decision_type: promote
 actor_type: human
 actor_id: human_operator
-decision: approve_with_conditions
+decision_status: recorded
 from_status: onboarding
 to_status: manual_test
 decision_summary: Internal Research may move to manual_test posture in documentation while runtime remains off and all automation/integration boundaries remain blocked.
+conditions:
+  - runtime default remains off
+  - allowed_agents remains empty
+  - scheduled jobs remain disabled
+  - watch mode remains disabled
+  - external integrations remain absent
+  - live Observatory ingestion remains blocked
+  - all work remains documentation-only manual testing
 source_references:
   - record_type: manual_note
-    record_id: docs/workspaces/internal-research/manual-test-001-evidence.md
+    record_id: mt_internal_research_001_evidence
     relationship: evidence
   - record_type: manual_note
-    record_id: docs/workspaces/internal-research/workspace-config.draft.md
+    record_id: ws_internal_research_001_config_draft
     relationship: promotion_target
-schema_version: human_decision_v1
+schema_version: schema_v1
 record_revision: 1
 ```
 

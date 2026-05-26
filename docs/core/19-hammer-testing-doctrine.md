@@ -319,6 +319,8 @@ Must eventually verify:
 - workspace-scoped target records verify workspace scope before disclosure
 - cross-workspace private references fail without existence leakage
 - provider-specific target types cannot appear in generic core references
+- archived or retired target records are not resolvable for active workflow use without an explicit revalidation path
+- direct database-side resolver bypass is blocked or unsupported in favor of the central resolver API/service entry point
 - denied or invalid resolution leaves state clean
 - resolver failures are deterministic and auditable when meaningful
 

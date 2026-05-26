@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-in_progress
+passed_with_notes
 ```
 
 This document records the evidence pass for `manual-test-003-llm-draft-assistance.md`.
@@ -27,7 +27,7 @@ source_workspace_config: docs/workspaces/internal-research/workspace-config.draf
 source_agent_assistance_boundary_plan: docs/workspaces/internal-research/agent-assistance-boundary-plan.md
 source_manual_test_plan: docs/workspaces/internal-research/manual-test-003-llm-draft-assistance.md
 source_prior_manual_test: docs/workspaces/internal-research/manual-test-002-evidence.md
-evidence_status: completed_with_conditions
+evidence_status: passed_with_notes
 created_at: 2026-05-25T00:00:00Z
 updated_at: 2026-05-25T00:00:00Z
 schema_version: manual_test_evidence_v1
@@ -152,7 +152,7 @@ review_llm_draft_artifact_001
 | Runtime remains off | passed | Boundary confirmation |
 | Agents remain unassigned | passed | `allowed_agents: []` |
 | Risks and blockers are named | passed | Artifact names no-runtime and review requirements |
-| Draft not treated as approved evidence | completed_with_conditions | Human operator approved with changes |
+| Draft not treated as approved evidence | passed_with_notes | Human operator approved with changes |
 
 ### Review Result
 
@@ -248,17 +248,17 @@ It records what future implementation must be able to audit.
 | draft requested | Test Question section | planned/audit-required |
 | draft artifact produced | Draft Artifact section | planned/audit-required |
 | review item created | Artifact Review Item section | planned/audit-required |
-| human decision recorded | Human Decision Record section | completed_with_conditions |
+| human decision recorded | Human Decision Record section | passed_with_notes |
 | optional signal candidate parked | Optional Signal Candidate section | planned/audit-required |
 | blocked-action probes checked | Blocked Action Probe Results section | planned/audit-required |
-| manual test summarized | Final Evidence Summary section | completed_with_conditions |
+| manual test summarized | Final Evidence Summary section | passed_with_notes |
 
 ## Exit Criteria Check
 
 | Exit Criterion | Status | Notes |
 |---|---|---|
 | LLM produces a draft artifact rather than taking action | passed | Draft artifact is text only |
-| draft artifact is reviewed by a human | passed_with_conditions | human operator approved with changes |
+| draft artifact is reviewed by a human | passed_with_notes | human operator approved with changes |
 | human decision is explicit | passed | human operator decision is recorded |
 | suggested risky action remains blocked | passed | all blocked probes remain blocked |
 | audit expectations are clear for every meaningful step | passed | audit checklist included |
@@ -281,7 +281,7 @@ This evidence pass demonstrates that an LLM can draft an internal research artif
 Current outcome:
 
 ```text
-passed_with_conditions
+passed_with_notes
 ```
 
 The draft-assistance lane appears useful, and the human operator approved the LLM-drafted artifact with changes.

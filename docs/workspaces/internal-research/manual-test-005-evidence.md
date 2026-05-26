@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-in_progress
+passed_with_notes
 ```
 
 This document records the evidence pass for `manual-test-005-local-schema-shape-consolidation.md`.
@@ -34,7 +34,7 @@ source_manual_test_plan: docs/workspaces/internal-research/manual-test-005-local
 source_prior_manual_test: docs/workspaces/internal-research/manual-test-004-evidence.md
 source_schema_authority: docs/core/14-schema-authority.md
 source_schema_change_checklist: docs/operations/schema-change-checklist.md
-evidence_status: completed_with_conditions
+evidence_status: passed_with_notes
 created_at: 2026-05-25T00:00:00Z
 updated_at: 2026-05-25T00:00:00Z
 schema_version: manual_test_evidence_v1
@@ -172,7 +172,7 @@ review_local_shape_classification_001
 | Agents remain unassigned | passed | `allowed_agents: []` |
 | Future local reference candidates remain pending approval | passed | candidates are recommendation only |
 | Future governed schema candidates are not created | passed | no governed schema candidates recommended |
-| Classification not treated as approval | completed_with_conditions | Human operator approved with changes |
+| Classification not treated as approval | passed_with_notes | Human operator approved with changes |
 
 ### Review Result
 
@@ -271,10 +271,10 @@ It records what future implementation must be able to audit.
 | local shape classification requested | Test Question section | planned/audit-required |
 | classification packet drafted | Local Shape Classification Packet section | planned/audit-required |
 | review item created | Review Item section | planned/audit-required |
-| human decision recorded | Human Decision Record section | completed_with_conditions |
+| human decision recorded | Human Decision Record section | passed_with_notes |
 | optional signal candidate parked | Optional Signal Candidate section | planned/audit-required |
 | blocked-action probes checked | Blocked Action Probe Results section | planned/audit-required |
-| manual test summarized | Final Evidence Summary section | completed_with_conditions |
+| manual test summarized | Final Evidence Summary section | passed_with_notes |
 
 ## Exit Criteria Check
 
@@ -307,7 +307,7 @@ This evidence pass demonstrates that recurring Internal Research local/manual-te
 Current outcome:
 
 ```text
-passed_with_conditions
+passed_with_notes
 ```
 
 The local shape classification lane appears useful, and the human operator approved the classification packet with changes.

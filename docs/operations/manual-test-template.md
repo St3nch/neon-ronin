@@ -45,6 +45,38 @@ test_operator:
 test_status: planned | running | passed | passed_with_notes | failed | blocked | parked
 ```
 
+## Workspace-Local Gate Extensions
+
+Manual-test evidence may use workspace-local gate names when a gate is explanatory evidence rather than a governed review-queue enum.
+
+Current workspace-local gate names observed in Internal Research evidence:
+
+```text
+artifact_quality_gate
+audit_readiness_gate
+permission_review_gate
+schema_review_gate
+```
+
+Workspace-local gates must be labeled as local evidence gates when used as authority for manual-test documentation.
+
+Promotion of a workspace-local gate to canonical `required_gates` vocabulary requires schema-authority review and the schema-change checklist.
+
+## Manual-Test-Local Evidence Status
+
+Manual-test evidence records should use `evidence_status: passed_with_notes` when a manual test passes with reviewer conditions, required notes, or non-blocking follow-up.
+
+Deprecated local synonyms:
+
+```text
+completed_with_conditions
+passed_with_conditions
+```
+
+New evidence docs should not use those synonyms.
+
+Existing evidence docs should be normalized to `passed_with_notes` unless a future schema-authority review creates a different governed status.
+
 ## Test Goal
 
 Describe the exact thing being validated.

@@ -799,6 +799,17 @@ Even better later:
 integration-specific Etsy connection schema behind core external reference contract
 ```
 
+## Timestamp Posture
+
+All governed timestamps must be recorded in UTC.
+
+Timestamp strings should use ISO 8601 format with a `Z` suffix.
+
+Timestamp precision must be seconds or finer.
+
+`created_at` and `updated_at` are system-owned fields and must not be set directly by callers, agents, workspace configs, or imported provider payloads.
+
+When timestamp ordering collides, use `record_revision` first and then `audit_record_id` as deterministic ordering tie-breakers where those fields exist.
 ## Server/System-Owned Field Rule
 
 Schema docs must identify fields that callers, agents, or workspace configs may not set directly.

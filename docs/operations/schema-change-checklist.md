@@ -212,6 +212,9 @@ Does the change affect review gates?
 - [ ] rights and compliance gate
 - [ ] signal sanitization gate
 - [ ] strategy review gate
+- [ ] workspace promotion gate
+- [ ] promotion readiness gate
+- [ ] data boundary gate
 - [ ] external write gate
 - [ ] credential permission gate
 

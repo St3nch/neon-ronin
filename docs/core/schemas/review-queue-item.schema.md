@@ -231,6 +231,8 @@ signal_sanitization_gate
 ip_common_sense_gate
 strategy_review_gate
 workspace_promotion_gate
+promotion_readiness_gate
+data_boundary_gate
 external_write_gate
 credential_permission_gate
 ```
