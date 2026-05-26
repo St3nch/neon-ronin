@@ -1020,12 +1020,22 @@ Manual Tests 001-005 are enough meta-validation for now.
 - local schema reference creation
 - core schema promotion from local packet shapes
 
+## Planning Review vs Runtime Human-In-Loop
+
+Runtime human-in-loop means future Neon Ronin agents, workflows, and automation cannot finalize, approve, publish, deliver, spend, submit, execute external actions, or move consequential work forward without human review.
+
+Planning documents do not require canonical human-decision records for every low-risk refinement.
+
+Canonical planning decisions are required only for meaningful gates, including phase transitions, implementation start, schema authority changes, runtime enablement, agent enablement, integrations, external actions, customer-facing work, SearchClarity onboarding, or local packet-shape promotion.
+
+Assistant-drafted planning refinements may be recorded and reviewed by the operator without pretending each refinement is a product human-in-loop decision.
+
 ## Immediate Next Actions
 
-1. Record the human review decision for `docs/workspaces/internal-research/first-proof-parameters-persistence-001.md`.
-2. If approved, create an implementation-start decision before any code, migration, or storage work begins.
-3. Keep the first proof limited to SQLite, direct service/module call, `workspace_configs`, `audit_records`, `workspace_config_create`, and `hammer-audit-first-workspace-config-create` unless a separate decision narrows or changes scope.
-4. Do not write code, create migrations, implement storage, or build the database until the parameter record is reviewed and separately approved.
+1. Create an implementation-start decision before any code, migration, or storage work begins.
+2. Implementation-start decision must confirm or revise the first proof parameters in `docs/workspaces/internal-research/first-proof-parameters-persistence-001.md`.
+3. Keep the first proof limited to SQLite, direct service/module call, `workspace_configs`, `audit_records`, `workspace_config_create`, and `hammer-audit-first-workspace-config-create` unless that decision narrows or changes scope.
+4. Do not write code, create migrations, implement storage, or build the database until the implementation-start decision is recorded.
 5. Do not create a local schema reference from Manual Test 005 evidence alone.
 6. Keep executable agent definitions, integrations, UI, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, and automation blocked.
 

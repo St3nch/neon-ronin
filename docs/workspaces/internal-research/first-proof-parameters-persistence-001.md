@@ -311,23 +311,23 @@ Still blocked:
 6. Should failed-attempt audit logging remain deferred?
 7. Should human-decision record persistence remain out of scope?
 
-## Recommended Human Decision
-
-Recommended canonical decision:
+## Planning Review Status
 
 ```text
-approve_with_changes
+assistant_drafted_pending_operator_review
 ```
 
-Recommended conditions:
+These parameters are a low-risk planning refinement, not a consequential runtime action.
 
-```text
-Approve the first proof parameters for implementation approval review only. Actual code, migrations, and storage implementation remain blocked until a separate implementation-start decision is recorded.
-```
+They do not require a canonical human-decision record unless they are used to approve implementation start, change scope, change schema authority, enable runtime, enable agents, create integrations, or begin customer-facing work.
+
+Implementation remains blocked until a separate implementation-start decision is recorded.
 
 ## Next Allowed Step
 
-Record the human review decision for this first proof parameter record.
+Create an implementation-start decision record if the operator is ready to begin the first local persistence proof.
+
+That decision is the meaningful human gate before code, migrations, or storage work.
 
 Do not write code.
 

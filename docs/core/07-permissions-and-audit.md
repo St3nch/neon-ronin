@@ -37,6 +37,18 @@ Agents receive the minimum permissions required to complete their task.
 
 Agents should receive scoped tokens or temporary permissions where possible.
 
+## Runtime Human-In-Loop Rule
+
+Human-in-loop requirements apply to consequential runtime and workflow actions.
+
+Future agents, workflows, and automation must not finalize, approve, publish, deliver, spend, submit, execute external actions, or move consequential work forward without the required human review gate.
+
+Agents must not mark their own work as correct, final, approved, delivered, or safe to execute.
+
+Planning documents may be assistant-drafted and operator-reviewed without requiring a canonical human-decision record for every low-risk refinement.
+
+Canonical human-decision records are required for meaningful gates, including implementation start, schema authority changes, runtime enablement, agent enablement, integrations, external actions, customer-facing work, workspace promotion, and any action that would let automation move consequential work forward.
+
 ## Audit Requirements
 
 The following actions must generate audit records:
