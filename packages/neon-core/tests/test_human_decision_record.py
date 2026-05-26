@@ -319,7 +319,7 @@ class HumanDecisionRecordProofTests(unittest.TestCase):
 
         self.assertEqual(
             [row["name"] for row in rows],
-            ["audit_records", "human_decisions", "review_queue_items", "workspace_configs"],
+            ["audit_records", "human_decisions", "review_queue_items", "signal_candidates", "workspace_configs"],
         )
 
 

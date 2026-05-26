@@ -11,10 +11,12 @@ workspace_configs
 audit_records
 review_queue_items
 human_decisions
+signal_candidates
 workspace_config_create
 workspace_config_update
 review_queue_item_create
 human_decision_record
+signal_candidate_create
 audit-first write behavior
 hammer-audit-first-workspace-config-create
 ```

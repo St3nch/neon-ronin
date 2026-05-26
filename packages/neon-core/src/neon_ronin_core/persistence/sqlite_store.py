@@ -6,10 +6,12 @@ This module intentionally implements only the approved persistence proof:
 - audit_records
 - review_queue_items
 - human_decisions
+- signal_candidates
 - workspace_config_create
 - workspace_config_update
 - review_queue_item_create
 - human_decision_record
+- signal_candidate_create
 - audit-first transaction behavior
 
 It does not implement agents, UI, integrations, scheduled jobs, watch mode,
@@ -30,6 +32,8 @@ SCHEMA_VERSION = "schema_v1"
 INITIAL_RECORD_REVISION = 1
 INITIAL_REVIEW_STATUS = "open"
 INITIAL_DECISION_STATUS = "recorded"
+SIGNAL_CANDIDATE_FORM = "signal_candidate"
+INITIAL_SIGNAL_CANDIDATE_STATUS = "candidate"
 
 FORBIDDEN_FIELDS = frozenset({"metadata", "custom_data"})
 SYSTEM_OWNED_WORKSPACE_FIELDS = frozenset(
@@ -60,6 +64,18 @@ SYSTEM_OWNED_DECISION_FIELDS = frozenset(
         "decision_status",
         "audit_record_id",
         "decided_at",
+        "created_at",
+        "updated_at",
+        "schema_version",
+        "record_revision",
+    }
+)
+SYSTEM_OWNED_SIGNAL_FIELDS = frozenset(
+    {
+        "signal_id",
+        "signal_form",
+        "status",
+        "audit_record_id",
         "created_at",
         "updated_at",
         "schema_version",
@@ -158,6 +174,41 @@ REQUIRED_DECISION_CREATE_FIELDS = frozenset(
         "decision_summary",
     }
 )
+ALLOWED_SIGNAL_CANDIDATE_CREATE_FIELDS = frozenset(
+    {
+        "workspace_id",
+        "workspace_type",
+        "signal_type",
+        "source_actor_type",
+        "source_actor_id",
+        "source_references",
+        "summary",
+        "evidence_summary",
+        "sensitivity_rating",
+        "confidence",
+        "private_data_removed",
+        "remaining_sensitivity_notes",
+        "parent_signal_id",
+        "raw_signal_id",
+        "tags",
+    }
+)
+REQUIRED_SIGNAL_CANDIDATE_CREATE_FIELDS = frozenset(
+    {
+        "workspace_id",
+        "workspace_type",
+        "signal_type",
+        "source_actor_type",
+        "source_actor_id",
+        "source_references",
+        "summary",
+        "evidence_summary",
+        "sensitivity_rating",
+        "confidence",
+        "private_data_removed",
+        "remaining_sensitivity_notes",
+    }
+)
 ALLOWED_REVIEW_TYPES = frozenset(
     {
         "strategy_review",
@@ -185,6 +236,7 @@ ALLOWED_REQUIRED_GATES = frozenset(
     }
 )
 ALLOWED_SOURCE_ACTOR_TYPES = frozenset({"human", "system"})
+ALLOWED_SIGNAL_SOURCE_ACTOR_TYPES = frozenset({"human", "system"})
 ALLOWED_LINKED_RECORD_TYPES = frozenset(
     {
         "workspace_config",
@@ -212,6 +264,41 @@ ALLOWED_TARGET_RECORD_TYPES = frozenset(
         "audit_record",
         "artifact",
         "signal_candidate",
+    }
+)
+ALLOWED_SIGNAL_TYPES = frozenset(
+    {
+        "customer_need_pattern",
+        "keyword_pattern",
+        "market_gap",
+        "competitor_pattern",
+        "workflow_problem",
+        "quality_issue",
+        "content_gap",
+        "service_demand_pattern",
+        "product_opportunity",
+        "policy_or_rights_risk",
+        "data_quality_note",
+        "research_finding",
+        "strategy_observation",
+        "other",
+    }
+)
+ALLOWED_LOW_RISK_SIGNAL_SENSITIVITY_RATINGS = frozenset({"low", "medium"})
+ALLOWED_SIGNAL_CONFIDENCE_VALUES = frozenset({"low", "medium", "high", "unknown"})
+ALLOWED_SIGNAL_SOURCE_REFERENCE_TYPES = frozenset(
+    {
+        "artifact",
+        "agent_run",
+        "review_item",
+        "human_decision",
+        "audit_record",
+        "workflow",
+        "external_reference",
+        "observatory_query_result",
+        "manual_note",
+        "business_intake",
+        "workspace_config",
     }
 )
 REVIEW_STATUS_BY_DECISION_TYPE = {
@@ -282,6 +369,16 @@ class RecordHumanDecisionResult:
     audit_record: dict[str, Any]
 
 
+@dataclass(frozen=True)
+class CreateSignalCandidateResult:
+    """Result of a successful signal candidate create operation."""
+
+    signal_id: str
+    audit_record_id: str
+    signal_candidate_record: dict[str, Any]
+    audit_record: dict[str, Any]
+
+
 Clock = Callable[[], datetime]
 IdFactory = Callable[[], str]
 
@@ -311,6 +408,7 @@ class SQLitePersistenceProofStore:
         audit_id_factory: IdFactory | None = None,
         review_item_id_factory: IdFactory | None = None,
         human_decision_id_factory: IdFactory | None = None,
+        signal_id_factory: IdFactory | None = None,
         fail_audit_write: bool = False,
     ) -> None:
         self.connection = connection
@@ -322,6 +420,7 @@ class SQLitePersistenceProofStore:
         self.human_decision_id_factory = human_decision_id_factory or (
             lambda: f"hdec_{uuid4().hex}"
         )
+        self.signal_id_factory = signal_id_factory or (lambda: f"sigcand_{uuid4().hex}")
         self.fail_audit_write = fail_audit_write
         self.connection.row_factory = sqlite3.Row
 
@@ -386,6 +485,23 @@ class SQLitePersistenceProofStore:
                 decision_status TEXT NOT NULL,
                 audit_record_id TEXT NOT NULL,
                 decided_at TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                schema_version TEXT NOT NULL,
+                record_revision INTEGER NOT NULL,
+                record_json TEXT NOT NULL
+            )
+            """
+        )
+        self.connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS signal_candidates (
+                signal_id TEXT PRIMARY KEY,
+                workspace_id TEXT NOT NULL,
+                signal_form TEXT NOT NULL,
+                status TEXT NOT NULL,
+                signal_type TEXT NOT NULL,
+                audit_record_id TEXT NOT NULL,
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL,
                 schema_version TEXT NOT NULL,
@@ -751,6 +867,90 @@ class SQLitePersistenceProofStore:
             audit_record=audit_record,
         )
 
+    def create_signal_candidate(
+        self,
+        *,
+        signal_candidate: Mapping[str, Any],
+        actor_id: str = "system:local_persistence_proof",
+    ) -> CreateSignalCandidateResult:
+        """Create a workspace-owned signal candidate and its audit record."""
+
+        clean_candidate = self._validate_signal_candidate_payload(signal_candidate)
+        workspace_id = clean_candidate["workspace_id"]
+        if self.get_workspace_config(workspace_id) is None:
+            raise NotFoundError("workspace config does not exist")
+
+        now = format_timestamp(self.clock())
+        signal_id = self.signal_id_factory()
+        audit_record_id = self.audit_id_factory()
+        signal_record = {
+            "signal_id": signal_id,
+            "signal_form": SIGNAL_CANDIDATE_FORM,
+            **clean_candidate,
+            "status": INITIAL_SIGNAL_CANDIDATE_STATUS,
+            "audit_record_id": audit_record_id,
+            "created_at": now,
+            "updated_at": now,
+            "schema_version": SCHEMA_VERSION,
+            "record_revision": INITIAL_RECORD_REVISION,
+        }
+        audit_record = self._build_audit_record(
+            audit_record_id=audit_record_id,
+            workspace_id=workspace_id,
+            actor_id=actor_id,
+            action_type="signal_candidate_create",
+            event_type="signal_candidate_created",
+            target_type="signal_candidate",
+            target_id=signal_id,
+            summary="Signal candidate created by local persistence proof.",
+            now=now,
+        )
+
+        try:
+            with self.connection:
+                self.connection.execute(
+                    """
+                    INSERT INTO signal_candidates (
+                        signal_id,
+                        workspace_id,
+                        signal_form,
+                        status,
+                        signal_type,
+                        audit_record_id,
+                        created_at,
+                        updated_at,
+                        schema_version,
+                        record_revision,
+                        record_json
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        signal_id,
+                        workspace_id,
+                        SIGNAL_CANDIDATE_FORM,
+                        INITIAL_SIGNAL_CANDIDATE_STATUS,
+                        clean_candidate["signal_type"],
+                        audit_record_id,
+                        now,
+                        now,
+                        SCHEMA_VERSION,
+                        INITIAL_RECORD_REVISION,
+                        _json_dumps(signal_record),
+                    ),
+                )
+                self._insert_audit_record(audit_record)
+        except AuditWriteError:
+            raise
+        except sqlite3.Error as exc:
+            raise PersistenceProofError(str(exc)) from exc
+
+        return CreateSignalCandidateResult(
+            signal_id=signal_id,
+            audit_record_id=audit_record_id,
+            signal_candidate_record=signal_record,
+            audit_record=audit_record,
+        )
+
     def get_workspace_config(self, workspace_id: str) -> dict[str, Any] | None:
         row = self.connection.execute(
             "SELECT record_json FROM workspace_configs WHERE workspace_id = ?",
@@ -778,6 +978,15 @@ class SQLitePersistenceProofStore:
             return None
         return json.loads(row["record_json"])
 
+    def get_signal_candidate(self, signal_id: str) -> dict[str, Any] | None:
+        row = self.connection.execute(
+            "SELECT record_json FROM signal_candidates WHERE signal_id = ?",
+            (signal_id,),
+        ).fetchone()
+        if row is None:
+            return None
+        return json.loads(row["record_json"])
+
     def get_audit_record(self, audit_record_id: str) -> dict[str, Any] | None:
         row = self.connection.execute(
             "SELECT record_json FROM audit_records WHERE audit_record_id = ?",
@@ -795,6 +1004,9 @@ class SQLitePersistenceProofStore:
 
     def count_human_decisions(self) -> int:
         return int(self.connection.execute("SELECT COUNT(*) FROM human_decisions").fetchone()[0])
+
+    def count_signal_candidates(self) -> int:
+        return int(self.connection.execute("SELECT COUNT(*) FROM signal_candidates").fetchone()[0])
 
     def count_audit_records(self) -> int:
         return int(self.connection.execute("SELECT COUNT(*) FROM audit_records").fetchone()[0])
@@ -995,6 +1207,56 @@ class SQLitePersistenceProofStore:
             raise ValidationError("unsupported decision_scope")
         _validate_linked_records(clean_decision.get("target_records"), ALLOWED_TARGET_RECORD_TYPES)
         return clean_decision
+
+    @staticmethod
+    def _validate_signal_candidate_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
+        if not isinstance(payload, Mapping):
+            raise ValidationError("signal_candidate must be a mapping")
+        keys = set(payload.keys())
+        forbidden = keys & FORBIDDEN_FIELDS
+        if forbidden:
+            raise ValidationError(f"forbidden fields present: {sorted(forbidden)}")
+        forged = keys & SYSTEM_OWNED_SIGNAL_FIELDS
+        if forged:
+            raise ValidationError(f"system-owned fields cannot be supplied: {sorted(forged)}")
+        unknown = keys - ALLOWED_SIGNAL_CANDIDATE_CREATE_FIELDS
+        if unknown:
+            raise ValidationError(f"unknown fields present: {sorted(unknown)}")
+        missing = REQUIRED_SIGNAL_CANDIDATE_CREATE_FIELDS - keys
+        if missing:
+            raise ValidationError(f"required fields missing: {sorted(missing)}")
+
+        clean_candidate = dict(payload)
+        _validate_non_empty_string(clean_candidate, "workspace_id")
+        _validate_non_empty_string(clean_candidate, "workspace_type")
+        _validate_non_empty_string(clean_candidate, "source_actor_id")
+        _validate_non_empty_string(clean_candidate, "summary")
+        _validate_non_empty_string(clean_candidate, "evidence_summary")
+        _validate_non_empty_string(clean_candidate, "remaining_sensitivity_notes")
+
+        signal_type = clean_candidate.get("signal_type")
+        if signal_type not in ALLOWED_SIGNAL_TYPES:
+            raise ValidationError("unsupported signal_type")
+        source_actor_type = clean_candidate.get("source_actor_type")
+        if source_actor_type not in ALLOWED_SIGNAL_SOURCE_ACTOR_TYPES:
+            raise ValidationError("unsupported source_actor_type")
+        sensitivity = clean_candidate.get("sensitivity_rating")
+        if sensitivity not in ALLOWED_LOW_RISK_SIGNAL_SENSITIVITY_RATINGS:
+            raise ValidationError("unsupported sensitivity_rating for candidate proof")
+        confidence = clean_candidate.get("confidence")
+        if confidence not in ALLOWED_SIGNAL_CONFIDENCE_VALUES:
+            raise ValidationError("unsupported confidence")
+        if clean_candidate.get("private_data_removed") is not True:
+            raise ValidationError("private_data_removed must be true for signal candidates")
+        _validate_linked_records(
+            clean_candidate.get("source_references"), ALLOWED_SIGNAL_SOURCE_REFERENCE_TYPES
+        )
+        tags = clean_candidate.get("tags", [])
+        if not isinstance(tags, Sequence) or isinstance(tags, (str, bytes)):
+            raise ValidationError("tags must be an array")
+        if any(not isinstance(tag, str) or not tag.strip() for tag in tags):
+            raise ValidationError("tags must contain only non-empty strings")
+        return clean_candidate
 
 
 def _validate_non_empty_string(payload: Mapping[str, Any], field_name: str) -> None:

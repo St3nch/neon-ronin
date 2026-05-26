@@ -337,7 +337,7 @@ class WorkspaceConfigCreateProofTests(unittest.TestCase):
 
         self.assertEqual(
             [row["name"] for row in rows],
-            ["audit_records", "human_decisions", "review_queue_items", "workspace_configs"],
+            ["audit_records", "human_decisions", "review_queue_items", "signal_candidates", "workspace_configs"],
         )
 
     def test_file_backed_sqlite_store_persists_records(self):
