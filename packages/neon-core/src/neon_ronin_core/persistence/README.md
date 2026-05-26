@@ -22,6 +22,7 @@ The current implementation is limited to:
 workspace_configs
 audit_records
 workspace_config_create
+workspace_config_update
 audit-first transaction behavior
 hammer-audit-first-workspace-config-create
 ```
@@ -38,7 +39,7 @@ no audit record means no workspace config record
 sqlite_store.py
 ```
 
-`sqlite_store.py` implements a tiny SQLite-backed direct module/service proof for `workspace_config_create`.
+`sqlite_store.py` implements a tiny SQLite-backed direct module/service proof for `workspace_config_create` and `workspace_config_update`.
 
 It uses Python stdlib `sqlite3` and no external dependencies.
 
@@ -64,7 +65,7 @@ python tools/hammers/run_audit_first_workspace_config_create.py
 Expected result:
 
 ```text
-Ran 11 tests
+Ran 23 tests
 OK
 ```
 
@@ -73,10 +74,13 @@ OK
 The hammer currently verifies:
 
 - valid workspace config creation writes exactly one workspace config and one audit record
+- valid workspace config update preserves `created_at`, replaces `updated_at`, increments `record_revision`, and writes one update audit record
 - forced audit-write failure rolls back workspace config creation
+- forced audit-write failure rolls back workspace config update
 - no partial workspace config remains after forced audit failure
 - file-backed SQLite persistence survives reconnect
 - duplicate workspace id does not create a second audit record
+- missing workspace update does not create an audit record
 - caller-supplied system-owned fields are rejected
 - unknown fields are rejected
 - missing required fields are rejected
@@ -84,6 +88,7 @@ The hammer currently verifies:
 - non-empty `allowed_agents` is rejected
 - non-empty `external_references` is rejected
 - scheduled or watch runtime flags are rejected
+- update attempts cannot change workspace status or runtime shape
 - timestamps are UTC ISO 8601 strings with a `Z` suffix
 - `schema_version` and `record_revision` are present and owned by the persistence layer
 

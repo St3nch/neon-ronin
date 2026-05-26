@@ -10,6 +10,7 @@ Current authorized scope:
 workspace_configs
 audit_records
 workspace_config_create
+workspace_config_update
 audit-first write behavior
 hammer-audit-first-workspace-config-create
 ```
