@@ -726,7 +726,9 @@ Internal Research has completed:
 
 - minimal implementation plan for persistence proof approved with conditions
 
-- first proof parameter record queued
+- first proof parameter record drafted
+
+- first proof parameters select SQLite, direct service/module call, workspace_config_create, and hammer-audit-first-workspace-config-create
 
 Current posture remains:
 
@@ -1020,9 +1022,9 @@ Manual Tests 001-005 are enough meta-validation for now.
 
 ## Immediate Next Actions
 
-1. Record exact first proof parameters for the approved minimal implementation plan.
-2. Parameter record must choose the storage substrate, fixture strategy, transaction boundary, and hammer proof before any code or migration work begins.
-3. Keep the first proof limited to `workspace_configs`, `audit_records`, an audit-first write path, `workspace_config_create`, and `hammer-audit-first-workspace-config-create` unless a separate decision narrows or changes scope.
+1. Record the human review decision for `docs/workspaces/internal-research/first-proof-parameters-persistence-001.md`.
+2. If approved, create an implementation-start decision before any code, migration, or storage work begins.
+3. Keep the first proof limited to SQLite, direct service/module call, `workspace_configs`, `audit_records`, `workspace_config_create`, and `hammer-audit-first-workspace-config-create` unless a separate decision narrows or changes scope.
 4. Do not write code, create migrations, implement storage, or build the database until the parameter record is reviewed and separately approved.
 5. Do not create a local schema reference from Manual Test 005 evidence alone.
 6. Keep executable agent definitions, integrations, UI, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, and automation blocked.
