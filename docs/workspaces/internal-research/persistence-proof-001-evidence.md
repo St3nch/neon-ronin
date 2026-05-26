@@ -59,7 +59,7 @@ python -m unittest discover -s packages/neon-core/tests -v
 Result:
 
 ```text
-Ran 5 tests
+Ran 10 tests
 OK
 ```
 
@@ -76,11 +76,16 @@ OK
 | timestamps are UTC ISO 8601 with `Z` suffix | passed |
 | `schema_version` and `record_revision` are present and correctly owned | passed |
 | result is deterministic and not mock-only | passed |
+| duplicate workspace id does not create a second audit record | passed |
+| missing required fields are rejected before persistence | passed |
+| non-empty `allowed_agents` is rejected for the first proof | passed |
+| non-empty `external_references` is rejected for the first proof | passed |
+| scheduled or watch runtime flags are rejected for the first proof | passed |
 
 ## Implementation Notes
 
 - SQLite is used through Python stdlib `sqlite3`.
-- The proof uses direct module/service calls only.
+- The proof uses direct module/service calls only.`n- Expanded hammer coverage now includes duplicate-create, required-field, runtime, agent, and external-reference guard checks.
 - The schema has only the two approved tables: `workspace_configs` and `audit_records`.
 - The audit failure strategy is injectable audit write failure.
 - Failed-attempt audit logging remains deferred.

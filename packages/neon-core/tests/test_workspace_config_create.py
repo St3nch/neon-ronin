@@ -80,19 +80,43 @@ class WorkspaceConfigCreateProofTests(unittest.TestCase):
         self.assertEqual(store.count_audit_records(), 0)
         self.assertIsNone(store.get_workspace_config(INTERNAL_RESEARCH_WORKSPACE_ID))
 
-    def test_rejects_system_owned_fields_from_caller_payload(self):
+    def test_duplicate_workspace_id_does_not_create_second_audit_record(self):
         store = self.make_store()
-        payload = dict(INTERNAL_RESEARCH_WORKSPACE_CONFIG)
-        payload["schema_version"] = "forged"
+        store.create_workspace_config(
+            assigned_workspace_id=INTERNAL_RESEARCH_WORKSPACE_ID,
+            workspace_config=INTERNAL_RESEARCH_WORKSPACE_CONFIG,
+        )
 
-        with self.assertRaisesRegex(ValidationError, "system-owned"):
+        with self.assertRaises(Exception):
             store.create_workspace_config(
                 assigned_workspace_id=INTERNAL_RESEARCH_WORKSPACE_ID,
-                workspace_config=payload,
+                workspace_config=INTERNAL_RESEARCH_WORKSPACE_CONFIG,
             )
 
-        self.assertEqual(store.count_workspace_configs(), 0)
-        self.assertEqual(store.count_audit_records(), 0)
+        self.assertEqual(store.count_workspace_configs(), 1)
+        self.assertEqual(store.count_audit_records(), 1)
+
+    def test_rejects_system_owned_fields_from_caller_payload(self):
+        for system_owned_field in (
+            "workspace_id",
+            "created_at",
+            "updated_at",
+            "schema_version",
+            "record_revision",
+        ):
+            with self.subTest(system_owned_field=system_owned_field):
+                store = self.make_store()
+                payload = dict(INTERNAL_RESEARCH_WORKSPACE_CONFIG)
+                payload[system_owned_field] = "forged"
+
+                with self.assertRaisesRegex(ValidationError, "system-owned"):
+                    store.create_workspace_config(
+                        assigned_workspace_id=INTERNAL_RESEARCH_WORKSPACE_ID,
+                        workspace_config=payload,
+                    )
+
+                self.assertEqual(store.count_workspace_configs(), 0)
+                self.assertEqual(store.count_audit_records(), 0)
 
     def test_rejects_unknown_fields(self):
         store = self.make_store()
@@ -105,6 +129,23 @@ class WorkspaceConfigCreateProofTests(unittest.TestCase):
                 workspace_config=payload,
             )
 
+        self.assertEqual(store.count_workspace_configs(), 0)
+        self.assertEqual(store.count_audit_records(), 0)
+
+    def test_rejects_missing_required_fields(self):
+        store = self.make_store()
+        payload = dict(INTERNAL_RESEARCH_WORKSPACE_CONFIG)
+        payload.pop("purpose")
+
+        with self.assertRaisesRegex(ValidationError, "required fields missing"):
+            store.create_workspace_config(
+                assigned_workspace_id=INTERNAL_RESEARCH_WORKSPACE_ID,
+                workspace_config=payload,
+            )
+
+        self.assertEqual(store.count_workspace_configs(), 0)
+        self.assertEqual(store.count_audit_records(), 0)
+
     def test_rejects_forbidden_metadata_and_custom_data(self):
         for forbidden_field in ("metadata", "custom_data"):
             with self.subTest(forbidden_field=forbidden_field):
@@ -113,6 +154,52 @@ class WorkspaceConfigCreateProofTests(unittest.TestCase):
                 payload[forbidden_field] = {}
 
                 with self.assertRaisesRegex(ValidationError, "forbidden fields"):
+                    store.create_workspace_config(
+                        assigned_workspace_id=INTERNAL_RESEARCH_WORKSPACE_ID,
+                        workspace_config=payload,
+                    )
+
+                self.assertEqual(store.count_workspace_configs(), 0)
+                self.assertEqual(store.count_audit_records(), 0)
+
+    def test_rejects_non_empty_allowed_agents(self):
+        store = self.make_store()
+        payload = dict(INTERNAL_RESEARCH_WORKSPACE_CONFIG)
+        payload["allowed_agents"] = ["research_agent"]
+
+        with self.assertRaisesRegex(ValidationError, "allowed_agents"):
+            store.create_workspace_config(
+                assigned_workspace_id=INTERNAL_RESEARCH_WORKSPACE_ID,
+                workspace_config=payload,
+            )
+
+        self.assertEqual(store.count_workspace_configs(), 0)
+        self.assertEqual(store.count_audit_records(), 0)
+
+    def test_rejects_external_references(self):
+        store = self.make_store()
+        payload = dict(INTERNAL_RESEARCH_WORKSPACE_CONFIG)
+        payload["external_references"] = [{"provider": "example"}]
+
+        with self.assertRaisesRegex(ValidationError, "external_references"):
+            store.create_workspace_config(
+                assigned_workspace_id=INTERNAL_RESEARCH_WORKSPACE_ID,
+                workspace_config=payload,
+            )
+
+        self.assertEqual(store.count_workspace_configs(), 0)
+        self.assertEqual(store.count_audit_records(), 0)
+
+    def test_rejects_runtime_scheduled_or_watch_mode(self):
+        for runtime_key in ("scheduled_allowed", "watch_mode_allowed"):
+            with self.subTest(runtime_key=runtime_key):
+                store = self.make_store()
+                payload = dict(INTERNAL_RESEARCH_WORKSPACE_CONFIG)
+                runtime = dict(payload["runtime"])
+                runtime[runtime_key] = True
+                payload["runtime"] = runtime
+
+                with self.assertRaisesRegex(ValidationError, runtime_key):
                     store.create_workspace_config(
                         assigned_workspace_id=INTERNAL_RESEARCH_WORKSPACE_ID,
                         workspace_config=payload,
