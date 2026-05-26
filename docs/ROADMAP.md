@@ -730,6 +730,8 @@ Internal Research has completed:
 
 - first proof parameters select SQLite, direct service/module call, workspace_config_create, and hammer-audit-first-workspace-config-create
 
+- implementation-start decision approved for first local persistence proof
+
 Current posture remains:
 
 ```text
@@ -1032,10 +1034,10 @@ Assistant-drafted planning refinements may be recorded and reviewed by the opera
 
 ## Immediate Next Actions
 
-1. Create an implementation-start decision before any code, migration, or storage work begins.
-2. Implementation-start decision must confirm or revise the first proof parameters in `docs/workspaces/internal-research/first-proof-parameters-persistence-001.md`.
-3. Keep the first proof limited to SQLite, direct service/module call, `workspace_configs`, `audit_records`, `workspace_config_create`, and `hammer-audit-first-workspace-config-create` unless that decision narrows or changes scope.
-4. Do not write code, create migrations, implement storage, or build the database until the implementation-start decision is recorded.
+1. Begin the first local persistence proof implementation in the approved narrow scope.
+2. Implement only the smallest SQLite-backed direct module/service path needed to prove `workspace_config_create` creates or rolls back `workspace_configs` and `audit_records` together.
+3. Add the hammer proof `hammer-audit-first-workspace-config-create` for the positive and forced-audit-failure cases.
+4. Keep the first proof limited to SQLite, direct service/module call, `workspace_configs`, `audit_records`, `workspace_config_create`, and `hammer-audit-first-workspace-config-create` unless a separate decision narrows or changes scope.
 5. Do not create a local schema reference from Manual Test 005 evidence alone.
 6. Keep executable agent definitions, integrations, UI, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, and automation blocked.
 
