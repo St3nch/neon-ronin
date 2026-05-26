@@ -719,10 +719,12 @@ Internal Research has completed:
 - Manual Test 005 classification approved as manual evidence only
 
 - no Manual Test 006 by default
-- implementation-readiness checkpoint queued
+- implementation-readiness checkpoint completed
 - Prompt B schema/status audit findings fixed
 
 - implementation-readiness decision approved with conditions
+
+- minimal implementation plan for persistence proof drafted
 
 Current posture remains:
 
@@ -1016,13 +1018,12 @@ Manual Tests 001-005 are enough meta-validation for now.
 
 ## Immediate Next Actions
 
-1. Create a minimal implementation plan for the first executable persistence proof.
-2. Keep the plan limited to `workspace_configs`, `audit_records`, an audit-first write path, one transaction boundary, and one hammer proof unless the plan explicitly justifies a smaller scope.
-3. Treat `workspace_config_create` as the preferred first transaction boundary unless the plan justifies another boundary.
-4. Treat audit-first write blocking or rollback as the preferred first hammer proof.
-5. Do not write code, create migrations, or implement a database until the minimal implementation plan is reviewed and separately approved.
-6. Do not create a local schema reference from Manual Test 005 evidence alone.
-7. Keep executable agent definitions, integrations, UI, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, and automation blocked.
+1. Record the human review decision for `docs/workspaces/internal-research/minimal-implementation-plan-persistence-001.md`.
+2. If approved, record the storage substrate, fixture strategy, transaction boundary, and hammer proof before any code or migration work begins.
+3. Keep the first proof limited to `workspace_configs`, `audit_records`, an audit-first write path, `workspace_config_create`, and one hammer proof unless a separate decision narrows or changes scope.
+4. Do not write code, create migrations, or implement a database until the minimal implementation plan is reviewed and separately approved.
+5. Do not create a local schema reference from Manual Test 005 evidence alone.
+6. Keep executable agent definitions, integrations, UI, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, and automation blocked.
 
 ## Final Rule
 
