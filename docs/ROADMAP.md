@@ -722,6 +722,8 @@ Internal Research has completed:
 - implementation-readiness checkpoint queued
 - Prompt B schema/status audit findings fixed
 
+- implementation-readiness decision approved with conditions
+
 Current posture remains:
 
 ```text
@@ -1014,14 +1016,13 @@ Manual Tests 001-005 are enough meta-validation for now.
 
 ## Immediate Next Actions
 
-1. Complete the implementation-readiness checkpoint before starting any new manual test or local schema reference.
-2. Decide whether adapter/workspace-extension infrastructure is a blocker before the first executable slice or can wait until a customer-facing workspace is queued.
-3. If implementation is approved later, keep the first executable slice limited to workspace configs, audit records, an audit-first write path, one transaction boundary, and one hammer probe.
-4. Do not create a local schema reference from Manual Test 005 evidence alone.
-5. Do not promote recommendation/proposed-action/manual-test packet shapes into core schemas without schema authority review.
-6. Keep executable agent definitions blocked until a separate approval path says otherwise.
-7. Keep runtime off, `allowed_agents: []`, scheduled jobs disabled, watch mode disabled, and live Observatory ingestion blocked.
-8. Keep SearchClarity as future workspace pressure, not core doctrine.
+1. Create a minimal implementation plan for the first executable persistence proof.
+2. Keep the plan limited to `workspace_configs`, `audit_records`, an audit-first write path, one transaction boundary, and one hammer proof unless the plan explicitly justifies a smaller scope.
+3. Treat `workspace_config_create` as the preferred first transaction boundary unless the plan justifies another boundary.
+4. Treat audit-first write blocking or rollback as the preferred first hammer proof.
+5. Do not write code, create migrations, or implement a database until the minimal implementation plan is reviewed and separately approved.
+6. Do not create a local schema reference from Manual Test 005 evidence alone.
+7. Keep executable agent definitions, integrations, UI, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, and automation blocked.
 
 ## Final Rule
 
