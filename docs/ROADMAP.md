@@ -740,6 +740,66 @@ Internal Research has completed:
 
 - next persistence boundary options recorded without authorizing implementation
 
+- `workspace_config_update` implemented as the next smallest persistence boundary using existing authorized tables
+
+- `review_queue_item_create` implemented with an approved implementation-start decision and audit-first rollback coverage
+
+- `human_decision_record` implemented to resolve review queue items through human authority without agent self-approval
+
+- `signal_candidate_create` implemented as workspace-owned candidate persistence only, without raw signal persistence, sanitized signal persistence, or Observatory submission
+
+- `artifact_metadata_create` implemented as metadata-only artifact persistence without blob/content storage, delivery-ready marking, or public-use approval
+
+- `workflow_record_create` implemented as manual-test workflow definition persistence only, without execution, scheduling, watch mode, agents, or integrations
+
+- first persistence proof hammer renamed to `python tools/hammers/run_first_persistence_proof.py`; the old `run_audit_first_workspace_config_create.py` path remains a compatibility wrapper
+
+- persistence proof tests now use shared proof helpers for authorized table assertions
+
+- persistence proof implementation split into `common.py`, `constants.py`, `errors.py`, `results.py`, `schema.py`, `validators.py`, and `sqlite_store.py` without behavior changes
+
+- current first persistence proof validation is `Ran 87 tests / OK`
+
+### Phase 6A - Post-Claude Audit Cleanup And Stabilization
+
+Phase 6A is a short stabilization lane inside Phase 6, created after external Claude audit of the work from `779a4aa` through `12df174`.
+
+Claude's audit verdict was:
+
+```text
+PASS WITH FINDINGS
+```
+
+The audit found no blockers, no high-severity findings, no doctrine breach, no forbidden runtime surfaces, and no audit-first invariant failure.
+
+Phase 6A authorizes cleanup only. It does not authorize new persistence tables, new domain records, UI, agents, integrations, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, or automation.
+
+#### Phase 6A Cleanup Scope
+
+Immediate cleanup:
+
+- remove dead split debris from `validators.py`
+- remove unused imports from split persistence modules
+- sync this roadmap with the current persistence proof state
+- update stale hammer command references to the canonical `run_first_persistence_proof.py` runner
+- keep the first persistence proof hammer green at `Ran 87 tests / OK`
+
+Deferred cleanup, not required before the immediate audit cleanup commit:
+
+- decide whether shared test helper adoption should expand beyond authorized-table assertions
+- move shared test payloads out of test modules if fixture coupling grows
+- consider package export cleanup only when there is a real consumer need
+- revisit audit-first orchestration helper extraction only if another persistence boundary adds enough repetition to justify it
+
+#### Phase 6A Exit Criteria
+
+Phase 6A is complete when:
+
+1. Claude's accepted cleanup findings are either fixed or explicitly deferred.
+2. `python tools/dev/check_first_proof.py` returns `Ran 87 tests / OK`.
+3. `git diff --check` is clean.
+4. No new tables, operations, runtime surfaces, agents, integrations, UI, scheduling, watch mode, Observatory ingestion, customer-facing onboarding, SearchClarity onboarding, or automation were added.
+
 Current posture remains:
 
 ```text
@@ -1042,7 +1102,7 @@ Assistant-drafted planning refinements may be recorded and reviewed by the opera
 
 ## Immediate Next Actions
 
-1. Run the first hammer proof with `python tools/hammers/run_audit_first_workspace_config_create.py` before changing persistence code.
+1. Run the first persistence proof hammer with `python tools/hammers/run_first_persistence_proof.py` before changing persistence code.
 2. Decide the next smallest persistence boundary only after the current proof stays green.
 3. Candidate next boundaries remain limited to planning/evaluation; do not add new persistence tables or domain records without a separate decision.
 4. Do not add UI, agents, integrations, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, or automation without a separate decision.
