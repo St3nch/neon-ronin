@@ -7,11 +7,13 @@ This module intentionally implements only the approved persistence proof:
 - review_queue_items
 - human_decisions
 - signal_candidates
+- artifact_metadata
 - workspace_config_create
 - workspace_config_update
 - review_queue_item_create
 - human_decision_record
 - signal_candidate_create
+- artifact_metadata_create
 - audit-first transaction behavior
 
 It does not implement agents, UI, integrations, scheduled jobs, watch mode,
@@ -34,6 +36,7 @@ INITIAL_REVIEW_STATUS = "open"
 INITIAL_DECISION_STATUS = "recorded"
 SIGNAL_CANDIDATE_FORM = "signal_candidate"
 INITIAL_SIGNAL_CANDIDATE_STATUS = "candidate"
+INITIAL_ARTIFACT_STATUS = "draft"
 
 FORBIDDEN_FIELDS = frozenset({"metadata", "custom_data"})
 SYSTEM_OWNED_WORKSPACE_FIELDS = frozenset(
@@ -76,6 +79,17 @@ SYSTEM_OWNED_SIGNAL_FIELDS = frozenset(
         "signal_form",
         "status",
         "audit_record_id",
+        "created_at",
+        "updated_at",
+        "schema_version",
+        "record_revision",
+    }
+)
+SYSTEM_OWNED_ARTIFACT_FIELDS = frozenset(
+    {
+        "artifact_id",
+        "status",
+        "audit_record_ids",
         "created_at",
         "updated_at",
         "schema_version",
@@ -209,6 +223,45 @@ REQUIRED_SIGNAL_CANDIDATE_CREATE_FIELDS = frozenset(
         "remaining_sensitivity_notes",
     }
 )
+ALLOWED_ARTIFACT_METADATA_CREATE_FIELDS = frozenset(
+    {
+        "workspace_id",
+        "artifact_type",
+        "content_scope",
+        "storage_reference",
+        "title",
+        "summary",
+        "creator_actor_type",
+        "creator_actor_id",
+        "source_references",
+        "workflow_id",
+        "agent_run_id",
+        "review_item_ids",
+        "human_decision_ids",
+        "parent_artifact_id",
+        "version_label",
+        "content_format",
+        "file_hash",
+        "sensitivity_rating",
+        "confidence",
+        "delivery_ready",
+        "public_use_allowed",
+        "tags",
+    }
+)
+REQUIRED_ARTIFACT_METADATA_CREATE_FIELDS = frozenset(
+    {
+        "workspace_id",
+        "artifact_type",
+        "content_scope",
+        "storage_reference",
+        "title",
+        "summary",
+        "creator_actor_type",
+        "creator_actor_id",
+        "source_references",
+    }
+)
 ALLOWED_REVIEW_TYPES = frozenset(
     {
         "strategy_review",
@@ -237,6 +290,7 @@ ALLOWED_REQUIRED_GATES = frozenset(
 )
 ALLOWED_SOURCE_ACTOR_TYPES = frozenset({"human", "system"})
 ALLOWED_SIGNAL_SOURCE_ACTOR_TYPES = frozenset({"human", "system"})
+ALLOWED_ARTIFACT_CREATOR_ACTOR_TYPES = frozenset({"human", "system"})
 ALLOWED_LINKED_RECORD_TYPES = frozenset(
     {
         "workspace_config",
@@ -299,6 +353,58 @@ ALLOWED_SIGNAL_SOURCE_REFERENCE_TYPES = frozenset(
         "manual_note",
         "business_intake",
         "workspace_config",
+    }
+)
+ALLOWED_ARTIFACT_TYPES = frozenset(
+    {
+        "keyword_table",
+        "markdown_source",
+        "public_preview",
+        "research_note",
+        "review_packet",
+        "recommendation_packet",
+        "template",
+        "supporting_note",
+    }
+)
+ALLOWED_ARTIFACT_CONTENT_SCOPES = frozenset(
+    {"core_metadata_only", "workspace_private", "referenced_external"}
+)
+ALLOWED_STORAGE_TYPES = frozenset(
+    {"local_path", "repo_path", "external_uri", "external_reference", "object_store", "none"}
+)
+ALLOWED_CONTENT_FORMATS = frozenset(
+    {"markdown", "pdf", "csv", "xlsx", "image", "json", "text", "unknown"}
+)
+ALLOWED_ARTIFACT_SENSITIVITY_RATINGS = frozenset({"low", "medium", "unknown"})
+ALLOWED_ARTIFACT_CONFIDENCE_VALUES = frozenset({"low", "medium", "high", "unknown"})
+ALLOWED_ARTIFACT_SOURCE_REFERENCE_TYPES = frozenset(
+    {
+        "workspace_config",
+        "review_item",
+        "human_decision",
+        "audit_record",
+        "signal_candidate",
+        "manual_note",
+        "workflow",
+        "agent_run",
+        "artifact",
+    }
+)
+FORBIDDEN_STORAGE_REFERENCE_KEYS = frozenset(
+    {
+        "credential",
+        "credentials",
+        "api_key",
+        "token",
+        "oauth_token",
+        "oauth_refresh_token",
+        "password",
+        "secret",
+        "content_body",
+        "raw_content",
+        "payload",
+        "blob",
     }
 )
 REVIEW_STATUS_BY_DECISION_TYPE = {
@@ -379,6 +485,16 @@ class CreateSignalCandidateResult:
     audit_record: dict[str, Any]
 
 
+@dataclass(frozen=True)
+class CreateArtifactMetadataResult:
+    """Result of a successful artifact metadata create operation."""
+
+    artifact_id: str
+    audit_record_id: str
+    artifact_metadata_record: dict[str, Any]
+    audit_record: dict[str, Any]
+
+
 Clock = Callable[[], datetime]
 IdFactory = Callable[[], str]
 
@@ -409,6 +525,7 @@ class SQLitePersistenceProofStore:
         review_item_id_factory: IdFactory | None = None,
         human_decision_id_factory: IdFactory | None = None,
         signal_id_factory: IdFactory | None = None,
+        artifact_id_factory: IdFactory | None = None,
         fail_audit_write: bool = False,
     ) -> None:
         self.connection = connection
@@ -421,6 +538,7 @@ class SQLitePersistenceProofStore:
             lambda: f"hdec_{uuid4().hex}"
         )
         self.signal_id_factory = signal_id_factory or (lambda: f"sigcand_{uuid4().hex}")
+        self.artifact_id_factory = artifact_id_factory or (lambda: f"art_{uuid4().hex}")
         self.fail_audit_write = fail_audit_write
         self.connection.row_factory = sqlite3.Row
 
@@ -501,6 +619,23 @@ class SQLitePersistenceProofStore:
                 signal_form TEXT NOT NULL,
                 status TEXT NOT NULL,
                 signal_type TEXT NOT NULL,
+                audit_record_id TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                schema_version TEXT NOT NULL,
+                record_revision INTEGER NOT NULL,
+                record_json TEXT NOT NULL
+            )
+            """
+        )
+        self.connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS artifact_metadata (
+                artifact_id TEXT PRIMARY KEY,
+                workspace_id TEXT NOT NULL,
+                artifact_type TEXT NOT NULL,
+                status TEXT NOT NULL,
+                content_scope TEXT NOT NULL,
                 audit_record_id TEXT NOT NULL,
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL,
@@ -951,6 +1086,89 @@ class SQLitePersistenceProofStore:
             audit_record=audit_record,
         )
 
+    def create_artifact_metadata(
+        self,
+        *,
+        artifact_metadata: Mapping[str, Any],
+        actor_id: str = "system:local_persistence_proof",
+    ) -> CreateArtifactMetadataResult:
+        """Create artifact metadata and its audit record without storing content."""
+
+        clean_artifact = self._validate_artifact_metadata_payload(artifact_metadata)
+        workspace_id = clean_artifact["workspace_id"]
+        if self.get_workspace_config(workspace_id) is None:
+            raise NotFoundError("workspace config does not exist")
+
+        now = format_timestamp(self.clock())
+        artifact_id = self.artifact_id_factory()
+        audit_record_id = self.audit_id_factory()
+        artifact_record = {
+            "artifact_id": artifact_id,
+            **clean_artifact,
+            "status": INITIAL_ARTIFACT_STATUS,
+            "audit_record_ids": [audit_record_id],
+            "created_at": now,
+            "updated_at": now,
+            "schema_version": SCHEMA_VERSION,
+            "record_revision": INITIAL_RECORD_REVISION,
+        }
+        audit_record = self._build_audit_record(
+            audit_record_id=audit_record_id,
+            workspace_id=workspace_id,
+            actor_id=actor_id,
+            action_type="artifact_metadata_create",
+            event_type="artifact_metadata_created",
+            target_type="artifact_metadata",
+            target_id=artifact_id,
+            summary="Artifact metadata created by local persistence proof.",
+            now=now,
+        )
+
+        try:
+            with self.connection:
+                self.connection.execute(
+                    """
+                    INSERT INTO artifact_metadata (
+                        artifact_id,
+                        workspace_id,
+                        artifact_type,
+                        status,
+                        content_scope,
+                        audit_record_id,
+                        created_at,
+                        updated_at,
+                        schema_version,
+                        record_revision,
+                        record_json
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        artifact_id,
+                        workspace_id,
+                        clean_artifact["artifact_type"],
+                        INITIAL_ARTIFACT_STATUS,
+                        clean_artifact["content_scope"],
+                        audit_record_id,
+                        now,
+                        now,
+                        SCHEMA_VERSION,
+                        INITIAL_RECORD_REVISION,
+                        _json_dumps(artifact_record),
+                    ),
+                )
+                self._insert_audit_record(audit_record)
+        except AuditWriteError:
+            raise
+        except sqlite3.Error as exc:
+            raise PersistenceProofError(str(exc)) from exc
+
+        return CreateArtifactMetadataResult(
+            artifact_id=artifact_id,
+            audit_record_id=audit_record_id,
+            artifact_metadata_record=artifact_record,
+            audit_record=audit_record,
+        )
+
     def get_workspace_config(self, workspace_id: str) -> dict[str, Any] | None:
         row = self.connection.execute(
             "SELECT record_json FROM workspace_configs WHERE workspace_id = ?",
@@ -987,6 +1205,15 @@ class SQLitePersistenceProofStore:
             return None
         return json.loads(row["record_json"])
 
+    def get_artifact_metadata(self, artifact_id: str) -> dict[str, Any] | None:
+        row = self.connection.execute(
+            "SELECT record_json FROM artifact_metadata WHERE artifact_id = ?",
+            (artifact_id,),
+        ).fetchone()
+        if row is None:
+            return None
+        return json.loads(row["record_json"])
+
     def get_audit_record(self, audit_record_id: str) -> dict[str, Any] | None:
         row = self.connection.execute(
             "SELECT record_json FROM audit_records WHERE audit_record_id = ?",
@@ -1007,6 +1234,9 @@ class SQLitePersistenceProofStore:
 
     def count_signal_candidates(self) -> int:
         return int(self.connection.execute("SELECT COUNT(*) FROM signal_candidates").fetchone()[0])
+
+    def count_artifact_metadata(self) -> int:
+        return int(self.connection.execute("SELECT COUNT(*) FROM artifact_metadata").fetchone()[0])
 
     def count_audit_records(self) -> int:
         return int(self.connection.execute("SELECT COUNT(*) FROM audit_records").fetchone()[0])
@@ -1258,6 +1488,67 @@ class SQLitePersistenceProofStore:
             raise ValidationError("tags must contain only non-empty strings")
         return clean_candidate
 
+    @staticmethod
+    def _validate_artifact_metadata_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
+        if not isinstance(payload, Mapping):
+            raise ValidationError("artifact_metadata must be a mapping")
+        keys = set(payload.keys())
+        forbidden = keys & FORBIDDEN_FIELDS
+        if forbidden:
+            raise ValidationError(f"forbidden fields present: {sorted(forbidden)}")
+        forged = keys & SYSTEM_OWNED_ARTIFACT_FIELDS
+        if forged:
+            raise ValidationError(f"system-owned fields cannot be supplied: {sorted(forged)}")
+        unknown = keys - ALLOWED_ARTIFACT_METADATA_CREATE_FIELDS
+        if unknown:
+            raise ValidationError(f"unknown fields present: {sorted(unknown)}")
+        missing = REQUIRED_ARTIFACT_METADATA_CREATE_FIELDS - keys
+        if missing:
+            raise ValidationError(f"required fields missing: {sorted(missing)}")
+
+        clean_artifact = dict(payload)
+        _validate_non_empty_string(clean_artifact, "workspace_id")
+        _validate_non_empty_string(clean_artifact, "title")
+        _validate_non_empty_string(clean_artifact, "summary")
+        _validate_non_empty_string(clean_artifact, "creator_actor_id")
+
+        artifact_type = clean_artifact.get("artifact_type")
+        if artifact_type not in ALLOWED_ARTIFACT_TYPES:
+            raise ValidationError("unsupported artifact_type")
+        content_scope = clean_artifact.get("content_scope")
+        if content_scope not in ALLOWED_ARTIFACT_CONTENT_SCOPES:
+            raise ValidationError("unsupported content_scope")
+        creator_actor_type = clean_artifact.get("creator_actor_type")
+        if creator_actor_type not in ALLOWED_ARTIFACT_CREATOR_ACTOR_TYPES:
+            raise ValidationError("unsupported creator_actor_type")
+        _validate_storage_reference(clean_artifact.get("storage_reference"))
+        _validate_linked_records(
+            clean_artifact.get("source_references"), ALLOWED_ARTIFACT_SOURCE_REFERENCE_TYPES
+        )
+        _validate_optional_string_array(clean_artifact.get("review_item_ids", []), "review_item_ids")
+        _validate_optional_string_array(
+            clean_artifact.get("human_decision_ids", []), "human_decision_ids"
+        )
+        if clean_artifact.get("delivery_ready", False) is not False:
+            raise ValidationError("delivery_ready must be false for metadata create proof")
+        if clean_artifact.get("public_use_allowed", False) is not False:
+            raise ValidationError("public_use_allowed must be false for metadata create proof")
+        content_format = clean_artifact.get("content_format")
+        if content_format is not None and content_format not in ALLOWED_CONTENT_FORMATS:
+            raise ValidationError("unsupported content_format")
+        sensitivity = clean_artifact.get("sensitivity_rating")
+        if sensitivity is not None and sensitivity not in ALLOWED_ARTIFACT_SENSITIVITY_RATINGS:
+            raise ValidationError("unsupported sensitivity_rating")
+        confidence = clean_artifact.get("confidence")
+        if confidence is not None and confidence not in ALLOWED_ARTIFACT_CONFIDENCE_VALUES:
+            raise ValidationError("unsupported confidence")
+        tags = clean_artifact.get("tags", [])
+        if not isinstance(tags, Sequence) or isinstance(tags, (str, bytes)):
+            raise ValidationError("tags must be an array")
+        if any(not isinstance(tag, str) or not tag.strip() for tag in tags):
+            raise ValidationError("tags must contain only non-empty strings")
+        return clean_artifact
+
 
 def _validate_non_empty_string(payload: Mapping[str, Any], field_name: str) -> None:
     value = payload.get(field_name)
@@ -1296,6 +1587,38 @@ def _validate_linked_records(value: Any, allowed_record_types: frozenset[str]) -
         extra_keys = set(record.keys()) - allowed_keys
         if extra_keys:
             raise ValidationError(f"unknown linked record fields: {sorted(extra_keys)}")
+
+
+def _validate_optional_string_array(value: Any, field_name: str) -> None:
+    if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
+        raise ValidationError(f"{field_name} must be an array")
+    if any(not isinstance(item, str) or not item.strip() for item in value):
+        raise ValidationError(f"{field_name} must contain only non-empty strings")
+
+
+def _validate_storage_reference(value: Any) -> None:
+    if not isinstance(value, Mapping):
+        raise ValidationError("storage_reference must be a mapping")
+    storage_type = value.get("storage_type")
+    if storage_type not in ALLOWED_STORAGE_TYPES:
+        raise ValidationError("unsupported storage_type")
+    if value.get("content_stored_in_core") is not False:
+        raise ValidationError("content_stored_in_core must be false")
+    extra_forbidden = set(value.keys()) & FORBIDDEN_STORAGE_REFERENCE_KEYS
+    if extra_forbidden:
+        raise ValidationError(f"forbidden storage_reference fields: {sorted(extra_forbidden)}")
+    allowed_keys = {
+        "storage_type",
+        "content_stored_in_core",
+        "reference",
+        "description",
+    }
+    extra_keys = set(value.keys()) - allowed_keys
+    if extra_keys:
+        raise ValidationError(f"unknown storage_reference fields: {sorted(extra_keys)}")
+    reference = value.get("reference")
+    if reference is not None and not isinstance(reference, str):
+        raise ValidationError("storage_reference.reference must be a string when present")
 
 
 def _json_dumps(value: Mapping[str, Any]) -> str:

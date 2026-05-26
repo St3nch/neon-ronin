@@ -161,6 +161,7 @@ class SignalCandidateCreateProofTests(unittest.TestCase):
         self.assertEqual(
             [row["name"] for row in rows],
             [
+                "artifact_metadata",
                 "audit_records",
                 "human_decisions",
                 "review_queue_items",
