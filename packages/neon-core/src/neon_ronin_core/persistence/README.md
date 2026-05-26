@@ -51,10 +51,25 @@ no audit record means no workflow record
 ## Current Files
 
 ```text
+common.py
+constants.py
+errors.py
+results.py
+schema.py
 sqlite_store.py
+validators.py
 ```
 
-`sqlite_store.py` implements a tiny SQLite-backed direct module/service proof for `workspace_config_create`, `workspace_config_update`, `review_queue_item_create`, `human_decision_record`, `signal_candidate_create`, `artifact_metadata_create`, and `workflow_record_create`.
+`sqlite_store.py` keeps the SQLite-backed transaction/read/write orchestration for `workspace_config_create`, `workspace_config_update`, `review_queue_item_create`, `human_decision_record`, `signal_candidate_create`, `artifact_metadata_create`, and `workflow_record_create`.
+
+The supporting modules keep the proof readable:
+
+- `common.py` contains shared timestamp, id factory, and JSON helpers.
+- `constants.py` contains bounded proof constants and allowed values.
+- `errors.py` contains persistence proof error types.
+- `results.py` contains operation result dataclasses.
+- `schema.py` contains SQLite schema initialization.
+- `validators.py` contains bounded payload validators.
 
 It uses Python stdlib `sqlite3` and no external dependencies.
 
@@ -189,4 +204,4 @@ Do not add any of the following in this persistence slice:
 
 Before expanding persistence, keep this proof green and decide the next smallest boundary explicitly.
 
-Preferred next work should pause and audit the current persistence slice before adding another table.
+Preferred next work should audit the split persistence slice before adding another table.
