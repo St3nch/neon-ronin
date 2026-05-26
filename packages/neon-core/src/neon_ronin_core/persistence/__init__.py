@@ -1,0 +1,1 @@
+"""Persistence helpers for the first Neon Ronin local proof."""

@@ -1,0 +1,10 @@
+[project]
+name = "neon-ronin-core"
+version = "0.0.0"
+description = "Neon Ronin local core proof package"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.pytest.ini_options]
+pythonpath = ["packages/neon-core/src"]
+testpaths = ["packages/neon-core/tests"]
