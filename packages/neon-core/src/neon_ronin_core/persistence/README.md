@@ -22,9 +22,11 @@ The current implementation is limited to:
 workspace_configs
 audit_records
 review_queue_items
+human_decisions
 workspace_config_create
 workspace_config_update
 review_queue_item_create
+human_decision_record
 audit-first transaction behavior
 hammer-audit-first-workspace-config-create
 ```
@@ -34,6 +36,7 @@ The core invariants are:
 ```text
 no audit record means no workspace config record
 no audit record means no review queue item record
+no audit record means no human decision record and no review item resolution
 ```
 
 ## Current Files
@@ -42,7 +45,7 @@ no audit record means no review queue item record
 sqlite_store.py
 ```
 
-`sqlite_store.py` implements a tiny SQLite-backed direct module/service proof for `workspace_config_create`, `workspace_config_update`, and `review_queue_item_create`.
+`sqlite_store.py` implements a tiny SQLite-backed direct module/service proof for `workspace_config_create`, `workspace_config_update`, `review_queue_item_create`, and `human_decision_record`.
 
 It uses Python stdlib `sqlite3` and no external dependencies.
 
@@ -54,6 +57,7 @@ Only these tables are authorized:
 workspace_configs
 audit_records
 review_queue_items
+human_decisions
 ```
 
 Adding any new persistence table or domain record requires a separate decision.
@@ -69,7 +73,7 @@ python tools/hammers/run_audit_first_workspace_config_create.py
 Expected result:
 
 ```text
-Ran 35 tests
+Ran 47 tests
 OK
 ```
 
@@ -80,15 +84,20 @@ The hammer currently verifies:
 - valid workspace config creation writes exactly one workspace config and one audit record
 - valid workspace config update preserves `created_at`, replaces `updated_at`, increments `record_revision`, and writes one update audit record
 - valid review queue item creation writes exactly one review item and one audit record
+- valid human decision recording writes exactly one human decision, resolves one review item, and writes one audit record
 - forced audit-write failure rolls back workspace config creation
 - forced audit-write failure rolls back workspace config update
 - forced audit-write failure rolls back review queue item creation
+- forced audit-write failure rolls back human decision recording and review item resolution
 - no partial workspace config remains after forced audit failure
 - no partial review queue item remains after forced audit failure
+- no partial human decision or review item resolution remains after forced audit failure
 - file-backed SQLite persistence survives reconnect
 - duplicate workspace id does not create a second audit record
 - missing workspace update does not create an audit record
 - review item creation requires an existing workspace
+- human decision recording requires an existing unresolved review item
+- non-human reviewer actors are rejected for human decisions
 - schema initialization creates only the authorized tables
 - caller-supplied system-owned fields are rejected
 - unknown fields are rejected
@@ -99,6 +108,7 @@ The hammer currently verifies:
 - scheduled or watch runtime flags are rejected
 - update attempts cannot change workspace status or runtime shape
 - unsupported review types, risk categories, required gates, and linked record types are rejected
+- unsupported decision types, decision scopes, and target record types are rejected
 - timestamps are UTC ISO 8601 strings with a `Z` suffix
 - `schema_version` and `record_revision` are present and owned by the persistence layer
 
@@ -124,10 +134,9 @@ Do not add any of the following in this persistence slice:
 - service-business adapter implementation
 - order records
 - consent records
-- human-decision persistence
 - signal persistence
-- review item resolution
 - artifact persistence
+- external action execution
 - provider payload snapshots
 - credential handling
 
@@ -137,5 +146,5 @@ Before expanding persistence, keep this proof green and decide the next smallest
 
 Preferred next work should either:
 
-1. implement a separately approved review item resolution or human-decision boundary, or
-2. pause and audit the current persistence slice.
+1. pause and audit the current persistence slice, or
+2. implement a separately approved signal, artifact, or workflow boundary.

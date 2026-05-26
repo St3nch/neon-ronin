@@ -5,9 +5,11 @@ This module intentionally implements only the approved persistence proof:
 - workspace_configs
 - audit_records
 - review_queue_items
+- human_decisions
 - workspace_config_create
 - workspace_config_update
 - review_queue_item_create
+- human_decision_record
 - audit-first transaction behavior
 
 It does not implement agents, UI, integrations, scheduled jobs, watch mode,
@@ -27,6 +29,7 @@ from uuid import uuid4
 SCHEMA_VERSION = "schema_v1"
 INITIAL_RECORD_REVISION = 1
 INITIAL_REVIEW_STATUS = "open"
+INITIAL_DECISION_STATUS = "recorded"
 
 FORBIDDEN_FIELDS = frozenset({"metadata", "custom_data"})
 SYSTEM_OWNED_WORKSPACE_FIELDS = frozenset(
@@ -44,6 +47,19 @@ SYSTEM_OWNED_REVIEW_FIELDS = frozenset(
         "status",
         "decision",
         "audit_record_id",
+        "created_at",
+        "updated_at",
+        "schema_version",
+        "record_revision",
+    }
+)
+SYSTEM_OWNED_DECISION_FIELDS = frozenset(
+    {
+        "human_decision_id",
+        "workspace_id",
+        "decision_status",
+        "audit_record_id",
+        "decided_at",
         "created_at",
         "updated_at",
         "schema_version",
@@ -116,6 +132,32 @@ REQUIRED_REVIEW_CREATE_FIELDS = frozenset(
         "linked_records",
     }
 )
+ALLOWED_DECISION_CREATE_FIELDS = frozenset(
+    {
+        "review_item_id",
+        "decision_type",
+        "decision_scope",
+        "reviewer_actor_id",
+        "target_records",
+        "decision_summary",
+        "decision_notes",
+        "conditions",
+        "revision_instructions",
+        "park_reason",
+        "block_reason",
+        "sensitivity_rating",
+    }
+)
+REQUIRED_DECISION_CREATE_FIELDS = frozenset(
+    {
+        "review_item_id",
+        "decision_type",
+        "decision_scope",
+        "reviewer_actor_id",
+        "target_records",
+        "decision_summary",
+    }
+)
 ALLOWED_REVIEW_TYPES = frozenset(
     {
         "strategy_review",
@@ -152,6 +194,35 @@ ALLOWED_LINKED_RECORD_TYPES = frozenset(
         "human_decision",
     }
 )
+ALLOWED_DECISION_TYPES = frozenset(
+    {
+        "approve",
+        "approve_with_changes",
+        "reject",
+        "request_revision",
+        "park",
+        "block",
+    }
+)
+ALLOWED_DECISION_SCOPES = frozenset({"review_item"})
+ALLOWED_TARGET_RECORD_TYPES = frozenset(
+    {
+        "review_item",
+        "workspace_config",
+        "audit_record",
+        "artifact",
+        "signal_candidate",
+    }
+)
+REVIEW_STATUS_BY_DECISION_TYPE = {
+    "approve": "approved",
+    "approve_with_changes": "approved_with_changes",
+    "reject": "rejected",
+    "request_revision": "revision_requested",
+    "park": "parked",
+    "block": "blocked",
+}
+RESOLVED_REVIEW_STATUSES = frozenset(REVIEW_STATUS_BY_DECISION_TYPE.values())
 
 
 class PersistenceProofError(Exception):
@@ -200,6 +271,17 @@ class CreateReviewQueueItemResult:
     audit_record: dict[str, Any]
 
 
+@dataclass(frozen=True)
+class RecordHumanDecisionResult:
+    """Result of a successful human decision record operation."""
+
+    human_decision_id: str
+    audit_record_id: str
+    human_decision_record: dict[str, Any]
+    review_item_record: dict[str, Any]
+    audit_record: dict[str, Any]
+
+
 Clock = Callable[[], datetime]
 IdFactory = Callable[[], str]
 
@@ -228,6 +310,7 @@ class SQLitePersistenceProofStore:
         clock: Clock = utc_now,
         audit_id_factory: IdFactory | None = None,
         review_item_id_factory: IdFactory | None = None,
+        human_decision_id_factory: IdFactory | None = None,
         fail_audit_write: bool = False,
     ) -> None:
         self.connection = connection
@@ -235,6 +318,9 @@ class SQLitePersistenceProofStore:
         self.audit_id_factory = audit_id_factory or (lambda: f"audit_{uuid4().hex}")
         self.review_item_id_factory = review_item_id_factory or (
             lambda: f"review_{uuid4().hex}"
+        )
+        self.human_decision_id_factory = human_decision_id_factory or (
+            lambda: f"hdec_{uuid4().hex}"
         )
         self.fail_audit_write = fail_audit_write
         self.connection.row_factory = sqlite3.Row
@@ -282,6 +368,24 @@ class SQLitePersistenceProofStore:
                 status TEXT NOT NULL,
                 review_type TEXT NOT NULL,
                 audit_record_id TEXT NOT NULL,
+                created_at TEXT NOT NULL,
+                updated_at TEXT NOT NULL,
+                schema_version TEXT NOT NULL,
+                record_revision INTEGER NOT NULL,
+                record_json TEXT NOT NULL
+            )
+            """
+        )
+        self.connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS human_decisions (
+                human_decision_id TEXT PRIMARY KEY,
+                workspace_id TEXT NOT NULL,
+                review_item_id TEXT NOT NULL,
+                decision_type TEXT NOT NULL,
+                decision_status TEXT NOT NULL,
+                audit_record_id TEXT NOT NULL,
+                decided_at TEXT NOT NULL,
                 created_at TEXT NOT NULL,
                 updated_at TEXT NOT NULL,
                 schema_version TEXT NOT NULL,
@@ -516,6 +620,137 @@ class SQLitePersistenceProofStore:
             audit_record=audit_record,
         )
 
+    def record_human_decision(
+        self,
+        *,
+        human_decision: Mapping[str, Any],
+        actor_id: str = "system:local_persistence_proof",
+    ) -> RecordHumanDecisionResult:
+        """Record a human decision and resolve one review item in one transaction."""
+
+        clean_decision = self._validate_human_decision_payload(human_decision)
+        review_item_id = clean_decision["review_item_id"]
+        review_item_record = self.get_review_queue_item(review_item_id)
+        if review_item_record is None:
+            raise NotFoundError("review queue item does not exist")
+        if review_item_record["status"] != INITIAL_REVIEW_STATUS:
+            raise ValidationError("review item is already resolved")
+
+        workspace_id = review_item_record["workspace_id"]
+        now = format_timestamp(self.clock())
+        human_decision_id = self.human_decision_id_factory()
+        audit_record_id = self.audit_id_factory()
+        next_review_revision = int(review_item_record["record_revision"]) + 1
+        resolved_status = REVIEW_STATUS_BY_DECISION_TYPE[clean_decision["decision_type"]]
+
+        decision_record = {
+            "human_decision_id": human_decision_id,
+            "workspace_id": workspace_id,
+            **clean_decision,
+            "decision_status": INITIAL_DECISION_STATUS,
+            "audit_record_id": audit_record_id,
+            "decided_at": now,
+            "created_at": now,
+            "updated_at": now,
+            "schema_version": SCHEMA_VERSION,
+            "record_revision": INITIAL_RECORD_REVISION,
+        }
+        embedded_decision = {
+            "human_decision_id": human_decision_id,
+            "decision_type": clean_decision["decision_type"],
+            "decision_status": INITIAL_DECISION_STATUS,
+            "reviewer_actor_id": clean_decision["reviewer_actor_id"],
+            "decision_summary": clean_decision["decision_summary"],
+            "audit_record_id": audit_record_id,
+            "decided_at": now,
+        }
+        updated_review_item = {
+            **review_item_record,
+            "status": resolved_status,
+            "decision": embedded_decision,
+            "audit_record_id": audit_record_id,
+            "updated_at": now,
+            "record_revision": next_review_revision,
+        }
+        audit_record = self._build_audit_record(
+            audit_record_id=audit_record_id,
+            workspace_id=workspace_id,
+            actor_id=actor_id,
+            action_type="human_decision_record",
+            event_type="human_decision_recorded",
+            target_type="human_decision",
+            target_id=human_decision_id,
+            summary="Human decision recorded by local persistence proof.",
+            now=now,
+        )
+
+        try:
+            with self.connection:
+                self.connection.execute(
+                    """
+                    INSERT INTO human_decisions (
+                        human_decision_id,
+                        workspace_id,
+                        review_item_id,
+                        decision_type,
+                        decision_status,
+                        audit_record_id,
+                        decided_at,
+                        created_at,
+                        updated_at,
+                        schema_version,
+                        record_revision,
+                        record_json
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        human_decision_id,
+                        workspace_id,
+                        review_item_id,
+                        clean_decision["decision_type"],
+                        INITIAL_DECISION_STATUS,
+                        audit_record_id,
+                        now,
+                        now,
+                        now,
+                        SCHEMA_VERSION,
+                        INITIAL_RECORD_REVISION,
+                        _json_dumps(decision_record),
+                    ),
+                )
+                self.connection.execute(
+                    """
+                    UPDATE review_queue_items
+                    SET status = ?,
+                        audit_record_id = ?,
+                        updated_at = ?,
+                        record_revision = ?,
+                        record_json = ?
+                    WHERE review_item_id = ?
+                    """,
+                    (
+                        resolved_status,
+                        audit_record_id,
+                        now,
+                        next_review_revision,
+                        _json_dumps(updated_review_item),
+                        review_item_id,
+                    ),
+                )
+                self._insert_audit_record(audit_record)
+        except AuditWriteError:
+            raise
+        except sqlite3.Error as exc:
+            raise PersistenceProofError(str(exc)) from exc
+
+        return RecordHumanDecisionResult(
+            human_decision_id=human_decision_id,
+            audit_record_id=audit_record_id,
+            human_decision_record=decision_record,
+            review_item_record=updated_review_item,
+            audit_record=audit_record,
+        )
+
     def get_workspace_config(self, workspace_id: str) -> dict[str, Any] | None:
         row = self.connection.execute(
             "SELECT record_json FROM workspace_configs WHERE workspace_id = ?",
@@ -529,6 +764,15 @@ class SQLitePersistenceProofStore:
         row = self.connection.execute(
             "SELECT record_json FROM review_queue_items WHERE review_item_id = ?",
             (review_item_id,),
+        ).fetchone()
+        if row is None:
+            return None
+        return json.loads(row["record_json"])
+
+    def get_human_decision(self, human_decision_id: str) -> dict[str, Any] | None:
+        row = self.connection.execute(
+            "SELECT record_json FROM human_decisions WHERE human_decision_id = ?",
+            (human_decision_id,),
         ).fetchone()
         if row is None:
             return None
@@ -548,6 +792,9 @@ class SQLitePersistenceProofStore:
 
     def count_review_queue_items(self) -> int:
         return int(self.connection.execute("SELECT COUNT(*) FROM review_queue_items").fetchone()[0])
+
+    def count_human_decisions(self) -> int:
+        return int(self.connection.execute("SELECT COUNT(*) FROM human_decisions").fetchone()[0])
 
     def count_audit_records(self) -> int:
         return int(self.connection.execute("SELECT COUNT(*) FROM audit_records").fetchone()[0])
@@ -713,8 +960,41 @@ class SQLitePersistenceProofStore:
             ALLOWED_REQUIRED_GATES,
             require_non_empty=True,
         )
-        _validate_linked_records(clean_item.get("linked_records"))
+        _validate_linked_records(clean_item.get("linked_records"), ALLOWED_LINKED_RECORD_TYPES)
         return clean_item
+
+    @staticmethod
+    def _validate_human_decision_payload(payload: Mapping[str, Any]) -> dict[str, Any]:
+        if not isinstance(payload, Mapping):
+            raise ValidationError("human_decision must be a mapping")
+        keys = set(payload.keys())
+        forbidden = keys & FORBIDDEN_FIELDS
+        if forbidden:
+            raise ValidationError(f"forbidden fields present: {sorted(forbidden)}")
+        forged = keys & SYSTEM_OWNED_DECISION_FIELDS
+        if forged:
+            raise ValidationError(f"system-owned fields cannot be supplied: {sorted(forged)}")
+        unknown = keys - ALLOWED_DECISION_CREATE_FIELDS
+        if unknown:
+            raise ValidationError(f"unknown fields present: {sorted(unknown)}")
+        missing = REQUIRED_DECISION_CREATE_FIELDS - keys
+        if missing:
+            raise ValidationError(f"required fields missing: {sorted(missing)}")
+
+        clean_decision = dict(payload)
+        _validate_non_empty_string(clean_decision, "review_item_id")
+        _validate_non_empty_string(clean_decision, "reviewer_actor_id")
+        _validate_non_empty_string(clean_decision, "decision_summary")
+        if not clean_decision["reviewer_actor_id"].startswith("human:"):
+            raise ValidationError("reviewer_actor_id must identify a human actor")
+        decision_type = clean_decision.get("decision_type")
+        if decision_type not in ALLOWED_DECISION_TYPES:
+            raise ValidationError("unsupported decision_type")
+        decision_scope = clean_decision.get("decision_scope")
+        if decision_scope not in ALLOWED_DECISION_SCOPES:
+            raise ValidationError("unsupported decision_scope")
+        _validate_linked_records(clean_decision.get("target_records"), ALLOWED_TARGET_RECORD_TYPES)
+        return clean_decision
 
 
 def _validate_non_empty_string(payload: Mapping[str, Any], field_name: str) -> None:
@@ -735,7 +1015,7 @@ def _validate_allowed_string_sequence(
         raise ValidationError(f"unsupported {field_name}: {invalid_values}")
 
 
-def _validate_linked_records(value: Any) -> None:
+def _validate_linked_records(value: Any, allowed_record_types: frozenset[str]) -> None:
     if not isinstance(value, Sequence) or isinstance(value, (str, bytes)):
         raise ValidationError("linked_records must be an array")
     for record in value:
@@ -744,7 +1024,7 @@ def _validate_linked_records(value: Any) -> None:
         record_type = record.get("record_type")
         record_id = record.get("record_id")
         relationship = record.get("relationship")
-        if record_type not in ALLOWED_LINKED_RECORD_TYPES:
+        if record_type not in allowed_record_types:
             raise ValidationError("unsupported linked record type")
         if not isinstance(record_id, str) or not record_id.strip():
             raise ValidationError("linked record_id must be a non-empty string")
