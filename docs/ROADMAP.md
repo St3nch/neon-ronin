@@ -724,7 +724,9 @@ Internal Research has completed:
 
 - implementation-readiness decision approved with conditions
 
-- minimal implementation plan for persistence proof drafted
+- minimal implementation plan for persistence proof approved with conditions
+
+- first proof parameter record queued
 
 Current posture remains:
 
@@ -1018,10 +1020,10 @@ Manual Tests 001-005 are enough meta-validation for now.
 
 ## Immediate Next Actions
 
-1. Record the human review decision for `docs/workspaces/internal-research/minimal-implementation-plan-persistence-001.md`.
-2. If approved, record the storage substrate, fixture strategy, transaction boundary, and hammer proof before any code or migration work begins.
-3. Keep the first proof limited to `workspace_configs`, `audit_records`, an audit-first write path, `workspace_config_create`, and one hammer proof unless a separate decision narrows or changes scope.
-4. Do not write code, create migrations, or implement a database until the minimal implementation plan is reviewed and separately approved.
+1. Record exact first proof parameters for the approved minimal implementation plan.
+2. Parameter record must choose the storage substrate, fixture strategy, transaction boundary, and hammer proof before any code or migration work begins.
+3. Keep the first proof limited to `workspace_configs`, `audit_records`, an audit-first write path, `workspace_config_create`, and `hammer-audit-first-workspace-config-create` unless a separate decision narrows or changes scope.
+4. Do not write code, create migrations, implement storage, or build the database until the parameter record is reviewed and separately approved.
 5. Do not create a local schema reference from Manual Test 005 evidence alone.
 6. Keep executable agent definitions, integrations, UI, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, and automation blocked.
 

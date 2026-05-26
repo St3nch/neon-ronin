@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-planned
+approved
 ```
 
 This document defines the first minimal executable persistence proof Neon Ronin may prepare for after the implementation-readiness decision.
@@ -27,11 +27,11 @@ workspace_name: Neon Ronin Internal Research
 workspace_type: internal_research
 workspace_status_at_plan_time: manual_test
 source_implementation_readiness_decision: docs/workspaces/internal-research/implementation-readiness-decision.md
-plan_status: planned
+plan_status: approved
 created_at: 2026-05-26T00:00:00Z
 updated_at: 2026-05-26T00:00:00Z
 schema_version: implementation_plan_v1
-record_revision: 1
+record_revision: 2
 ```
 
 ## Decision Inherited
@@ -300,9 +300,44 @@ Recommended condition:
 Approve planning only for a local minimal persistence proof. Implementation may begin only after a separate human approval records the storage substrate, fixture strategy, transaction boundary, and hammer proof.
 ```
 
+## Human Review Decision
+
+```yaml
+human_decision_id: decision_minimal_implementation_plan_persistence_001
+decision_type: approve_with_changes
+decision_status: recorded
+actor_type: human
+actor_id: human_operator
+decision_summary: Approve the minimal implementation plan for planning only. The next step may record exact first proof parameters, but code, migrations, storage implementation, agents, integrations, UI, scheduled jobs, watch mode, live Observatory ingestion, customer-facing workspace onboarding, SearchClarity onboarding, and automation remain blocked.
+conditions:
+  - planning only
+  - storage substrate must be recorded before code
+  - fixture strategy must be recorded before code
+  - transaction boundary remains workspace_config_create unless separately changed
+  - first hammer proof remains audit-first blocking or rollback unless separately changed
+  - scope remains limited to workspace_configs and audit_records unless separately changed
+  - no code until separate approval
+  - no database migrations until separate approval
+  - no storage implementation until separate approval
+  - no agents
+  - no integrations
+  - no UI
+  - no scheduled jobs
+  - no watch mode
+  - no live Observatory ingestion
+  - no customer-facing workspace onboarding
+  - no SearchClarity onboarding
+  - no automation
+source_references:
+  - record_type: manual_note
+    record_id: impl_plan_internal_research_persistence_001
+    relationship: approved_plan
+schema_version: schema_v1
+record_revision: 1
+```
 ## Next Allowed Step
 
-Record a human review decision for this minimal implementation plan.
+Record exact first proof parameters for the approved minimal implementation plan.
 
 Do not write code.
 
