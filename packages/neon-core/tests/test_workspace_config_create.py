@@ -335,7 +335,10 @@ class WorkspaceConfigCreateProofTests(unittest.TestCase):
             "SELECT name FROM sqlite_master WHERE type = 'table' ORDER BY name"
         ).fetchall()
 
-        self.assertEqual([row["name"] for row in rows], ["audit_records", "workspace_configs"])
+        self.assertEqual(
+            [row["name"] for row in rows],
+            ["audit_records", "review_queue_items", "workspace_configs"],
+        )
 
     def test_file_backed_sqlite_store_persists_records(self):
         with tempfile.TemporaryDirectory() as temp_dir:
