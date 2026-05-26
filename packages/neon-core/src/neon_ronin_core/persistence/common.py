@@ -7,7 +7,6 @@ from datetime import UTC, datetime
 import json
 from typing import Any
 
-from .constants import SCHEMA_VERSION
 
 Clock = Callable[[], datetime]
 IdFactory = Callable[[], str]

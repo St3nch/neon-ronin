@@ -71,46 +71,6 @@ def validate_update_does_not_change_deferred_runtime_authority(
     if clean_config.get("runtime") != existing_record.get("runtime"):
         raise ValidationError("runtime changes are not authorized for the update proof")
 
-def _insert_audit_record(self, audit_record: Mapping[str, Any]) -> None:
-    if self.fail_audit_write:
-        raise AuditWriteError("forced audit write failure")
-    self.connection.execute(
-        """
-        INSERT INTO audit_records (
-            audit_record_id,
-            workspace_id,
-            event_type,
-            actor_type,
-            actor_id,
-            action_type,
-            target_type,
-            target_id,
-            result_status,
-            occurred_at,
-            created_at,
-            schema_version,
-            record_revision,
-            record_json
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        (
-            audit_record["audit_record_id"],
-            audit_record["workspace_id"],
-            audit_record["event_type"],
-            audit_record["actor_type"],
-            audit_record["actor_id"],
-            audit_record["action_type"],
-            audit_record["target_type"],
-            audit_record["target_id"],
-            audit_record["result_status"],
-            audit_record["occurred_at"],
-            audit_record["created_at"],
-            audit_record["schema_version"],
-            audit_record["record_revision"],
-            _json_dumps(audit_record),
-        ),
-    )
-
 
 def validate_assigned_workspace_id(workspace_id: str) -> None:
     if not isinstance(workspace_id, str) or not workspace_id.strip():

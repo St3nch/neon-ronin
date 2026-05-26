@@ -10,7 +10,7 @@ Observatory ingestion, customer-facing onboarding, or automation.
 
 from __future__ import annotations
 
-from collections.abc import Callable, Mapping
+from collections.abc import Mapping
 import json
 import sqlite3
 from typing import Any
