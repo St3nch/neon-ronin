@@ -60,3 +60,4 @@ Until then, future-candidate docs are parked context only.
 ## Current Candidates
 
 - `cross-workspace-content-market-intelligence.md`
+- `cross-workspace-visibility-observation.md`
