@@ -14,6 +14,8 @@ It answers:
 
 Detailed phase history lives in `docs/roadmap/phase-history.md`.
 
+The `docs/roadmap/` folder is the roadmap support area for phase-level working memory and condensed history. Use it when phase details help future humans or LLMs continue work, but keep the active decision surface in this file.
+
 Core rule:
 
 ```text
@@ -57,7 +59,7 @@ python tools/dev/check_first_proof.py
 Expected result:
 
 ```text
-Ran 87 tests
+Ran 89 tests
 OK
 ```
 
@@ -122,6 +124,16 @@ Internal Research is allowed to exercise:
 
 Internal Research must not introduce customer pressure, marketplace pressure, paid delivery pressure, business-specific report formats, or SearchClarity-specific core assumptions.
 
+### Recent Phase 6 Work Carried Forward
+
+The condensed roadmap keeps the recent Phase 6 work as current state, not buried history:
+
+- Manual Tests 001-005 completed as documentation/manual evidence.
+- Implementation readiness and first persistence proof parameters were approved with conditions.
+- First local SQLite audit-first persistence proof was implemented.
+- The proof expanded through `workspace_config_update`, `review_queue_item_create`, `human_decision_record`, `signal_candidate_create`, `artifact_metadata_create`, and `workflow_record_create`.
+- Phase 6A immediate audit cleanup completed and left the proof green at `Ran 89 tests / OK`.
+
 ## Phase 6 Current Proof State
 
 The first executable persistence proof exists and remains local/constrained.
@@ -170,11 +182,30 @@ Before SearchClarity enters Neon Ronin planning, Internal Research should prove 
 
 Phase 6 is healthy but not closed.
 
-Recommended next action:
+Use this roadmap section as the checkpoint surface. Do not create a separate checkpoint document unless the roadmap itself becomes unable to carry the decision clearly.
 
-- complete a docs-only Phase 6 checkpoint review
-- map current evidence against the Phase 6 exit criteria
-- decide whether remaining gaps require docs-only cleanup, tests-only proof, new implementation, or pause
+### Phase 6 Exit-Criteria Check
+
+| Exit Criterion | Current Evidence | Current Status | Next Need |
+|---|---|---|---|
+| Workspace can be created from config | `workspace_config_create`, `workspace_config_update`, first persistence proof hammer | proven | keep proof green |
+| Manual workflow can produce artifacts | Manual Tests 001-005, `artifact_metadata_create`, and cross-boundary workflow/artifact/review/decision proof | proven | keep proof green |
+| Review queue item can be created and resolved | `review_queue_item_create` and `human_decision_record` | proven | keep human-authority boundary intact |
+| Audit record can trace the work | audit-first transaction behavior across implemented persistence boundaries | proven | keep rollback coverage green |
+| Signal candidate can be sanitized or rejected | signal candidate create plus review queue and human rejection decision cross-boundary proof | proven as review-mediated rejection; sanitized-signal persistence remains out of scope | do not add Observatory ingestion or sanitized signal tables |
+| Platform decision can be recorded without business-specific contamination | manual-test decisions, implementation-start decisions, and human decision proof | mostly proven | keep SearchClarity and customer-facing assumptions out of core |
+| Provenance is preserved across raw, structured, sanitized, and derived records | bounded source/linked/target references across workflow, artifact, review, human decision, signal candidate, and audit records | improved; still partial for full raw-to-normalized Observatory chain | defer normalized Observatory provenance until ingestion is explicitly authorized |
+
+### Next Batch Rule
+
+The next batch should choose exactly one lane:
+
+1. docs-only: tighten this roadmap checkpoint and supporting references
+2. tests-only: add coverage around existing authorized records without new operations or tables
+3. implementation-start decision: authorize one new persistence boundary only if the checkpoint proves it is necessary
+4. pause: hold Phase 6 as healthy but not closed
+
+Default recommendation: do not start another persistence boundary until the partially proven Phase 6 criteria are resolved or explicitly deferred.
 
 No new persistence boundary is currently authorized.
 
@@ -195,7 +226,7 @@ SearchClarity Compatibility Preparation begins only when:
 
 Use these files for details instead of expanding this roadmap:
 
-- `docs/roadmap/phase-history.md`
+- `docs/roadmap/` for phase-level working memory and condensed history
 - `docs/core/`
 - `docs/core/schemas/`
 - `docs/operations/`

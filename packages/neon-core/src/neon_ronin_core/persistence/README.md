@@ -100,7 +100,7 @@ python tools/hammers/run_first_persistence_proof.py
 Expected result:
 
 ```text
-Ran 87 tests
+Ran 89 tests
 OK
 ```
 
@@ -115,6 +115,8 @@ The hammer currently verifies:
 - valid signal candidate creation writes exactly one workspace-owned signal candidate and one audit record
 - valid artifact metadata creation writes exactly one metadata-only artifact record and one audit record
 - valid workflow record creation writes exactly one manual-test workflow definition and one audit record
+- existing records compose into a manual workflow -> metadata-only artifact -> review item -> human decision proof chain
+- existing records compose into a signal candidate -> sanitization review item -> human rejection decision proof chain without Observatory ingestion
 - forced audit-write failure rolls back workspace config creation
 - forced audit-write failure rolls back workspace config update
 - forced audit-write failure rolls back review queue item creation

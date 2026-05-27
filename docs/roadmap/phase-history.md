@@ -214,9 +214,14 @@ Current validation:
 
 ```text
 python tools/dev/check_first_proof.py
-Ran 87 tests
+Ran 89 tests
 OK
 ```
+
+The tests-only cross-boundary proof now verifies the existing authorized records can compose into:
+
+- a manual workflow -> metadata-only artifact -> review item -> human decision chain
+- a signal candidate -> sanitization review item -> human rejection decision chain without Observatory ingestion
 
 Important proof limits:
 
@@ -245,7 +250,7 @@ Outcome:
 - Unused imports were removed from split persistence modules.
 - ROADMAP and hammer command references were synchronized with the current proof runner.
 - Manual-test promotion statuses were normalized from `passed_with_conditions` to `passed_with_notes` where appropriate.
-- Immediate cleanup finished while keeping the proof green at `Ran 87 tests / OK`.
+- Immediate cleanup finished with a green proof; later tests-only Phase 6 tightening raised the current proof to `Ran 89 tests / OK`.
 
 Deferred cleanup, still not required before moving on:
 
