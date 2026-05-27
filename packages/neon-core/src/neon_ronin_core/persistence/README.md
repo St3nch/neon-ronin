@@ -205,6 +205,6 @@ Do not add any of the following in this persistence slice:
 
 ## Next Safe Direction
 
-Before expanding persistence, keep this proof green and decide the next smallest boundary explicitly.
+Keep this proof green and treat Phase 6 as sufficient for the current authorized scope.
 
-Preferred next work should audit the split persistence slice before adding another table.
+Do not expand persistence by default. Any new persistence boundary requires a separate implementation-start decision that proves a real gap and keeps the work small, reversible, business-neutral, and audit-first.

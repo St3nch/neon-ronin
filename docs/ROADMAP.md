@@ -37,7 +37,7 @@ Neon Ronin is the multi-workspace agent operating system. SearchClarity and any 
 
 ## Current Status
 
-Neon Ronin is in Phase 6: Internal Research validation and first local persistence proof work.
+Neon Ronin is in Phase 6: Internal Research validation. The first local persistence proof is sufficient for the current authorized scope, and further persistence expansion requires a separate implementation-start decision.
 
 Current implementation posture:
 
@@ -101,7 +101,7 @@ Canonical human-decision records are required for meaningful gates, including im
 | 5B | Hammer Testing Doctrine | Completed | Hammer testing posture defined before serious implementation. | `docs/core/19-hammer-testing-doctrine.md` |
 | 5C | Core Example Separation | Completed | Concrete business examples separated from core doctrine. | `docs/reference-examples/`, `docs/workspaces/` |
 | 5D | DB Reliability And Schema Clarification | Completed | Version semantics, transaction boundaries, status vocabulary, and resolver concerns clarified. | `docs/core/14-schema-authority.md`, `docs/core/20-transaction-boundaries.md`, schema docs |
-| 6 | Workspace 1: Internal Research | Active | Manual validation and first executable persistence proof are underway. | `docs/workspaces/internal-research/`, `packages/neon-core/` |
+| 6 | Workspace 1: Internal Research | Sufficient for current scope | Manual validation and first executable persistence proof are sufficient for current authorized scope. | `docs/workspaces/internal-research/`, `packages/neon-core/` |
 | 6A | Post-Claude Audit Cleanup And Stabilization | Completed | Immediate audit cleanup completed; proof remains green. | `docs/roadmap/phase-history.md`, persistence proof docs |
 | 7 | SearchClarity Compatibility Preparation | Blocked | Waits for Phase 6 sufficiency and SearchClarity business-readiness evidence. | Future workspace planning |
 
@@ -180,7 +180,9 @@ Before SearchClarity enters Neon Ronin planning, Internal Research should prove 
 
 ## Current Decision Point
 
-Phase 6 is healthy but not closed.
+Phase 6 is sufficient for the current authorized scope.
+
+The remaining partial exit criterion is full raw-to-normalized Observatory provenance. That work is intentionally deferred because live Observatory ingestion, sanitized signal persistence, raw signal persistence, and Observatory normalization are not authorized in this phase.
 
 Use this roadmap section as the checkpoint surface. Do not create a separate checkpoint document unless the roadmap itself becomes unable to carry the decision clearly.
 
@@ -200,12 +202,11 @@ Use this roadmap section as the checkpoint surface. Do not create a separate che
 
 The next batch should choose exactly one lane:
 
-1. docs-only: tighten this roadmap checkpoint and supporting references
-2. tests-only: add coverage around existing authorized records without new operations or tables
-3. implementation-start decision: authorize one new persistence boundary only if the checkpoint proves it is necessary
-4. pause: hold Phase 6 as healthy but not closed
+1. pause: hold Phase 6 as sufficient for current authorized scope
+2. docs-only: tighten roadmap/supporting references if they drift
+3. implementation-start decision: authorize one new persistence boundary only if a real gap is proven and explicitly approved
 
-Default recommendation: do not start another persistence boundary until the partially proven Phase 6 criteria are resolved or explicitly deferred.
+Default recommendation: pause Phase 6 implementation work. Do not start another persistence boundary unless a separate implementation-start decision proves it is necessary.
 
 No new persistence boundary is currently authorized.
 

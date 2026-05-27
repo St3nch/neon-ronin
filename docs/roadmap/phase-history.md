@@ -176,7 +176,7 @@ Primary references:
 
 ## Phase 6 - Workspace 1: Internal Research
 
-Status: active.
+Status: sufficient for current authorized scope.
 
 Outcome so far:
 
@@ -229,6 +229,7 @@ Important proof limits:
 - signal candidate persistence only; no raw signal persistence, sanitized signal persistence, or Observatory submission
 - artifact metadata only; no blob/content storage, delivery-ready marking, or public-use approval
 - workflow definition only; no execution, scheduling, watch mode, agents, or integrations
+- full raw-to-normalized Observatory provenance remains deferred until Observatory ingestion is explicitly authorized
 - no new persistence table or domain record without a separate implementation-start decision
 
 Primary references:
