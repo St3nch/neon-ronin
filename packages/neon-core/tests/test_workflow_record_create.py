@@ -16,82 +16,12 @@ from workspace_config_fixture import (
     INTERNAL_RESEARCH_WORKSPACE_ID,
 )
 from proof_helpers import assert_authorized_tables_only
+from proof_payloads import VALID_WORKFLOW_RECORD
 
 
 FIXED_TIME = datetime(2026, 5, 26, 12, 0, 0, tzinfo=UTC)
 WORKFLOW_TIME = datetime(2026, 5, 26, 18, 0, 0, tzinfo=UTC)
 TIMESTAMP_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
-
-
-VALID_WORKFLOW_RECORD = {
-    "workflow_name": "Internal Research Manual Proof Workflow",
-    "workflow_type": "manual_research",
-    "scope_type": "workspace",
-    "workspace_id": INTERNAL_RESEARCH_WORKSPACE_ID,
-    "adapter_id": None,
-    "allowed_workspace_types": ["internal_research"],
-    "allowed_lifecycle_statuses": ["manual_test"],
-    "allowed_runtime_modes": ["on_demand"],
-    "steps": [
-        {
-            "step_id": "step_001",
-            "step_name": "Capture manual research note",
-            "step_type": "human_task",
-            "required": True,
-            "actor_type": "human",
-            "allowed_agent_ids": [],
-            "input_refs": ["workspace_config"],
-            "output_refs": ["artifact"],
-            "review_gate": None,
-            "audit_event_type": "workflow_step_completed",
-        },
-        {
-            "step_id": "step_002",
-            "step_name": "Create metadata-only artifact",
-            "step_type": "artifact_creation",
-            "required": True,
-            "actor_type": "human",
-            "allowed_agent_ids": [],
-            "input_refs": ["manual_note"],
-            "output_refs": ["artifact"],
-            "review_gate": None,
-            "audit_event_type": "artifact_metadata_created",
-        },
-    ],
-    "required_review_gates": ["quality_review_gate"],
-    "expected_inputs": [
-        {
-            "input_type": "workspace_config",
-            "required": True,
-            "ownership": "workspace_owned",
-        }
-    ],
-    "expected_outputs": [
-        {
-            "output_type": "artifact",
-            "artifact_type": "markdown_source",
-            "required": True,
-            "ownership": "workspace_owned",
-            "requires_review": True,
-        }
-    ],
-    "audit_requirements": ["workflow_record_created", "artifact_metadata_created"],
-    "description": "Manual workflow definition only; not a workflow engine or automation grant.",
-    "version_label": "manual-test-v1",
-    "trigger_types": ["human_started"],
-    "allowed_agents": [],
-    "forbidden_actions": ["external_action_execution", "scheduled_execution"],
-    "handoff_rules": {
-        "artifacts_requiring_review_go_to_review_queue": True,
-        "failed_steps_create_audit_record": True,
-    },
-    "failure_behavior": {
-        "on_missing_input": "block_or_request_revision",
-        "on_failed_step": "create_audit_record",
-    },
-    "provenance_requirements": ["workspace_config", "audit_record"],
-    "tags": ["persistence-proof"],
-}
 
 
 class WorkflowRecordCreateProofTests(unittest.TestCase):

@@ -16,43 +16,12 @@ from workspace_config_fixture import (
     INTERNAL_RESEARCH_WORKSPACE_ID,
 )
 from proof_helpers import assert_authorized_tables_only
+from proof_payloads import VALID_ARTIFACT_METADATA
 
 
 FIXED_TIME = datetime(2026, 5, 26, 12, 0, 0, tzinfo=UTC)
 ARTIFACT_TIME = datetime(2026, 5, 26, 17, 0, 0, tzinfo=UTC)
 TIMESTAMP_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
-
-
-VALID_ARTIFACT_METADATA = {
-    "workspace_id": INTERNAL_RESEARCH_WORKSPACE_ID,
-    "artifact_type": "markdown_source",
-    "content_scope": "core_metadata_only",
-    "storage_reference": {
-        "storage_type": "repo_path",
-        "content_stored_in_core": False,
-        "reference": "docs/workspaces/internal-research/example-artifact.md",
-        "description": "Metadata pointer only; content is not stored in core persistence.",
-    },
-    "title": "Internal research proof note",
-    "summary": "Metadata-only artifact record for the persistence proof.",
-    "creator_actor_type": "human",
-    "creator_actor_id": "human:operator",
-    "source_references": [
-        {
-            "record_type": "workspace_config",
-            "record_id": INTERNAL_RESEARCH_WORKSPACE_ID,
-            "relationship": "artifact_context",
-        }
-    ],
-    "review_item_ids": [],
-    "human_decision_ids": [],
-    "content_format": "markdown",
-    "sensitivity_rating": "low",
-    "confidence": "high",
-    "delivery_ready": False,
-    "public_use_allowed": False,
-    "tags": ["persistence-proof"],
-}
 
 
 class ArtifactMetadataCreateProofTests(unittest.TestCase):

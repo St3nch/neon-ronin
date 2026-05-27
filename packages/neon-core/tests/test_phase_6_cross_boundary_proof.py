@@ -16,11 +16,13 @@ from proof_helpers import (
     assert_authorized_tables_only,
     make_store,
 )
-from test_artifact_metadata_create import VALID_ARTIFACT_METADATA
-from test_human_decision_record import VALID_HUMAN_DECISION
-from test_review_queue_item_create import VALID_REVIEW_ITEM
-from test_signal_candidate_create import VALID_SIGNAL_CANDIDATE
-from test_workflow_record_create import VALID_WORKFLOW_RECORD
+from proof_payloads import (
+    VALID_ARTIFACT_METADATA,
+    VALID_HUMAN_DECISION,
+    VALID_REVIEW_ITEM,
+    VALID_SIGNAL_CANDIDATE,
+    VALID_WORKFLOW_RECORD,
+)
 from workspace_config_fixture import (
     INTERNAL_RESEARCH_WORKSPACE_CONFIG,
     INTERNAL_RESEARCH_WORKSPACE_ID,

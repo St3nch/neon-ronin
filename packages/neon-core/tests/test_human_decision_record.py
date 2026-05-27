@@ -11,37 +11,18 @@ from neon_ronin_core.persistence.sqlite_store import (
     SQLitePersistenceProofStore,
     ValidationError,
 )
-from test_review_queue_item_create import VALID_REVIEW_ITEM
 from workspace_config_fixture import (
     INTERNAL_RESEARCH_WORKSPACE_CONFIG,
     INTERNAL_RESEARCH_WORKSPACE_ID,
 )
 from proof_helpers import assert_authorized_tables_only
+from proof_payloads import VALID_HUMAN_DECISION, VALID_REVIEW_ITEM
 
 
 FIXED_TIME = datetime(2026, 5, 26, 12, 0, 0, tzinfo=UTC)
 REVIEW_TIME = datetime(2026, 5, 26, 14, 0, 0, tzinfo=UTC)
 DECISION_TIME = datetime(2026, 5, 26, 15, 0, 0, tzinfo=UTC)
 TIMESTAMP_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
-
-
-VALID_HUMAN_DECISION = {
-    "review_item_id": "review_item_001",
-    "decision_type": "approve",
-    "decision_scope": "review_item",
-    "reviewer_actor_id": "human:operator",
-    "target_records": [
-        {
-            "record_type": "review_item",
-            "record_id": "review_item_001",
-            "relationship": "resolves_review",
-        }
-    ],
-    "decision_summary": "Approved this bounded internal research review item.",
-    "decision_notes": "No external action is authorized by this proof.",
-    "conditions": [],
-    "sensitivity_rating": "low",
-}
 
 
 class HumanDecisionRecordProofTests(unittest.TestCase):

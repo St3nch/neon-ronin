@@ -255,7 +255,7 @@ Outcome:
 Deferred cleanup, still not required before moving on:
 
 - decide whether shared test helper adoption should expand beyond authorized-table assertions
-- move shared test payloads out of test modules if fixture coupling grows
+- shared test payloads were moved out of test modules after cross-boundary proof coupling grew
 - consider package export cleanup only when there is a real consumer need
 - revisit audit-first orchestration helper extraction only if another persistence boundary adds enough repetition to justify it
 

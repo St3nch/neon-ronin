@@ -16,34 +16,12 @@ from workspace_config_fixture import (
     INTERNAL_RESEARCH_WORKSPACE_ID,
 )
 from proof_helpers import assert_authorized_tables_only
+from proof_payloads import VALID_SIGNAL_CANDIDATE
 
 
 FIXED_TIME = datetime(2026, 5, 26, 12, 0, 0, tzinfo=UTC)
 SIGNAL_TIME = datetime(2026, 5, 26, 16, 0, 0, tzinfo=UTC)
 TIMESTAMP_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
-
-
-VALID_SIGNAL_CANDIDATE = {
-    "workspace_id": INTERNAL_RESEARCH_WORKSPACE_ID,
-    "workspace_type": "internal_research",
-    "signal_type": "workflow_problem",
-    "source_actor_type": "human",
-    "source_actor_id": "human:operator",
-    "source_references": [
-        {
-            "record_type": "manual_note",
-            "record_id": "note_001",
-            "relationship": "source_observation",
-        }
-    ],
-    "summary": "Manual workflow proofs benefit from narrow persistence boundaries.",
-    "evidence_summary": "Current implementation slices stayed small and audit-first.",
-    "sensitivity_rating": "low",
-    "confidence": "high",
-    "private_data_removed": True,
-    "remaining_sensitivity_notes": "No customer, credential, provider, or business-private data included.",
-    "tags": ["persistence-proof"],
-}
 
 
 class SignalCandidateCreateProofTests(unittest.TestCase):

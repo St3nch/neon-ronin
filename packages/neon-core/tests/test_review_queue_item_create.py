@@ -16,34 +16,12 @@ from workspace_config_fixture import (
     INTERNAL_RESEARCH_WORKSPACE_ID,
 )
 from proof_helpers import assert_authorized_tables_only
+from proof_payloads import VALID_REVIEW_ITEM
 
 
 FIXED_TIME = datetime(2026, 5, 26, 12, 0, 0, tzinfo=UTC)
 REVIEW_TIME = datetime(2026, 5, 26, 14, 0, 0, tzinfo=UTC)
 TIMESTAMP_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
-
-
-VALID_REVIEW_ITEM = {
-    "workspace_id": INTERNAL_RESEARCH_WORKSPACE_ID,
-    "review_type": "strategy_review",
-    "risk_categories": ["strategy"],
-    "source_actor_type": "human",
-    "source_actor_id": "human:operator",
-    "title": "Review internal research direction",
-    "summary": "Human review of a bounded internal research planning item.",
-    "required_gates": ["strategy_review_gate"],
-    "linked_records": [
-        {
-            "record_type": "workspace_config",
-            "record_id": INTERNAL_RESEARCH_WORKSPACE_ID,
-            "relationship": "review_context",
-        }
-    ],
-    "description": "Keep the first executable review queue proof bounded.",
-    "priority": "normal",
-    "sensitivity_rating": "low",
-    "confidence": "medium",
-}
 
 
 class ReviewQueueItemCreateProofTests(unittest.TestCase):
