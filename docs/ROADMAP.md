@@ -216,12 +216,19 @@ SearchClarity remains a parallel business-readiness track, not Neon Ronin core w
 
 SearchClarity-specific brand language, offers, pricing, report templates, customer intake forms, customer/order/report records, delivery messages, client-specific observations, and consent records must remain SearchClarity workspace-owned or business-owned.
 
-SearchClarity Compatibility Preparation begins only when:
+### Phase 7 Readiness Gate
 
-1. Neon Ronin has completed enough Phase 6 validation to enforce boundaries.
+Phase 7 is not active yet. It requires a separate readiness review before any SearchClarity compatibility preparation begins.
+
+The readiness review must confirm:
+
+1. Neon Ronin Phase 6 remains sufficient for current scope and the first proof is green.
 2. SearchClarity has enough manual-business evidence to model safely.
 3. SearchClarity-specific needs can be classified as workspace-owned, adapter-owned, reusable core capability, integration-owned, or out-of-scope.
 4. SearchClarity can be inspected without turning its docs into Neon Ronin doctrine.
+5. No customer-facing onboarding, integrations, agents, scheduled jobs, watch mode, Observatory ingestion, automation, or external actions are being authorized by the review.
+
+Passing the readiness review may authorize planning for Phase 7. It does not authorize implementation, onboarding, runtime enablement, or SearchClarity workspace activation by itself.
 
 ## Historical References
 

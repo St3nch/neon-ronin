@@ -265,16 +265,19 @@ Phase 6A did not authorize new persistence tables, new domain records, UI, agent
 
 ## Phase 7 - SearchClarity Compatibility Preparation
 
-Status: blocked.
+Status: blocked pending a separate readiness review.
 
-Phase 7 begins only after:
+Phase 7 requires a readiness review before any SearchClarity compatibility preparation begins.
 
-1. Phase 6 is complete enough to enforce boundaries.
+The readiness review must confirm:
+
+1. Neon Ronin Phase 6 remains sufficient for current scope and the first proof is green.
 2. SearchClarity has enough manual-business evidence to model safely.
 3. SearchClarity-specific details can be classified without becoming core doctrine.
 4. Neon Ronin can inspect SearchClarity without becoming SearchClarity.
+5. No customer-facing onboarding, integrations, agents, scheduled jobs, watch mode, Observatory ingestion, automation, or external actions are being authorized by the review.
 
-Expected future work:
+Expected future work, only after readiness is confirmed:
 
 - read SearchClarity docs as business/workspace input
 - classify SearchClarity as a workspace type
@@ -282,5 +285,7 @@ Expected future work:
 - identify adapter/core/schema gaps
 - draft a workspace config only when readiness gates are satisfied
 - identify hard-no automation rules and privacy boundaries
+
+Passing the readiness review may authorize planning for Phase 7. It does not authorize implementation, onboarding, runtime enablement, or SearchClarity workspace activation by itself.
 
 No SearchClarity onboarding is currently authorized.
