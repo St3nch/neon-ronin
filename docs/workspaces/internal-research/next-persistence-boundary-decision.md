@@ -17,15 +17,26 @@ It does not authorize new code, new tables, new schemas, new domain records, UI,
 The first local SQLite audit-first proof is complete and pushed.
 
 ```yaml
-latest_pushed_commit: f63e1d8
-latest_pushed_commit_summary: Add first proof developer check
+latest_pushed_commit: 09c8403
+latest_pushed_commit_summary: Add Phase 7 readiness gate
 proof_scope:
   - workspace_configs
   - audit_records
+  - review_queue_items
+  - human_decisions
+  - signal_candidates
+  - artifact_metadata
+  - workflow_records
   - workspace_config_create
+  - workspace_config_update
+  - review_queue_item_create
+  - human_decision_record
+  - signal_candidate_create
+  - artifact_metadata_create
+  - workflow_record_create
   - audit-first transaction behavior
 current_hammer_command: python tools/dev/check_first_proof.py
-current_hammer_result: Ran 12 tests / OK
+current_hammer_result: Ran 92 tests / OK
 ```
 
 The implementation remains intentionally tiny:

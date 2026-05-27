@@ -92,7 +92,7 @@ Implementation may touch only the existing first-proof implementation areas:
 packages/neon-core/src/neon_ronin_core/persistence/sqlite_store.py
 packages/neon-core/tests/test_workspace_config_create.py
 fixtures/internal-research/workspace_config_fixture.py
-tools/hammers/run_audit_first_workspace_config_create.py
+tools/hammers/run_audit_first_workspace_config_create.py  # historical compatibility wrapper; superseded by tools/hammers/run_first_persistence_proof.py
 tools/dev/check_first_proof.py
 packages/neon-core/src/neon_ronin_core/persistence/README.md
 packages/neon-core/README.md
