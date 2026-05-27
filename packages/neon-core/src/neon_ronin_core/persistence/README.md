@@ -100,7 +100,7 @@ python tools/hammers/run_first_persistence_proof.py
 Expected result:
 
 ```text
-Ran 89 tests
+Ran 92 tests
 OK
 ```
 
@@ -117,6 +117,7 @@ The hammer currently verifies:
 - valid workflow record creation writes exactly one manual-test workflow definition and one audit record
 - existing records compose into a manual workflow -> metadata-only artifact -> review item -> human decision proof chain
 - existing records compose into a signal candidate -> sanitization review item -> human rejection decision proof chain without Observatory ingestion
+- business-neutrality guardrails reject customer-facing, SearchClarity-shaped, and external-action shortcuts
 - forced audit-write failure rolls back workspace config creation
 - forced audit-write failure rolls back workspace config update
 - forced audit-write failure rolls back review queue item creation

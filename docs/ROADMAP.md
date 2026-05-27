@@ -59,7 +59,7 @@ python tools/dev/check_first_proof.py
 Expected result:
 
 ```text
-Ran 89 tests
+Ran 92 tests
 OK
 ```
 
@@ -132,7 +132,7 @@ The condensed roadmap keeps the recent Phase 6 work as current state, not buried
 - Implementation readiness and first persistence proof parameters were approved with conditions.
 - First local SQLite audit-first persistence proof was implemented.
 - The proof expanded through `workspace_config_update`, `review_queue_item_create`, `human_decision_record`, `signal_candidate_create`, `artifact_metadata_create`, and `workflow_record_create`.
-- Phase 6A immediate audit cleanup completed and left the proof green at `Ran 89 tests / OK`.
+- Phase 6A immediate audit cleanup completed with a green proof; later tests-only tightening raised the current proof to `Ran 92 tests / OK`.
 
 ## Phase 6 Current Proof State
 
@@ -193,7 +193,7 @@ Use this roadmap section as the checkpoint surface. Do not create a separate che
 | Review queue item can be created and resolved | `review_queue_item_create` and `human_decision_record` | proven | keep human-authority boundary intact |
 | Audit record can trace the work | audit-first transaction behavior across implemented persistence boundaries | proven | keep rollback coverage green |
 | Signal candidate can be sanitized or rejected | signal candidate create plus review queue and human rejection decision cross-boundary proof | proven as review-mediated rejection; sanitized-signal persistence remains out of scope | do not add Observatory ingestion or sanitized signal tables |
-| Platform decision can be recorded without business-specific contamination | manual-test decisions, implementation-start decisions, and human decision proof | mostly proven | keep SearchClarity and customer-facing assumptions out of core |
+| Platform decision can be recorded without business-specific contamination | manual-test decisions, implementation-start decisions, human decision proof, and business-neutrality rejection tests | proven | keep SearchClarity and customer-facing assumptions out of core |
 | Provenance is preserved across raw, structured, sanitized, and derived records | bounded source/linked/target references across workflow, artifact, review, human decision, signal candidate, and audit records | improved; still partial for full raw-to-normalized Observatory chain | defer normalized Observatory provenance until ingestion is explicitly authorized |
 
 ### Next Batch Rule
