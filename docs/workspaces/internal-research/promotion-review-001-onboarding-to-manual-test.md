@@ -51,7 +51,7 @@ This does not authorize automation.
 | Workspace config draft exists | passed |
 | Manual-test goal is clear | passed |
 | Manual-test plan exists | passed |
-| Manual-test evidence exists | passed_with_conditions |
+| Manual-test evidence exists | passed_with_notes |
 | Artifact review decision recorded | approve_with_changes |
 | Sanitization decision recorded | approve_with_changes |
 | No customer data involved | passed |
@@ -60,7 +60,7 @@ This does not authorize automation.
 | No scheduled jobs/watch mode | passed |
 | No credentials/provider payloads | passed |
 | Audit expectations documented | passed |
-| Review gates identified and exercised manually | passed_with_conditions |
+| Review gates identified and exercised manually | passed_with_notes |
 
 ## Promotion Checklist
 
@@ -76,7 +76,7 @@ This does not authorize automation.
 | Audit requirements are defined | passed | config/evidence docs list audit expectations |
 | Manual-test goal is clear | passed | artifact/review/audit/human-decision/signal flow |
 | Hard-no rules remain intact | passed | no agents, no schedules, no watch mode, no credentials, no external writes |
-| Blockers are absent or documented | passed_with_conditions | conditions listed below |
+| Blockers are absent or documented | passed_with_notes | conditions listed below |
 
 ## Conditions
 
